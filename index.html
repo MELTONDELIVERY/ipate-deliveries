@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -916,6 +916,31 @@
             max-height: 200px;
             border-radius: 8px;
         }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: var(--gray);
+        }
+
+        /* Form Validation */
+        .error-message {
+            color: var(--danger);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-control.error {
+            border-color: var(--danger);
+        }
     </style>
 </head>
 <body>
@@ -1037,7 +1062,7 @@
 
             <div class="container">
                 <div class="dashboard-content">
-                    <h2 class="section-title">ðŸ›ï¸ Customer Dashboard</h2>
+                    <h2 class="section-title">🛍️ Customer Dashboard</h2>
                     
                     <div class="dashboard-nav-links">
                         <a href="#" class="dashboard-nav-link active" onclick="showCustomerSection('dashboard')">Dashboard</a>
@@ -1062,7 +1087,7 @@
                                 <div class="customer-stat-label">Delivered Orders</div>
                             </div>
                             <div class="customer-stat-card">
-                                <div class="customer-stat-value">0 â˜…</div>
+                                <div class="customer-stat-value">0 ⭐</div>
                                 <div class="customer-stat-label">Your Rating</div>
                             </div>
                         </div>
@@ -1076,7 +1101,7 @@
                     <!-- Products Section -->
                     <div id="customer-products-section" class="customer-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ›ï¸ Shop Products</h2>
+                            <h2>🛍️ Shop Products</h2>
                             <div style="display: flex; gap: 15px; margin-top: 10px;">
                                 <select id="categoryFilter" class="form-control" style="width: auto;">
                                     <option value="all">All Categories</option>
@@ -1097,7 +1122,7 @@
                     <!-- Orders Section -->
                     <div id="customer-orders-section" class="customer-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ“¦ Your Orders</h2>
+                            <h2>📦 Your Orders</h2>
                             <div style="display: flex; gap: 15px; margin-top: 10px;">
                                 <select id="orderStatusFilter" class="form-control" style="width: auto;">
                                     <option value="all">All Orders</option>
@@ -1120,7 +1145,7 @@
                     <!-- Cart Section -->
                     <div id="customer-cart-section" class="customer-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ›’ Your Shopping Cart</h2>
+                            <h2>🛒 Your Shopping Cart</h2>
                         </div>
                         
                         <div class="cart-items" id="cart-items">
@@ -1177,7 +1202,7 @@
 
             <div class="container">
                 <div class="dashboard-content">
-                    <h2 class="section-title">ðŸš´â€â™‚ï¸ Rider Dashboard</h2>
+                    <h2 class="section-title">🚴‍♂️ Rider Dashboard</h2>
                     
                     <div class="dashboard-nav-links">
                         <a href="#" class="dashboard-nav-link active" onclick="showRiderSection('dashboard')">Dashboard</a>
@@ -1201,7 +1226,7 @@
                                 </div>
                             </div>
                             <div>
-                                <div class="stat-value" style="font-size: 24px; margin-bottom: 5px;">0 â˜…</div>
+                                <div class="stat-value" style="font-size: 24px; margin-bottom: 5px;">0 ⭐</div>
                                 <div class="stat-label">Your Rating</div>
                             </div>
                         </div>
@@ -1244,7 +1269,7 @@
                     <!-- Deliveries Section -->
                     <div id="rider-deliveries-section" class="rider-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ“¦ My Deliveries</h2>
+                            <h2>📦 My Deliveries</h2>
                         </div>
                         
                         <div id="rider-deliveries-list">
@@ -1255,7 +1280,7 @@
                     <!-- Earnings Section -->
                     <div id="rider-earnings-section" class="rider-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ’° Earnings</h2>
+                            <h2>💰 Earnings</h2>
                         </div>
                         
                         <div class="stats-grid">
@@ -1292,7 +1317,7 @@
                     <!-- Schedule Section -->
                     <div id="rider-schedule-section" class="rider-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ“… Schedule</h2>
+                            <h2>📅 Schedule</h2>
                         </div>
                         
                         <div class="map-container">
@@ -1332,7 +1357,7 @@
 
             <div class="container">
                 <div class="dashboard-content">
-                    <h2 class="section-title">ðŸª Seller Dashboard</h2>
+                    <h2 class="section-title">🏪 Seller Dashboard</h2>
                     
                     <div class="dashboard-nav-links">
                         <a href="#" class="dashboard-nav-link active" onclick="showSellerSection('dashboard')">Dashboard</a>
@@ -1377,7 +1402,7 @@
                     <!-- Products Section -->
                     <div id="seller-products-section" class="seller-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ“¦ Manage Products</h2>
+                            <h2>📦 Manage Products</h2>
                             <button class="btn btn-primary" onclick="openAddProductModal()">Add New Product</button>
                         </div>
                         
@@ -1389,7 +1414,7 @@
                     <!-- Orders Section -->
                     <div id="seller-orders-section" class="seller-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ“‹ Manage Orders</h2>
+                            <h2>📋 Manage Orders</h2>
                         </div>
                         
                         <div id="seller-orders-list">
@@ -1400,7 +1425,7 @@
                     <!-- Analytics Section -->
                     <div id="seller-analytics-section" class="seller-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ“Š Analytics</h2>
+                            <h2>📊 Analytics</h2>
                         </div>
                         
                         <div class="analytics-grid">
@@ -1438,7 +1463,7 @@
 
             <div class="container">
                 <div class="dashboard-content">
-                    <h2 class="section-title">â“ Help Center</h2>
+                    <h2 class="section-title">❓ Help Center</h2>
                     
                     <div class="features-grid">
                         <div class="feature-card">
@@ -1481,10 +1506,12 @@
                 <div class="form-group">
                     <label for="login-email">Email</label>
                     <input type="email" id="login-email" class="form-control" placeholder="Enter your email">
+                    <div class="error-message" id="login-email-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="login-password">Password</label>
                     <input type="password" id="login-password" class="form-control" placeholder="Enter your password">
+                    <div class="error-message" id="login-password-error"></div>
                 </div>
                 <button class="btn btn-primary btn-block" onclick="login()">Login</button>
                 <p style="text-align: center; margin-top: 15px;">
@@ -1497,14 +1524,17 @@
                 <div class="form-group">
                     <label for="signup-name">Full Name</label>
                     <input type="text" id="signup-name" class="form-control" placeholder="Enter your full name">
+                    <div class="error-message" id="signup-name-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="signup-email">Email</label>
                     <input type="email" id="signup-email" class="form-control" placeholder="Enter your email">
+                    <div class="error-message" id="signup-email-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="signup-password">Password</label>
                     <input type="password" id="signup-password" class="form-control" placeholder="Create a password">
+                    <div class="error-message" id="signup-password-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="signup-role">I want to:</label>
@@ -1528,6 +1558,7 @@
             <div class="form-group">
                 <label for="delivery-address">Delivery Address</label>
                 <textarea id="delivery-address" class="form-control" placeholder="Enter your complete delivery address" rows="3"></textarea>
+                <div class="error-message" id="delivery-address-error"></div>
             </div>
             
             <div class="form-group">
@@ -1560,6 +1591,7 @@
             <div class="form-group">
                 <label for="product-name">Product Name</label>
                 <input type="text" id="product-name" class="form-control" placeholder="Enter product name">
+                <div class="error-message" id="product-name-error"></div>
             </div>
             
             <div class="form-group">
@@ -1569,7 +1601,8 @@
             
             <div class="form-group">
                 <label for="product-price">Price (KSh)</label>
-                <input type="number" id="product-price" class="form-control" placeholder="Enter price">
+                <input type="number" id="product-price" class="form-control" placeholder="Enter price" min="1">
+                <div class="error-message" id="product-price-error"></div>
             </div>
             
             <div class="form-group">
@@ -1585,7 +1618,8 @@
             
             <div class="form-group">
                 <label for="product-stock">Stock Quantity</label>
-                <input type="number" id="product-stock" class="form-control" placeholder="Enter stock quantity">
+                <input type="number" id="product-stock" class="form-control" placeholder="Enter stock quantity" min="0">
+                <div class="error-message" id="product-stock-error"></div>
             </div>
             
             <div class="form-group">
@@ -1654,8 +1688,8 @@
 
     <script>
         // Supabase Configuration
-        const SUPABASE_URL = 'https://gckhrsktsoqolzwssqru.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja2hyc2t0c29xb2x6d3NzcXJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0NjYzNjMsImV4cCI6MjA3NzA0MjM2M30.bo3Fq9ynKjeKILk25VC8nTBeka0DiegUJhfbgzZswCY';
+        const SUPABASE_URL = 'https://stnodqdazzenapubqbou.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0bm9kcWRhenplbmFwdWJxYm91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMDAxMzksImV4cCI6MjA3NzY3NjEzOX0.DdeYFmLgwb5_rSSAitibIKXavOtT3BNTVvj5ny4nEmk';
 
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1678,7 +1712,132 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
             setupEventListeners();
+            initializeDatabase();
         });
+
+        // Initialize database tables
+        async function initializeDatabase() {
+            try {
+                // Check if users table exists, if not create it
+                const { error: usersError } = await supabase
+                    .from('users')
+                    .select('*')
+                    .limit(1);
+                
+                if (usersError && usersError.code === '42P01') {
+                    // Table doesn't exist, create it
+                    await createDatabaseTables();
+                }
+            } catch (error) {
+                console.error('Error initializing database:', error);
+            }
+        }
+
+        // Create database tables
+        async function createDatabaseTables() {
+            showNotification('Initializing database...', 'info');
+            
+            // Note: In a real application, you would use Supabase's SQL editor
+            // to run these SQL commands. For now, we'll handle it through the app.
+            
+            try {
+                // Create users table
+                const { error: usersError } = await supabase
+                    .from('users')
+                    .insert([
+                        {
+                            id: 'system',
+                            email: 'system@system.com',
+                            name: 'System',
+                            role: 'system'
+                        }
+                    ]);
+                
+                // If we can insert, the table exists
+                if (!usersError) {
+                    // Clean up the test record
+                    await supabase
+                        .from('users')
+                        .delete()
+                        .eq('id', 'system');
+                }
+                
+                // Create sample products if none exist
+                const { data: existingProducts } = await supabase
+                    .from('products')
+                    .select('*')
+                    .limit(1);
+                
+                if (!existingProducts || existingProducts.length === 0) {
+                    await createSampleProducts();
+                }
+                
+                showNotification('Database initialized successfully!', 'success');
+            } catch (error) {
+                console.error('Error creating database tables:', error);
+                showNotification('Error initializing database. Please check Supabase configuration.', 'error');
+            }
+        }
+
+        // Create sample products
+        async function createSampleProducts() {
+            const sampleProducts = [
+                {
+                    name: "Fresh Milk 1L",
+                    description: "Fresh pasteurized milk from local farms",
+                    price: 120,
+                    category: "Food",
+                    stock: 50,
+                    image_url: "https://images.unsplash.com/photo-1563636619-e9143da7973b?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                },
+                {
+                    name: "Whole Wheat Bread",
+                    description: "Freshly baked whole wheat bread",
+                    price: 80,
+                    category: "Food",
+                    stock: 30,
+                    image_url: "https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                },
+                {
+                    name: "Mineral Water 500ml",
+                    description: "Pure mineral water bottle",
+                    price: 40,
+                    category: "Beverages",
+                    stock: 100,
+                    image_url: "https://images.unsplash.com/photo-1548839149-851a64d1d8d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                },
+                {
+                    name: "Toothpaste",
+                    description: "Fluoride toothpaste for dental care",
+                    price: 150,
+                    category: "Personal Care",
+                    stock: 25,
+                    image_url: "https://images.unsplash.com/photo-1585435557343-3b092031d5ad?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                },
+                {
+                    name: "Phone Charger",
+                    description: "Universal USB phone charger",
+                    price: 800,
+                    category: "Electronics",
+                    stock: 15,
+                    image_url: "https://images.unsplash.com/photo-1609592810793-abeb6c64b5c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80"
+                }
+            ];
+
+            for (const product of sampleProducts) {
+                const { error } = await supabase
+                    .from('products')
+                    .insert([{
+                        ...product,
+                        seller_id: 'system', // System products
+                        is_active: true
+                    }]);
+                
+                if (error) {
+                    console.error('Error creating sample product:', error);
+                }
+            }
+        }
 
         // Initialize the application
         async function initializeApp() {
@@ -1730,9 +1889,155 @@
             document.getElementById('categoryFilter').addEventListener('change', filterProducts);
             document.getElementById('orderStatusFilter').addEventListener('change', filterOrders);
             
+            // Form validation
+            setupFormValidation();
+            
             // Load cart from localStorage
             loadCartFromStorage();
             updateCartCount();
+        }
+
+        // Setup form validation
+        function setupFormValidation() {
+            // Login form validation
+            document.getElementById('login-email').addEventListener('blur', validateEmail);
+            document.getElementById('login-password').addEventListener('blur', validatePassword);
+            
+            // Signup form validation
+            document.getElementById('signup-name').addEventListener('blur', validateName);
+            document.getElementById('signup-email').addEventListener('blur', validateEmail);
+            document.getElementById('signup-password').addEventListener('blur', validatePassword);
+            
+            // Product form validation
+            document.getElementById('product-name').addEventListener('blur', validateProductName);
+            document.getElementById('product-price').addEventListener('blur', validateProductPrice);
+            document.getElementById('product-stock').addEventListener('blur', validateProductStock);
+            
+            // Checkout validation
+            document.getElementById('delivery-address').addEventListener('blur', validateDeliveryAddress);
+        }
+
+        // Validation functions
+        function validateEmail(e) {
+            const email = e.target.value;
+            const errorElement = document.getElementById(e.target.id + '-error');
+            
+            if (!email) {
+                showError(e.target, errorElement, 'Email is required');
+                return false;
+            }
+            
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError(e.target, errorElement, 'Please enter a valid email address');
+                return false;
+            }
+            
+            clearError(e.target, errorElement);
+            return true;
+        }
+
+        function validatePassword(e) {
+            const password = e.target.value;
+            const errorElement = document.getElementById(e.target.id + '-error');
+            
+            if (!password) {
+                showError(e.target, errorElement, 'Password is required');
+                return false;
+            }
+            
+            if (password.length < 6) {
+                showError(e.target, errorElement, 'Password must be at least 6 characters');
+                return false;
+            }
+            
+            clearError(e.target, errorElement);
+            return true;
+        }
+
+        function validateName(e) {
+            const name = e.target.value;
+            const errorElement = document.getElementById(e.target.id + '-error');
+            
+            if (!name) {
+                showError(e.target, errorElement, 'Full name is required');
+                return false;
+            }
+            
+            if (name.length < 2) {
+                showError(e.target, errorElement, 'Name must be at least 2 characters');
+                return false;
+            }
+            
+            clearError(e.target, errorElement);
+            return true;
+        }
+
+        function validateProductName(e) {
+            const name = e.target.value;
+            const errorElement = document.getElementById(e.target.id + '-error');
+            
+            if (!name) {
+                showError(e.target, errorElement, 'Product name is required');
+                return false;
+            }
+            
+            clearError(e.target, errorElement);
+            return true;
+        }
+
+        function validateProductPrice(e) {
+            const price = parseFloat(e.target.value);
+            const errorElement = document.getElementById(e.target.id + '-error');
+            
+            if (!price || price <= 0) {
+                showError(e.target, errorElement, 'Price must be greater than 0');
+                return false;
+            }
+            
+            clearError(e.target, errorElement);
+            return true;
+        }
+
+        function validateProductStock(e) {
+            const stock = parseInt(e.target.value);
+            const errorElement = document.getElementById(e.target.id + '-error');
+            
+            if (stock < 0) {
+                showError(e.target, errorElement, 'Stock cannot be negative');
+                return false;
+            }
+            
+            clearError(e.target, errorElement);
+            return true;
+        }
+
+        function validateDeliveryAddress(e) {
+            const address = e.target.value;
+            const errorElement = document.getElementById(e.target.id + '-error');
+            
+            if (!address) {
+                showError(e.target, errorElement, 'Delivery address is required');
+                return false;
+            }
+            
+            if (address.length < 10) {
+                showError(e.target, errorElement, 'Please provide a complete address');
+                return false;
+            }
+            
+            clearError(e.target, errorElement);
+            return true;
+        }
+
+        function showError(input, errorElement, message) {
+            input.classList.add('error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function clearError(input, errorElement) {
+            input.classList.remove('error');
+            errorElement.style.display = 'none';
         }
 
         // Show notification
@@ -1824,8 +2129,9 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             
-            if (!email || !password) {
-                showNotification('Please fill in all fields', 'error');
+            // Validate form
+            if (!validateEmail({target: document.getElementById('login-email')}) || 
+                !validatePassword({target: document.getElementById('login-password')})) {
                 return;
             }
             
@@ -1854,182 +2160,97 @@
         }
 
         // Signup function
-        // Handle signup - FIXED VERSION
-async function signup() {
-    const name = document.getElementById('signup-name').value;
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-    const role = document.getElementById('signup-role').value;
-    
-    if (!name || !email || !password) {
-        showNotification('Please fill in all fields', 'error');
-        return;
-    }
-    
-    if (password.length < 6) {
-        showNotification('Password must be at least 6 characters', 'error');
-        return;
-    }
-    
-    showLoading();
-    
-    try {
-        // Create user in Supabase Auth
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: {
-                    name: name,
-                    role: role
-                }
-            }
-        });
-        
-        if (error) {
-            showNotification(error.message, 'error');
-            showLoading(false);
-            return;
-        }
-        
-        if (data.user) {
-            // Create user profile in database - FIXED
-            const { error: profileError } = await supabase
-                .from('users')
-                .insert([
-                    {
-                        id: data.user.id,
-                        email: email,
-                        name: name,
-                        role: role
-                    }
-                ]);
+        async function signup() {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const role = document.getElementById('signup-role').value;
             
-            if (profileError) {
-                console.error('Error creating user profile:', profileError);
-                
-                // If profile creation fails, try to update existing profile
-                const { error: updateError } = await supabase
-                    .from('users')
-                    .upsert({
-                        id: data.user.id,
-                        email: email,
-                        name: name,
-                        role: role
-                    });
-                
-                if (updateError) {
-                    console.error('Error updating user profile:', updateError);
-                    showNotification('Error creating user profile', 'error');
-                    showLoading(false);
-                    return;
-                }
-            }
-            
-            currentUser = data.user;
-            userRole = role;
-            
-            // Update UI
-            updateUserInfo({ name, role });
-            
-            // Redirect to dashboard
-            redirectToDashboard(role);
-            
-            showNotification('Account created successfully!', 'success');
-            closeAuthModal();
-        }
-        
-    } catch (error) {
-        console.error('Signup error:', error);
-        showNotification('An error occurred during signup', 'error');
-    }
-    
-    hideLoading();
-}
-
-// Handle login - FIXED VERSION
-async function login() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    
-    if (!email || !password) {
-        showNotification('Please fill in all fields', 'error');
-        return;
-    }
-    
-    showLoading();
-    
-    try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-        
-        if (error) {
-            showNotification(error.message, 'error');
-            hideLoading();
-            return;
-        }
-        
-        currentUser = data.user;
-        
-        // Get user profile from database - FIXED
-        const { data: userData, error: userError } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', data.user.id)
-            .single();
-        
-        if (userError) {
-            console.error('Error fetching user profile:', userError);
-            
-            // If profile doesn't exist, create it
-            const userMetadata = data.user.user_metadata;
-            const { error: createError } = await supabase
-                .from('users')
-                .insert([
-                    {
-                        id: data.user.id,
-                        email: data.user.email,
-                        name: userMetadata?.name || data.user.email.split('@')[0],
-                        role: userMetadata?.role || 'customer'
-                    }
-                ]);
-            
-            if (createError) {
-                console.error('Error creating user profile:', createError);
-                showNotification('Error loading user data', 'error');
-                hideLoading();
+            // Validate form
+            if (!validateName({target: document.getElementById('signup-name')}) || 
+                !validateEmail({target: document.getElementById('signup-email')}) || 
+                !validatePassword({target: document.getElementById('signup-password')})) {
                 return;
             }
             
-            userRole = userMetadata?.role || 'customer';
-        } else {
-            userRole = userData.role;
+            showLoading();
+            
+            try {
+                // Create user in Supabase Auth
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            name: name,
+                            role: role
+                        }
+                    }
+                });
+                
+                if (error) {
+                    showNotification(error.message, 'error');
+                    hideLoading();
+                    return;
+                }
+                
+                if (data.user) {
+                    // Create user profile in database
+                    const { error: profileError } = await supabase
+                        .from('users')
+                        .insert([
+                            {
+                                id: data.user.id,
+                                email: email,
+                                name: name,
+                                role: role
+                            }
+                        ]);
+                    
+                    if (profileError) {
+                        console.error('Error creating user profile:', profileError);
+                        
+                        // If profile creation fails, try to update existing profile
+                        const { error: updateError } = await supabase
+                            .from('users')
+                            .upsert({
+                                id: data.user.id,
+                                email: email,
+                                name: name,
+                                role: role
+                            });
+                        
+                        if (updateError) {
+                            console.error('Error updating user profile:', updateError);
+                            showNotification('Error creating user profile', 'error');
+                            hideLoading();
+                            return;
+                        }
+                    }
+                    
+                    currentUser = data.user;
+                    userRole = role;
+                    
+                    // Update UI
+                    updateUserInfo({ name, role });
+                    
+                    // Redirect to dashboard
+                    redirectToDashboard(role);
+                    
+                    showNotification('Account created successfully!', 'success');
+                    closeAuthModal();
+                }
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                showNotification('An error occurred during signup', 'error');
+            }
+            
+            hideLoading();
         }
-        
-        // Update UI
-        updateUserInfo(userData || { 
-            name: data.user.user_metadata?.name || data.user.email.split('@')[0], 
-            role: userRole 
-        });
-        
-        // Redirect to dashboard
-        redirectToDashboard(userRole);
-        
-        showNotification('Login successful!', 'success');
-        closeAuthModal();
-        
-    } catch (error) {
-        console.error('Login error:', error);
-        showNotification('An error occurred during login', 'error');
-    }
-    
-    hideLoading();
-}
 
-// Load user profile
-async function loadUserProfile() {
+        // Load user profile
+        async function loadUserProfile() {
             showLoading();
             
             try {
@@ -2042,11 +2263,40 @@ async function loadUserProfile() {
                 
                 if (error) {
                     console.error('Error loading user profile:', error);
-                    showNotification('Error loading user profile', 'error');
-                    return;
+                    
+                    // If profile doesn't exist, create it from auth metadata
+                    const userMetadata = currentUser.user_metadata;
+                    const { error: createError } = await supabase
+                        .from('users')
+                        .insert([
+                            {
+                                id: currentUser.id,
+                                email: currentUser.email,
+                                name: userMetadata?.name || currentUser.email.split('@')[0],
+                                role: userMetadata?.role || 'customer'
+                            }
+                        ]);
+                    
+                    if (createError) {
+                        console.error('Error creating user profile:', createError);
+                        showNotification('Error loading user data', 'error');
+                        await logout();
+                        return;
+                    }
+                    
+                    // Try to load profile again
+                    const { data: newProfile } = await supabase
+                        .from('users')
+                        .select('*')
+                        .eq('id', currentUser.id)
+                        .single();
+                    
+                    userRole = newProfile.role;
+                    updateUserInfo(newProfile);
+                } else {
+                    userRole = profile.role;
+                    updateUserInfo(profile);
                 }
-                
-                userRole = profile.role;
                 
                 // Update UI based on role
                 if (userRole === 'customer') {
@@ -2059,9 +2309,6 @@ async function loadUserProfile() {
                     showPage('seller-dashboard');
                     await loadSellerDashboard();
                 }
-                
-                // Update user info in UI
-                updateUserInfo(profile);
                 
             } catch (error) {
                 console.error('Error loading user profile:', error);
@@ -2084,6 +2331,20 @@ async function loadUserProfile() {
             } else if (userRole === 'seller') {
                 document.getElementById('seller-avatar').textContent = avatar;
                 document.getElementById('seller-name').textContent = profile.name;
+            }
+        }
+
+        // Redirect to dashboard based on role
+        function redirectToDashboard(role) {
+            if (role === 'customer') {
+                showPage('customer-dashboard');
+                loadCustomerDashboard();
+            } else if (role === 'rider') {
+                showPage('rider-dashboard');
+                loadRiderDashboard();
+            } else if (role === 'seller') {
+                showPage('seller-dashboard');
+                loadSellerDashboard();
             }
         }
 
@@ -2258,8 +2519,13 @@ async function loadUserProfile() {
             
             if (userOrders.length === 0) {
                 recentOrdersContainer.innerHTML = `
-                    <div class="order-card">
-                        <p style="text-align: center; color: var(--gray);">No orders yet. Start shopping!</p>
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h3>No orders yet</h3>
+                        <p>Start shopping to see your orders here</p>
+                        <button class="btn btn-primary" onclick="showCustomerSection('products')" style="margin-top: 15px;">
+                            Start Shopping
+                        </button>
                     </div>
                 `;
                 return;
@@ -2323,10 +2589,10 @@ async function loadUserProfile() {
             
             if (productsToDisplay.length === 0) {
                 productsContainer.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                        <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-box-open"></i>
                         <h3>No products available</h3>
-                        <p style="color: var(--gray);">Check back later for new products.</p>
+                        <p>Check back later for new products</p>
                     </div>
                 `;
                 return;
@@ -2372,7 +2638,7 @@ async function loadUserProfile() {
             if (searchTerm) {
                 filteredProducts = filteredProducts.filter(product => 
                     product.name.toLowerCase().includes(searchTerm) || 
-                    product.description.toLowerCase().includes(searchTerm)
+                    (product.description && product.description.toLowerCase().includes(searchTerm))
                 );
             }
             
@@ -2467,10 +2733,13 @@ async function loadUserProfile() {
             
             if (cart.length === 0) {
                 cartItemsContainer.innerHTML = `
-                    <div style="text-align: center; padding: 40px;">
-                        <i class="fas fa-shopping-cart" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-cart"></i>
                         <h3>Your cart is empty</h3>
-                        <p style="color: var(--gray);">Add some products to get started!</p>
+                        <p>Add some products to get started!</p>
+                        <button class="btn btn-primary" onclick="showCustomerSection('products')" style="margin-top: 15px;">
+                            Browse Products
+                        </button>
                     </div>
                 `;
                 
@@ -2603,6 +2872,15 @@ async function loadUserProfile() {
                 return;
             }
             
+            // Validate cart items are still available
+            for (const item of cart) {
+                const product = products.find(p => p.id === item.productId);
+                if (!product || product.stock < item.quantity) {
+                    showNotification(`${item.name} is no longer available in the requested quantity`, 'error');
+                    return;
+                }
+            }
+            
             // Load checkout items
             const checkoutItemsContainer = document.getElementById('checkout-items');
             const checkoutTotal = document.getElementById('checkout-total');
@@ -2642,8 +2920,8 @@ async function loadUserProfile() {
             const deliveryAddress = document.getElementById('delivery-address').value;
             const deliveryInstructions = document.getElementById('delivery-instructions').value;
             
-            if (!deliveryAddress) {
-                showNotification('Please enter a delivery address', 'error');
+            // Validate form
+            if (!validateDeliveryAddress({target: document.getElementById('delivery-address')})) {
                 return;
             }
             
@@ -2771,10 +3049,13 @@ async function loadUserProfile() {
             
             if (ordersToDisplay.length === 0) {
                 ordersContainer.innerHTML = `
-                    <div style="text-align: center; padding: 40px;">
-                        <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
                         <h3>No orders yet</h3>
-                        <p style="color: var(--gray);">Start shopping to see your orders here.</p>
+                        <p>Start shopping to see your orders here</p>
+                        <button class="btn btn-primary" onclick="showCustomerSection('products')" style="margin-top: 15px;">
+                            Start Shopping
+                        </button>
                     </div>
                 `;
                 return;
@@ -3219,10 +3500,10 @@ async function loadUserProfile() {
             
             if (deliveries.length === 0) {
                 deliveriesContainer.innerHTML = `
-                    <div style="text-align: center; padding: 40px;">
-                        <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
                         <h3>No deliveries yet</h3>
-                        <p style="color: var(--gray);">Accept deliveries to see them here.</p>
+                        <p>Accept deliveries to see them here</p>
                     </div>
                 `;
                 return;
@@ -3388,10 +3669,10 @@ async function loadUserProfile() {
             
             if (productsToDisplay.length === 0) {
                 productsContainer.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                        <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i class="fas fa-box-open"></i>
                         <h3>No products yet</h3>
-                        <p style="color: var(--gray);">Add your first product to get started!</p>
+                        <p>Add your first product to get started!</p>
                         <button class="btn btn-primary" onclick="openAddProductModal()" style="margin-top: 15px;">
                             <i class="fas fa-plus"></i> Add Product
                         </button>
@@ -3493,8 +3774,10 @@ async function loadUserProfile() {
             const stock = parseInt(document.getElementById('product-stock').value);
             const imageFile = document.getElementById('product-image').files[0];
             
-            if (!name || !price || !category || isNaN(stock)) {
-                showNotification('Please fill in all required fields', 'error');
+            // Validate form
+            if (!validateProductName({target: document.getElementById('product-name')}) || 
+                !validateProductPrice({target: document.getElementById('product-price')}) || 
+                !validateProductStock({target: document.getElementById('product-stock')})) {
                 return;
             }
             
@@ -3548,7 +3831,8 @@ async function loadUserProfile() {
                             price: price,
                             category: category,
                             stock: stock,
-                            image_url: imageUrl
+                            image_url: imageUrl,
+                            is_active: true
                         }
                     ]);
                 
@@ -3654,10 +3938,10 @@ async function loadUserProfile() {
             
             if (ordersToDisplay.length === 0) {
                 ordersContainer.innerHTML = `
-                    <div style="text-align: center; padding: 40px;">
-                        <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
                         <h3>No orders yet</h3>
-                        <p style="color: var(--gray);">Orders will appear here when customers purchase your products.</p>
+                        <p>Orders will appear here when customers purchase your products</p>
                     </div>
                 `;
                 return;
@@ -3746,14 +4030,6 @@ async function loadUserProfile() {
                 hideLoading();
             }
         }
-
-        // Initialize database tables (run this once)
-        async function initializeDatabase() {
-            // This function would typically be run once by an admin
-            // to create the necessary tables in Supabase
-            console.log('Database initialization would happen here');
-        }
     </script>
 </body>
 </html>
-
