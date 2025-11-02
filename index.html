@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1062,7 +1062,7 @@
 
             <div class="container">
                 <div class="dashboard-content">
-                    <h2 class="section-title">🛍️ Customer Dashboard</h2>
+                    <h2 class="section-title">ðŸ›ï¸ Customer Dashboard</h2>
                     
                     <div class="dashboard-nav-links">
                         <a href="#" class="dashboard-nav-link active" onclick="showCustomerSection('dashboard')">Dashboard</a>
@@ -1087,7 +1087,7 @@
                                 <div class="customer-stat-label">Delivered Orders</div>
                             </div>
                             <div class="customer-stat-card">
-                                <div class="customer-stat-value">0 ⭐</div>
+                                <div class="customer-stat-value">0 â­</div>
                                 <div class="customer-stat-label">Your Rating</div>
                             </div>
                         </div>
@@ -1101,7 +1101,7 @@
                     <!-- Products Section -->
                     <div id="customer-products-section" class="customer-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>🛍️ Shop Products</h2>
+                            <h2>ðŸ›ï¸ Shop Products</h2>
                             <div style="display: flex; gap: 15px; margin-top: 10px;">
                                 <select id="categoryFilter" class="form-control" style="width: auto;">
                                     <option value="all">All Categories</option>
@@ -1122,7 +1122,7 @@
                     <!-- Orders Section -->
                     <div id="customer-orders-section" class="customer-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>📦 Your Orders</h2>
+                            <h2>ðŸ“¦ Your Orders</h2>
                             <div style="display: flex; gap: 15px; margin-top: 10px;">
                                 <select id="orderStatusFilter" class="form-control" style="width: auto;">
                                     <option value="all">All Orders</option>
@@ -1145,7 +1145,7 @@
                     <!-- Cart Section -->
                     <div id="customer-cart-section" class="customer-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>🛒 Your Shopping Cart</h2>
+                            <h2>ðŸ›’ Your Shopping Cart</h2>
                         </div>
                         
                         <div class="cart-items" id="cart-items">
@@ -1539,17 +1539,21 @@
 
         // Redirect to dashboard based on role
         function redirectToDashboard(role) {
-            if (role === 'customer') {
-                showPage('customer-dashboard');
-                loadCustomerDashboard();
-            } else {
-                // For seller and rider roles, show customer dashboard for now
-                // since we don't have those dashboards implemented yet
-                showPage('customer-dashboard');
-                loadCustomerDashboard();
-                showNotification(`Welcome! ${role.charAt(0).toUpperCase() + role.slice(1)} features coming soon.`, 'info');
-            }
-        }
+    if (role === 'customer') {
+        showPage('customer-dashboard');
+        loadCustomerDashboard();
+    } else if (role === 'seller') {
+        showPage('seller-dashboard');
+        loadSellerDashboard();
+    } else if (role === 'rider') {
+        showPage('rider-dashboard');
+        loadRiderDashboard();
+    } else {
+        // Fallback for unknown roles
+        showPage('customer-dashboard');
+        loadCustomerDashboard();
+    }
+}
 
         // Logout function
         async function logout() {
@@ -2086,3 +2090,5 @@
     </script>
 </body>
 </html>
+
+
