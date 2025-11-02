@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1062,7 +1062,7 @@
 
             <div class="container">
                 <div class="dashboard-content">
-                    <h2 class="section-title">ðŸ›ï¸ Customer Dashboard</h2>
+                    <h2 class="section-title">🛍️ Customer Dashboard</h2>
                     
                     <div class="dashboard-nav-links">
                         <a href="#" class="dashboard-nav-link active" onclick="showCustomerSection('dashboard')">Dashboard</a>
@@ -1087,7 +1087,7 @@
                                 <div class="customer-stat-label">Delivered Orders</div>
                             </div>
                             <div class="customer-stat-card">
-                                <div class="customer-stat-value">0 â­</div>
+                                <div class="customer-stat-value">0 ⭐</div>
                                 <div class="customer-stat-label">Your Rating</div>
                             </div>
                         </div>
@@ -1101,7 +1101,7 @@
                     <!-- Products Section -->
                     <div id="customer-products-section" class="customer-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ›ï¸ Shop Products</h2>
+                            <h2>🛍️ Shop Products</h2>
                             <div style="display: flex; gap: 15px; margin-top: 10px;">
                                 <select id="categoryFilter" class="form-control" style="width: auto;">
                                     <option value="all">All Categories</option>
@@ -1122,7 +1122,7 @@
                     <!-- Orders Section -->
                     <div id="customer-orders-section" class="customer-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ“¦ Your Orders</h2>
+                            <h2>📦 Your Orders</h2>
                             <div style="display: flex; gap: 15px; margin-top: 10px;">
                                 <select id="orderStatusFilter" class="form-control" style="width: auto;">
                                     <option value="all">All Orders</option>
@@ -1145,7 +1145,7 @@
                     <!-- Cart Section -->
                     <div id="customer-cart-section" class="customer-section">
                         <div class="section-title" style="text-align: left; margin-bottom: 20px;">
-                            <h2>ðŸ›’ Your Shopping Cart</h2>
+                            <h2>🛒 Your Shopping Cart</h2>
                         </div>
                         
                         <div class="cart-items" id="cart-items">
@@ -1173,6 +1173,288 @@
                             <div style="margin-top: 20px; display: flex; gap: 10px;">
                                 <button class="btn btn-outline" onclick="clearCart()">Clear Cart</button>
                                 <button class="btn btn-primary" onclick="openCheckoutModal()">Proceed to Checkout</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rider Dashboard -->
+    <div id="rider-dashboard" class="page">
+        <div class="customer-dashboard">
+            <div class="customer-nav">
+                <div class="container">
+                    <div class="dashboard-nav">
+                        <div class="logo">
+                            <i class="fas fa-truck-fast logo-icon"></i>
+                            <div class="logo-text">IPATE<span>Deliveries</span></div>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-avatar" id="rider-avatar">RK</div>
+                            <span id="rider-name">Rider Kimani</span>
+                            <button class="btn btn-outline" onclick="logout()">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="dashboard-content">
+                    <h2 class="section-title">🚴‍♂️ Rider Dashboard</h2>
+                    
+                    <div class="dashboard-nav-links">
+                        <a href="#" class="dashboard-nav-link active" onclick="showRiderSection('dashboard')">Dashboard</a>
+                        <a href="#" class="dashboard-nav-link" onclick="showRiderSection('deliveries')">My Deliveries</a>
+                        <a href="#" class="dashboard-nav-link" onclick="showRiderSection('earnings')">Earnings</a>
+                        <a href="#" class="dashboard-nav-link" onclick="showRiderSection('schedule')">Schedule</a>
+                    </div>
+                    
+                    <!-- Dashboard Section -->
+                    <div id="rider-dashboard-section" class="customer-section active">
+                        <div class="status-toggle">
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="availabilityToggle" checked>
+                                    <span class="slider"></span>
+                                </label>
+                                <div>
+                                    <h3>Available for Deliveries</h3>
+                                    <p style="color: var(--gray); font-size: 14px;">You will receive new delivery requests</p>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="stat-value" style="font-size: 24px; margin-bottom: 5px;">4.8 ★</div>
+                                <div class="stat-label">Your Rating</div>
+                            </div>
+                        </div>
+
+                        <div class="customer-stats-grid">
+                            <div class="customer-stat-card">
+                                <div class="customer-stat-value">12</div>
+                                <div class="customer-stat-label">Deliveries Today</div>
+                            </div>
+                            <div class="customer-stat-card">
+                                <div class="customer-stat-value">KSh 3,450</div>
+                                <div class="customer-stat-label">Earnings Today</div>
+                            </div>
+                            <div class="customer-stat-card">
+                                <div class="customer-stat-value">42</div>
+                                <div class="customer-stat-label">Deliveries This Week</div>
+                            </div>
+                            <div class="customer-stat-card">
+                                <div class="customer-stat-value">98%</div>
+                                <div class="customer-stat-label">On-Time Rate</div>
+                            </div>
+                        </div>
+
+                        <!-- Current Delivery -->
+                        <div class="section">
+                            <div class="section-title">
+                                <h2>📦 Current Delivery</h2>
+                            </div>
+                            <div id="currentDelivery">
+                                <div class="order-card">
+                                    <div style="text-align: center; padding: 30px;">
+                                        <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                                        <h3>No Active Delivery</h3>
+                                        <p style="color: var(--gray); margin-bottom: 20px;">You don't have any active deliveries at the moment.</p>
+                                        <button class="btn btn-primary">
+                                            Check Available Deliveries
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Available Deliveries -->
+                        <div class="section">
+                            <div class="section-title">
+                                <h2>📋 Available Deliveries</h2>
+                            </div>
+                            <div class="orders-list" id="availableDeliveries">
+                                <div class="order-card">
+                                    <div style="text-align: center; padding: 20px;">
+                                        <i class="fas fa-clipboard-list" style="font-size: 36px; color: var(--gray); margin-bottom: 10px;"></i>
+                                        <h3>No Available Deliveries</h3>
+                                        <p style="color: var(--gray);">There are no available deliveries at the moment.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Other Rider Sections -->
+                    <div id="rider-deliveries-section" class="customer-section">
+                        <div class="section-title">
+                            <h2>📋 My Deliveries</h2>
+                            <p>Manage your current and past deliveries</p>
+                        </div>
+                        <div id="myDeliveriesContent">
+                            <!-- Deliveries content will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div id="rider-earnings-section" class="customer-section">
+                        <div class="section-title">
+                            <h2>💰 Earnings</h2>
+                            <p>Track your earnings and performance</p>
+                        </div>
+                        <div id="earningsContent">
+                            <!-- Earnings content will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div id="rider-schedule-section" class="customer-section">
+                        <div class="section-title">
+                            <h2>📅 Schedule</h2>
+                            <p>Manage your delivery schedule</p>
+                        </div>
+                        <div id="scheduleContent">
+                            <!-- Schedule content will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seller Dashboard -->
+    <div id="seller-dashboard" class="page">
+        <div class="customer-dashboard">
+            <div class="customer-nav">
+                <div class="container">
+                    <div class="dashboard-nav">
+                        <div class="logo">
+                            <i class="fas fa-truck-fast logo-icon"></i>
+                            <div class="logo-text">IPATE<span>Deliveries</span></div>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-avatar" id="seller-avatar">SK</div>
+                            <span id="seller-name">Sarah's Kitchen</span>
+                            <button class="btn btn-outline" onclick="logout()">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="dashboard-content">
+                    <h2 class="section-title">🏪 Seller Dashboard</h2>
+                    
+                    <div class="dashboard-nav-links">
+                        <a href="#" class="dashboard-nav-link active" onclick="showSellerSection('dashboard')">Dashboard</a>
+                        <a href="#" class="dashboard-nav-link" onclick="showSellerSection('products')">Products</a>
+                        <a href="#" class="dashboard-nav-link" onclick="showSellerSection('orders')">Orders</a>
+                        <a href="#" class="dashboard-nav-link" onclick="showSellerSection('analytics')">Analytics</a>
+                    </div>
+                    
+                    <!-- Dashboard Section -->
+                    <div id="seller-dashboard-section" class="customer-section active">
+                        <div class="customer-stats-grid">
+                            <div class="customer-stat-card">
+                                <div class="customer-stat-value">24</div>
+                                <div class="customer-stat-label">Total Orders</div>
+                            </div>
+                            <div class="customer-stat-card">
+                                <div class="customer-stat-value">KSh 42,850</div>
+                                <div class="customer-stat-label">Revenue This Month</div>
+                            </div>
+                            <div class="customer-stat-card">
+                                <div class="customer-stat-value">12</div>
+                                <div class="customer-stat-label">Products Listed</div>
+                            </div>
+                            <div class="customer-stat-card">
+                                <div class="customer-stat-value">4.8 ★</div>
+                                <div class="customer-stat-label">Customer Rating</div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Orders Preview -->
+                        <div class="section">
+                            <div class="section-title">
+                                <h2>📋 Recent Orders</h2>
+                                <button class="btn btn-outline">View All Orders</button>
+                            </div>
+                            <div class="orders-list" id="recentOrders">
+                                <div class="order-card">
+                                    <div class="order-header">
+                                        <div>
+                                            <strong>Order #ORD001</strong>
+                                            <div style="color: var(--gray); font-size: 14px; margin-top: 5px;">
+                                                Customer: John Doe • 2023-10-15
+                                            </div>
+                                        </div>
+                                        <div class="order-status status-ready">Ready</div>
+                                    </div>
+                                    <div class="order-items">
+                                        <div class="order-item">
+                                            <span>Fresh Organic Vegetables × 2</span>
+                                            <span>KSh 1,700</span>
+                                        </div>
+                                        <div class="order-item">
+                                            <span>Premium Coffee Beans × 1</span>
+                                            <span>KSh 1,200</span>
+                                        </div>
+                                    </div>
+                                    <div class="order-total">Total: KSh 2,900</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Products Section -->
+                    <div id="seller-products-section" class="customer-section">
+                        <div class="section-title">
+                            <h2>📦 My Products</h2>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add New Product
+                            </button>
+                        </div>
+                        <div class="customer-products-grid" id="sellerProducts">
+                            <!-- Products will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Orders Section -->
+                    <div id="seller-orders-section" class="customer-section">
+                        <div class="section-title">
+                            <h2>📋 All Orders</h2>
+                            <div>
+                                <select id="orderFilter">
+                                    <option value="all">All Orders</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="accepted">Accepted</option>
+                                    <option value="ready">Ready</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="orders-list" id="sellerOrders">
+                            <!-- Orders will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Analytics Section -->
+                    <div id="seller-analytics-section" class="customer-section">
+                        <div class="section-title">
+                            <h2>📊 Analytics</h2>
+                            <p>Track your business performance</p>
+                        </div>
+                        <div class="analytics-grid">
+                            <div class="chart-container">
+                                <h3>Sales Overview</h3>
+                                <div class="chart-placeholder">
+                                    Sales Chart Visualization
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <h3>Top Products</h3>
+                                <div class="chart-placeholder">
+                                    Top Products Chart
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1376,15 +1658,20 @@
             loadingSpinner.style.display = 'none';
         }
 
-        // Show page
+        // Show page - FIXED VERSION
         function showPage(pageId) {
             // Hide all pages
             document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
+                if (page && page.classList) {
+                    page.classList.remove('active');
+                }
             });
             
             // Show selected page
-            document.getElementById(pageId).classList.add('active');
+            const targetPage = document.getElementById(pageId);
+            if (targetPage && targetPage.classList) {
+                targetPage.classList.add('active');
+            }
         }
 
         // Show auth modal
@@ -1534,26 +1821,32 @@
             if (userRole === 'customer') {
                 document.getElementById('customer-avatar').textContent = avatar;
                 document.getElementById('customer-name').textContent = profile.name;
+            } else if (userRole === 'rider') {
+                document.getElementById('rider-avatar').textContent = avatar;
+                document.getElementById('rider-name').textContent = profile.name;
+            } else if (userRole === 'seller') {
+                document.getElementById('seller-avatar').textContent = avatar;
+                document.getElementById('seller-name').textContent = profile.name;
             }
         }
 
         // Redirect to dashboard based on role
         function redirectToDashboard(role) {
-    if (role === 'customer') {
-        showPage('customer-dashboard');
-        loadCustomerDashboard();
-    } else if (role === 'seller') {
-        showPage('seller-dashboard');
-        loadSellerDashboard();
-    } else if (role === 'rider') {
-        showPage('rider-dashboard');
-        loadRiderDashboard();
-    } else {
-        // Fallback for unknown roles
-        showPage('customer-dashboard');
-        loadCustomerDashboard();
-    }
-}
+            if (role === 'customer') {
+                showPage('customer-dashboard');
+                loadCustomerDashboard();
+            } else if (role === 'rider') {
+                showPage('rider-dashboard');
+                loadRiderDashboard();
+            } else if (role === 'seller') {
+                showPage('seller-dashboard');
+                loadSellerDashboard();
+            } else {
+                // Default to customer dashboard
+                showPage('customer-dashboard');
+                loadCustomerDashboard();
+            }
+        }
 
         // Logout function
         async function logout() {
@@ -1619,6 +1912,52 @@
             }
         }
 
+        // Show rider section
+        function showRiderSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.customer-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Update nav links
+            document.querySelectorAll('.dashboard-nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`rider-${section}-section`).classList.add('active');
+            
+            // Activate nav link
+            document.querySelectorAll('.dashboard-nav-link').forEach(link => {
+                if (link.textContent.includes(section.charAt(0).toUpperCase() + section.slice(1))) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Show seller section
+        function showSellerSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.customer-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Update nav links
+            document.querySelectorAll('.dashboard-nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`seller-${section}-section`).classList.add('active');
+            
+            // Activate nav link
+            document.querySelectorAll('.dashboard-nav-link').forEach(link => {
+                if (link.textContent.includes(section.charAt(0).toUpperCase() + section.slice(1))) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
         // Load customer dashboard
         async function loadCustomerDashboard() {
             showLoading();
@@ -1641,6 +1980,16 @@
             } finally {
                 hideLoading();
             }
+        }
+
+        // Load rider dashboard
+        function loadRiderDashboard() {
+            showNotification('Rider dashboard loaded successfully!', 'success');
+        }
+
+        // Load seller dashboard
+        function loadSellerDashboard() {
+            showNotification('Seller dashboard loaded successfully!', 'success');
         }
 
         // Load mock data for demo
@@ -2028,7 +2377,7 @@
             displayCustomerOrders(filteredOrders);
         }
 
-        // Initialize the application
+        // Initialize the application - FIXED VERSION
         async function initializeApp() {
             showLoading();
             
@@ -2059,6 +2408,8 @@
             } catch (error) {
                 console.error('Error initializing app:', error);
                 showNotification('Error initializing application', 'error');
+                // Ensure landing page is shown even if there's an error
+                showPage('landing-page');
             } finally {
                 hideLoading();
             }
@@ -2090,5 +2441,3 @@
     </script>
 </body>
 </html>
-
-
