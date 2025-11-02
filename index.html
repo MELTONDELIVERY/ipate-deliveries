@@ -886,6 +886,36 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* File Upload Styles */
+        .file-upload-container {
+            border: 2px dashed var(--gray);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .file-upload-container:hover {
+            border-color: var(--primary);
+        }
+
+        .file-upload-container.dragover {
+            border-color: var(--primary);
+            background-color: rgba(255, 107, 0, 0.05);
+        }
+
+        .file-preview {
+            margin-top: 15px;
+        }
+
+        .file-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
@@ -1564,8 +1594,19 @@
             </div>
             
             <div class="form-group">
-                <label for="product-image">Product Image URL</label>
-                <input type="text" id="product-image" class="form-control" placeholder="Enter image URL">
+                <label for="product-stock">Stock Quantity</label>
+                <input type="number" id="product-stock" class="form-control" placeholder="Enter stock quantity" value="1">
+            </div>
+            
+            <div class="form-group">
+                <label for="product-image">Product Image</label>
+                <div class="file-upload-container" id="image-upload-container">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: var(--gray); margin-bottom: 10px;"></i>
+                    <p>Click to upload or drag and drop</p>
+                    <p style="font-size: 12px; color: var(--gray);">PNG, JPG, GIF up to 10MB</p>
+                    <input type="file" id="product-image" accept="image/*" style="display: none;">
+                </div>
+                <div class="file-preview" id="image-preview"></div>
             </div>
             
             <button class="btn btn-primary btn-block" onclick="addProduct()">Add Product</button>
@@ -1625,9 +1666,9 @@
 
     <!-- Supabase Integration -->
     <script>
-        // Supabase Configuration
-        const SUPABASE_URL = 'https://gckhrsktsoqolzwssqru.supabase.co';
-       const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja2hyc2t0c29xb2x6d3NzcXJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0NjYzNjMsImV4cCI6MjA3NzA0MjM2M30.bo3Fq9ynKjeKILk25VC8nTBeka0DiegUJhfbgzZswCY';
+        // Supabase Configuration - REPLACE WITH YOUR ACTUAL SUPABASE CREDENTIALS
+       const SUPABASE_URL = 'https://gckhrsktsoqolzwssqru.supabase.co';;
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdja2hyc2t0c29xb2x6d3NzcXJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0NjYzNjMsImV4cCI6MjA3NzA0MjM2M30.bo3Fq9ynKjeKILk25VC8nTBeka0DiegUJhfbgzZswCY';;
         
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1636,6 +1677,7 @@
         let currentUser = null;
         let currentUserRole = null;
         let cart = [];
+        let uploadedImageFile = null;
         
         // DOM Elements
         const authModal = document.getElementById('auth-modal');
@@ -1660,8 +1702,12 @@
         
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+        
+        async function initializeApp() {
             // Check if user is already logged in
-            checkAuthStatus();
+            await checkAuthStatus();
             
             // Auth modal events
             loginBtn.addEventListener('click', () => showAuthModal('login'));
@@ -1682,12 +1728,127 @@
             document.getElementById('rider-logout').addEventListener('click', handleLogout);
             document.getElementById('seller-logout').addEventListener('click', handleLogout);
             
+            // File upload handling
+            setupFileUpload();
+            
             // Load cart from localStorage
             loadCart();
             
-            // Initialize sample data
-            initializeSampleData();
-        });
+            // Initialize database tables if needed
+            await initializeDatabase();
+        }
+        
+        // Setup file upload functionality
+        function setupFileUpload() {
+            const uploadContainer = document.getElementById('image-upload-container');
+            const fileInput = document.getElementById('product-image');
+            const previewContainer = document.getElementById('image-preview');
+            
+            uploadContainer.addEventListener('click', () => {
+                fileInput.click();
+            });
+            
+            uploadContainer.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadContainer.classList.add('dragover');
+            });
+            
+            uploadContainer.addEventListener('dragleave', () => {
+                uploadContainer.classList.remove('dragover');
+            });
+            
+            uploadContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadContainer.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileSelect(files[0]);
+                }
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileSelect(e.target.files[0]);
+                }
+            });
+            
+            function handleFileSelect(file) {
+                if (!file.type.match('image.*')) {
+                    showNotification('Please select an image file', 'error');
+                    return;
+                }
+                
+                if (file.size > 10 * 1024 * 1024) {
+                    showNotification('File size must be less than 10MB', 'error');
+                    return;
+                }
+                
+                uploadedImageFile = file;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewContainer.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview">
+                        <p style="margin-top: 10px; font-size: 14px;">${file.name}</p>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Initialize database tables
+        async function initializeDatabase() {
+            try {
+                // Check if users table exists, create if not
+                const { error: usersError } = await supabase
+                    .from('users')
+                    .select('*')
+                    .limit(1);
+                
+                if (usersError && usersError.code === 'PGRST116') {
+                    showNotification('Please create the required database tables in Supabase', 'warning');
+                    console.log(`
+                        Required Supabase Tables:
+                        
+                        1. users table:
+                           - id (uuid, primary key)
+                           - email (text)
+                           - name (text)
+                           - role (text)
+                           - created_at (timestamp)
+                        
+                        2. products table:
+                           - id (uuid, primary key)
+                           - seller_id (uuid, references users)
+                           - name (text)
+                           - description (text)
+                           - price (numeric)
+                           - category (text)
+                           - stock (integer)
+                           - image_url (text)
+                           - created_at (timestamp)
+                        
+                        3. orders table:
+                           - id (uuid, primary key)
+                           - customer_id (uuid, references users)
+                           - total_amount (numeric)
+                           - delivery_address (text)
+                           - delivery_instructions (text)
+                           - status (text)
+                           - created_at (timestamp)
+                        
+                        4. order_items table:
+                           - id (uuid, primary key)
+                           - order_id (uuid, references orders)
+                           - product_id (uuid, references products)
+                           - quantity (integer)
+                           - price (numeric)
+                    `);
+                }
+            } catch (error) {
+                console.error('Error initializing database:', error);
+            }
+        }
         
         // Check authentication status
         async function checkAuthStatus() {
@@ -1704,29 +1865,57 @@
                     const user = data.session.user;
                     currentUser = user;
                     
-                    // Get user role from metadata or database
+                    // Get user role from database
                     const { data: userData, error: userError } = await supabase
                         .from('users')
-                        .select('role')
+                        .select('role, name')
                         .eq('id', user.id)
                         .single();
                     
                     if (userError) {
                         console.error('Error fetching user role:', userError);
+                        // Create user profile if it doesn't exist
+                        await createUserProfile(user);
                         return;
                     }
                     
                     currentUserRole = userData.role;
                     
+                    // Update UI with user info
+                    updateUserInfo(userData.name || user.email, currentUserRole);
+                    
                     // Redirect to appropriate dashboard
                     redirectToDashboard(currentUserRole);
-                    
-                    // Update UI with user info
-                    updateUserInfo(user, currentUserRole);
                 }
             } catch (error) {
                 console.error('Error in checkAuthStatus:', error);
             }
+        }
+        
+        // Create user profile if it doesn't exist
+        async function createUserProfile(user) {
+            const { data, error } = await supabase
+                .from('users')
+                .insert([
+                    { 
+                        id: user.id, 
+                        email: user.email, 
+                        name: user.user_metadata?.name || user.email.split('@')[0],
+                        role: user.user_metadata?.role || 'customer',
+                        created_at: new Date()
+                    }
+                ])
+                .select()
+                .single();
+            
+            if (error) {
+                console.error('Error creating user profile:', error);
+                return;
+            }
+            
+            currentUserRole = data.role;
+            updateUserInfo(data.name, currentUserRole);
+            redirectToDashboard(currentUserRole);
         }
         
         // Show auth modal
@@ -1784,22 +1973,26 @@
                     return;
                 }
                 
-                // Update user role if needed
+                currentUser = data.user;
+                
+                // Get user role from database
                 const { data: userData, error: userError } = await supabase
                     .from('users')
-                    .select('role')
+                    .select('role, name')
                     .eq('id', data.user.id)
                     .single();
                 
                 if (userError) {
                     console.error('Error fetching user role:', userError);
+                    showNotification('Error fetching user data', 'error');
+                    showLoading(false);
+                    return;
                 }
                 
-                currentUser = data.user;
-                currentUserRole = userData ? userData.role : role;
+                currentUserRole = userData.role;
                 
                 // Update UI
-                updateUserInfo(currentUser, currentUserRole);
+                updateUserInfo(userData.name, currentUserRole);
                 
                 // Redirect to dashboard
                 redirectToDashboard(currentUserRole);
@@ -1868,18 +2061,21 @@
                 
                 if (dbError) {
                     console.error('Error creating user profile:', dbError);
+                    showNotification('Error creating user profile', 'error');
+                    showLoading(false);
+                    return;
                 }
                 
                 currentUser = data.user;
                 currentUserRole = role;
                 
                 // Update UI
-                updateUserInfo(currentUser, currentUserRole);
+                updateUserInfo(name, currentUserRole);
                 
                 // Redirect to dashboard
                 redirectToDashboard(currentUserRole);
                 
-                showNotification('Account created successfully!', 'success');
+                showNotification('Account created successfully! Please check your email for verification.', 'success');
                 hideAuthModal();
                 
             } catch (error) {
@@ -1928,8 +2124,7 @@
         }
         
         // Update user info in the UI
-        function updateUserInfo(user, role) {
-            const name = user.user_metadata?.name || user.email?.split('@')[0] || 'User';
+        function updateUserInfo(name, role) {
             const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
             
             if (role === 'customer') {
@@ -2101,7 +2296,7 @@
                     name: product.name,
                     price: product.price,
                     quantity: 1,
-                    image: product.image
+                    image: product.image_url
                 });
             }
             
@@ -2208,6 +2403,9 @@
                 
                 if (itemsError) {
                     console.error('Error adding order items:', itemsError);
+                    showNotification('Error adding order items', 'error');
+                    showLoading(false);
+                    return;
                 }
                 
                 // Clear cart
@@ -2266,81 +2464,152 @@
         }
         
         async function loadCustomerStats() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
-            const stats = {
-                totalOrders: 12,
-                pendingOrders: 2,
-                deliveredOrders: 10
-            };
+            if (!currentUser) return;
             
-            document.querySelectorAll('.customer-stat-value')[0].textContent = stats.totalOrders;
-            document.querySelectorAll('.customer-stat-value')[1].textContent = stats.pendingOrders;
-            document.querySelectorAll('.customer-stat-value')[2].textContent = stats.deliveredOrders;
+            try {
+                const { data: orders, error } = await supabase
+                    .from('orders')
+                    .select('*')
+                    .eq('customer_id', currentUser.id);
+                
+                if (error) {
+                    console.error('Error loading customer stats:', error);
+                    return;
+                }
+                
+                const totalOrders = orders.length;
+                const pendingOrders = orders.filter(order => order.status === 'pending').length;
+                const deliveredOrders = orders.filter(order => order.status === 'delivered').length;
+                
+                document.querySelectorAll('.customer-stat-value')[0].textContent = totalOrders;
+                document.querySelectorAll('.customer-stat-value')[1].textContent = pendingOrders;
+                document.querySelectorAll('.customer-stat-value')[2].textContent = deliveredOrders;
+            } catch (error) {
+                console.error('Error loading customer stats:', error);
+            }
         }
         
         async function loadCustomerRecentOrders() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
-            const orders = [
-                {
-                    id: 'ORD-001',
-                    date: '2023-06-15',
-                    total: 1250,
-                    status: 'delivered',
-                    items: [
-                        { name: 'Pizza', quantity: 1, price: 800 },
-                        { name: 'Soda', quantity: 2, price: 225 }
-                    ]
-                },
-                {
-                    id: 'ORD-002',
-                    date: '2023-06-14',
-                    total: 3500,
-                    status: 'picked',
-                    items: [
-                        { name: 'Laptop Case', quantity: 1, price: 3500 }
-                    ]
+            if (!currentUser) return;
+            
+            try {
+                const { data: orders, error } = await supabase
+                    .from('orders')
+                    .select('*')
+                    .eq('customer_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+                
+                if (error) {
+                    console.error('Error loading recent orders:', error);
+                    return;
                 }
-            ];
-            
-            const container = document.getElementById('customer-recent-orders');
-            container.innerHTML = '';
-            
-            orders.forEach(order => {
-                const orderCard = document.createElement('div');
-                orderCard.className = 'order-card';
                 
-                const itemsHtml = order.items.map(item => `
-                    <div class="order-item">
-                        <span>${item.name} x ${item.quantity}</span>
-                        <span>KSh ${item.price * item.quantity}</span>
-                    </div>
-                `).join('');
+                const container = document.getElementById('customer-recent-orders');
+                container.innerHTML = '';
                 
-                orderCard.innerHTML = `
-                    <div class="order-header">
-                        <div>
-                            <h3>${order.id}</h3>
-                            <p style="color: var(--gray); font-size: 14px;">${order.date}</p>
+                if (orders.length === 0) {
+                    container.innerHTML = '<p>No recent orders</p>';
+                    return;
+                }
+                
+                for (const order of orders) {
+                    const { data: items, error: itemsError } = await supabase
+                        .from('order_items')
+                        .select(`
+                            quantity,
+                            price,
+                            products (name)
+                        `)
+                        .eq('order_id', order.id);
+                    
+                    if (itemsError) {
+                        console.error('Error loading order items:', itemsError);
+                        continue;
+                    }
+                    
+                    const orderCard = document.createElement('div');
+                    orderCard.className = 'order-card';
+                    
+                    const itemsHtml = items.map(item => `
+                        <div class="order-item">
+                            <span>${item.products.name} x ${item.quantity}</span>
+                            <span>KSh ${item.price * item.quantity}</span>
                         </div>
-                        <div class="order-status status-${order.status}">${order.status}</div>
-                    </div>
-                    <div class="order-items">
-                        ${itemsHtml}
-                    </div>
-                    <div class="order-total">
-                        Total: KSh ${order.total}
-                    </div>
-                `;
-                
-                container.appendChild(orderCard);
-            });
+                    `).join('');
+                    
+                    orderCard.innerHTML = `
+                        <div class="order-header">
+                            <div>
+                                <h3>ORD-${order.id.slice(-6)}</h3>
+                                <p style="color: var(--gray); font-size: 14px;">${new Date(order.created_at).toLocaleDateString()}</p>
+                            </div>
+                            <div class="order-status status-${order.status}">${order.status}</div>
+                        </div>
+                        <div class="order-items">
+                            ${itemsHtml}
+                        </div>
+                        <div class="order-total">
+                            Total: KSh ${order.total_amount}
+                        </div>
+                    `;
+                    
+                    container.appendChild(orderCard);
+                }
+            } catch (error) {
+                console.error('Error loading recent orders:', error);
+            }
         }
         
         async function loadProducts() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
+            try {
+                const { data: products, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .gt('stock', 0)
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Error loading products:', error);
+                    // Fallback to mock data if no products exist
+                    loadMockProducts();
+                    return;
+                }
+                
+                const container = document.getElementById('products-list');
+                container.innerHTML = '';
+                
+                if (products.length === 0) {
+                    container.innerHTML = '<p>No products available</p>';
+                    return;
+                }
+                
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'customer-product-card';
+                    
+                    productCard.innerHTML = `
+                        <div class="product-image" style="background-image: url('${product.image_url || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'}');"></div>
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <p>${product.description}</p>
+                            <div class="customer-product-price">KSh ${product.price}</div>
+                            <p style="color: var(--gray); font-size: 14px;">Stock: ${product.stock}</p>
+                            <div class="customer-product-actions">
+                                <button class="btn btn-primary btn-sm" onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">Add to Cart</button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(productCard);
+                });
+            } catch (error) {
+                console.error('Error loading products:', error);
+                loadMockProducts();
+            }
+        }
+        
+        function loadMockProducts() {
             const products = [
                 {
                     id: '1',
@@ -2348,7 +2617,8 @@
                     description: 'Classic pizza with tomato sauce and mozzarella',
                     price: 800,
                     category: 'Food',
-                    image: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
+                    image_url: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
+                    stock: 15
                 },
                 {
                     id: '2',
@@ -2356,39 +2626,8 @@
                     description: 'Juicy chicken burger with fresh vegetables',
                     price: 450,
                     category: 'Food',
-                    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
-                },
-                {
-                    id: '3',
-                    name: 'Fresh Orange Juice',
-                    description: 'Freshly squeezed orange juice',
-                    price: 150,
-                    category: 'Beverages',
-                    image: 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
-                },
-                {
-                    id: '4',
-                    name: 'Toothpaste',
-                    description: 'Mint flavored toothpaste for fresh breath',
-                    price: 200,
-                    category: 'Personal Care',
-                    image: 'https://images.unsplash.com/photo-1585435557343-3b092031d5ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
-                },
-                {
-                    id: '5',
-                    name: 'Phone Charger',
-                    description: 'Fast charging USB-C cable',
-                    price: 1200,
-                    category: 'Electronics',
-                    image: 'https://images.unsplash.com/photo-1609592810793-abeb6c64b5c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
-                },
-                {
-                    id: '6',
-                    name: 'Energy Drink',
-                    description: 'Boost your energy with this refreshing drink',
-                    price: 180,
-                    category: 'Beverages',
-                    image: 'https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
+                    image_url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
+                    stock: 22
                 }
             ];
             
@@ -2400,11 +2639,12 @@
                 productCard.className = 'customer-product-card';
                 
                 productCard.innerHTML = `
-                    <div class="product-image" style="background-image: url('${product.image}');"></div>
+                    <div class="product-image" style="background-image: url('${product.image_url}');"></div>
                     <div class="product-info">
                         <h3>${product.name}</h3>
                         <p>${product.description}</p>
                         <div class="customer-product-price">KSh ${product.price}</div>
+                        <p style="color: var(--gray); font-size: 14px;">Stock: ${product.stock}</p>
                         <div class="customer-product-actions">
                             <button class="btn btn-primary btn-sm" onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})">Add to Cart</button>
                         </div>
@@ -2416,349 +2656,80 @@
         }
         
         async function loadCustomerOrders() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
-            const orders = [
-                {
-                    id: 'ORD-001',
-                    date: '2023-06-15',
-                    total: 1250,
-                    status: 'delivered',
-                    items: [
-                        { name: 'Pizza', quantity: 1, price: 800 },
-                        { name: 'Soda', quantity: 2, price: 225 }
-                    ]
-                },
-                {
-                    id: 'ORD-002',
-                    date: '2023-06-14',
-                    total: 3500,
-                    status: 'picked',
-                    items: [
-                        { name: 'Laptop Case', quantity: 1, price: 3500 }
-                    ]
-                },
-                {
-                    id: 'ORD-003',
-                    date: '2023-06-13',
-                    total: 1800,
-                    status: 'assigned',
-                    items: [
-                        { name: 'Chicken Burger', quantity: 2, price: 900 }
-                    ]
-                },
-                {
-                    id: 'ORD-004',
-                    date: '2023-06-12',
-                    total: 600,
-                    status: 'pending',
-                    items: [
-                        { name: 'Orange Juice', quantity: 4, price: 150 }
-                    ]
+            if (!currentUser) return;
+            
+            try {
+                const { data: orders, error } = await supabase
+                    .from('orders')
+                    .select('*')
+                    .eq('customer_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Error loading customer orders:', error);
+                    return;
                 }
-            ];
-            
-            const container = document.getElementById('customer-orders-list');
-            container.innerHTML = '';
-            
-            const statusFilter = document.getElementById('orderStatusFilter').value;
-            
-            const filteredOrders = statusFilter === 'all' 
-                ? orders 
-                : orders.filter(order => order.status === statusFilter);
-            
-            if (filteredOrders.length === 0) {
-                container.innerHTML = '<p>No orders found</p>';
-                return;
-            }
-            
-            filteredOrders.forEach(order => {
-                const orderCard = document.createElement('div');
-                orderCard.className = 'order-card';
                 
-                const itemsHtml = order.items.map(item => `
-                    <div class="order-item">
-                        <span>${item.name} x ${item.quantity}</span>
-                        <span>KSh ${item.price * item.quantity}</span>
-                    </div>
-                `).join('');
+                const container = document.getElementById('customer-orders-list');
+                container.innerHTML = '';
                 
-                orderCard.innerHTML = `
-                    <div class="order-header">
-                        <div>
-                            <h3>${order.id}</h3>
-                            <p style="color: var(--gray); font-size: 14px;">${order.date}</p>
+                const statusFilter = document.getElementById('orderStatusFilter').value;
+                
+                const filteredOrders = statusFilter === 'all' 
+                    ? orders 
+                    : orders.filter(order => order.status === statusFilter);
+                
+                if (filteredOrders.length === 0) {
+                    container.innerHTML = '<p>No orders found</p>';
+                    return;
+                }
+                
+                for (const order of filteredOrders) {
+                    const { data: items, error: itemsError } = await supabase
+                        .from('order_items')
+                        .select(`
+                            quantity,
+                            price,
+                            products (name)
+                        `)
+                        .eq('order_id', order.id);
+                    
+                    if (itemsError) {
+                        console.error('Error loading order items:', itemsError);
+                        continue;
+                    }
+                    
+                    const orderCard = document.createElement('div');
+                    orderCard.className = 'order-card';
+                    
+                    const itemsHtml = items.map(item => `
+                        <div class="order-item">
+                            <span>${item.products.name} x ${item.quantity}</span>
+                            <span>KSh ${item.price * item.quantity}</span>
                         </div>
-                        <div class="order-status status-${order.status}">${order.status}</div>
-                    </div>
-                    <div class="order-items">
-                        ${itemsHtml}
-                    </div>
-                    <div class="order-total">
-                        Total: KSh ${order.total}
-                    </div>
-                `;
-                
-                container.appendChild(orderCard);
-            });
-        }
-        
-        // Rider Dashboard Functions
-        function showRiderSection(section) {
-            // Hide all sections
-            document.querySelectorAll('.rider-section').forEach(sec => {
-                sec.classList.remove('active');
-            });
-            
-            // Update nav links
-            document.querySelectorAll('.dashboard-nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(`rider-${section}-section`).classList.add('active');
-            
-            // Update active nav link
-            event.target.classList.add('active');
-            
-            // Load section data if needed
-            if (section === 'deliveries') {
-                loadRiderDeliveries();
-            }
-        }
-        
-        function loadRiderDashboard() {
-            // Load current delivery
-            loadCurrentDelivery();
-            
-            // Load available deliveries
-            loadAvailableDeliveries();
-        }
-        
-        function loadCurrentDelivery() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
-            const currentDelivery = {
-                id: 'ORD-003',
-                pickup: 'Westlands Mall, Nairobi',
-                delivery: 'Kileleshwa, Nairobi',
-                customer: 'John Doe',
-                items: [
-                    { name: 'Chicken Burger', quantity: 2 }
-                ],
-                status: 'picked'
-            };
-            
-            const container = document.getElementById('current-delivery');
-            
-            if (currentDelivery) {
-                const itemsHtml = currentDelivery.items.map(item => `
-                    <div class="order-item">
-                        <span>${item.name} x ${item.quantity}</span>
-                    </div>
-                `).join('');
-                
-                container.innerHTML = `
-                    <div class="order-card">
+                    `).join('');
+                    
+                    orderCard.innerHTML = `
                         <div class="order-header">
                             <div>
-                                <h3>${currentDelivery.id}</h3>
-                                <p style="color: var(--gray); font-size: 14px;">Current Delivery</p>
+                                <h3>ORD-${order.id.slice(-6)}</h3>
+                                <p style="color: var(--gray); font-size: 14px;">${new Date(order.created_at).toLocaleDateString()}</p>
                             </div>
-                            <div class="order-status status-${currentDelivery.status}">${currentDelivery.status}</div>
-                        </div>
-                        <div class="order-items">
-                            <div class="order-item">
-                                <span><strong>Pickup:</strong> ${currentDelivery.pickup}</span>
-                            </div>
-                            <div class="order-item">
-                                <span><strong>Delivery:</strong> ${currentDelivery.delivery}</span>
-                            </div>
-                            <div class="order-item">
-                                <span><strong>Customer:</strong> ${currentDelivery.customer}</span>
-                            </div>
+                            <div class="order-status status-${order.status}">${order.status}</div>
                         </div>
                         <div class="order-items">
                             ${itemsHtml}
                         </div>
-                        <div style="margin-top: 15px; display: flex; gap: 10px;">
-                            <button class="btn btn-outline" onclick="updateDeliveryStatus('${currentDelivery.id}', 'delivered')">Mark as Delivered</button>
+                        <div class="order-total">
+                            Total: KSh ${order.total_amount}
                         </div>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = '<p>No current delivery</p>';
-            }
-        }
-        
-        function loadAvailableDeliveries() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
-            const availableDeliveries = [
-                {
-                    id: 'ORD-004',
-                    pickup: 'Karen, Nairobi',
-                    delivery: 'Langata, Nairobi',
-                    distance: '5.2 km',
-                    earnings: 200,
-                    items: [
-                        { name: 'Orange Juice', quantity: 4 }
-                    ]
-                },
-                {
-                    id: 'ORD-005',
-                    pickup: 'CBD, Nairobi',
-                    delivery: 'Westlands, Nairobi',
-                    distance: '3.8 km',
-                    earnings: 150,
-                    items: [
-                        { name: 'Documents', quantity: 1 }
-                    ]
+                    `;
+                    
+                    container.appendChild(orderCard);
                 }
-            ];
-            
-            const container = document.getElementById('available-deliveries');
-            container.innerHTML = '';
-            
-            if (availableDeliveries.length === 0) {
-                container.innerHTML = '<p>No available deliveries at the moment</p>';
-                return;
+            } catch (error) {
+                console.error('Error loading customer orders:', error);
             }
-            
-            availableDeliveries.forEach(delivery => {
-                const itemsHtml = delivery.items.map(item => `
-                    <div class="order-item">
-                        <span>${item.name} x ${item.quantity}</span>
-                    </div>
-                `).join('');
-                
-                const deliveryCard = document.createElement('div');
-                deliveryCard.className = 'order-card';
-                
-                deliveryCard.innerHTML = `
-                    <div class="order-header">
-                        <div>
-                            <h3>${delivery.id}</h3>
-                            <p style="color: var(--gray); font-size: 14px;">Available Delivery</p>
-                        </div>
-                        <div class="order-status status-ready">Ready</div>
-                    </div>
-                    <div class="order-items">
-                        <div class="order-item">
-                            <span><strong>Pickup:</strong> ${delivery.pickup}</span>
-                        </div>
-                        <div class="order-item">
-                            <span><strong>Delivery:</strong> ${delivery.delivery}</span>
-                        </div>
-                        <div class="order-item">
-                            <span><strong>Distance:</strong> ${delivery.distance}</span>
-                        </div>
-                    </div>
-                    <div class="order-items">
-                        ${itemsHtml}
-                    </div>
-                    <div class="order-total">
-                        Earnings: KSh ${delivery.earnings}
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <button class="btn btn-primary" onclick="acceptDelivery('${delivery.id}')">Accept Delivery</button>
-                    </div>
-                `;
-                
-                container.appendChild(deliveryCard);
-            });
-        }
-        
-        function acceptDelivery(orderId) {
-            // In a real app, this would update the database
-            showNotification(`Delivery ${orderId} accepted`, 'success');
-            
-            // Refresh available deliveries
-            loadAvailableDeliveries();
-            
-            // Refresh current delivery
-            loadCurrentDelivery();
-        }
-        
-        function updateDeliveryStatus(orderId, status) {
-            // In a real app, this would update the database
-            showNotification(`Delivery ${orderId} marked as ${status}`, 'success');
-            
-            // Refresh current delivery
-            loadCurrentDelivery();
-        }
-        
-        async function loadRiderDeliveries() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
-            const deliveries = [
-                {
-                    id: 'ORD-001',
-                    date: '2023-06-15',
-                    pickup: 'Westlands Mall, Nairobi',
-                    delivery: 'Kileleshwa, Nairobi',
-                    earnings: 180,
-                    status: 'delivered'
-                },
-                {
-                    id: 'ORD-002',
-                    date: '2023-06-14',
-                    pickup: 'CBD, Nairobi',
-                    delivery: 'Westlands, Nairobi',
-                    earnings: 150,
-                    status: 'delivered'
-                },
-                {
-                    id: 'ORD-003',
-                    date: '2023-06-13',
-                    pickup: 'Karen, Nairobi',
-                    delivery: 'Langata, Nairobi',
-                    earnings: 200,
-                    status: 'picked'
-                }
-            ];
-            
-            const container = document.getElementById('rider-deliveries-list');
-            container.innerHTML = '';
-            
-            const statusFilter = document.getElementById('deliveryStatusFilter').value;
-            
-            const filteredDeliveries = statusFilter === 'all' 
-                ? deliveries 
-                : deliveries.filter(delivery => delivery.status === statusFilter);
-            
-            if (filteredDeliveries.length === 0) {
-                container.innerHTML = '<p>No deliveries found</p>';
-                return;
-            }
-            
-            filteredDeliveries.forEach(delivery => {
-                const deliveryCard = document.createElement('div');
-                deliveryCard.className = 'order-card';
-                
-                deliveryCard.innerHTML = `
-                    <div class="order-header">
-                        <div>
-                            <h3>${delivery.id}</h3>
-                            <p style="color: var(--gray); font-size: 14px;">${delivery.date}</p>
-                        </div>
-                        <div class="order-status status-${delivery.status}">${delivery.status}</div>
-                    </div>
-                    <div class="order-items">
-                        <div class="order-item">
-                            <span><strong>Pickup:</strong> ${delivery.pickup}</span>
-                        </div>
-                        <div class="order-item">
-                            <span><strong>Delivery:</strong> ${delivery.delivery}</span>
-                        </div>
-                    </div>
-                    <div class="order-total">
-                        Earnings: KSh ${delivery.earnings}
-                    </div>
-                `;
-                
-                container.appendChild(deliveryCard);
-            });
         }
         
         // Seller Dashboard Functions
@@ -2795,306 +2766,435 @@
             loadSellerTopProducts();
         }
         
-        function loadSellerRecentOrders() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
-            const orders = [
-                {
-                    id: 'ORD-001',
-                    date: '2023-06-15',
-                    customer: 'John Doe',
-                    total: 1250,
-                    status: 'delivered',
-                    items: [
-                        { name: 'Pizza', quantity: 1 }
-                    ]
-                },
-                {
-                    id: 'ORD-002',
-                    date: '2023-06-14',
-                    customer: 'Jane Smith',
-                    total: 3500,
-                    status: 'picked',
-                    items: [
-                        { name: 'Laptop Case', quantity: 1 }
-                    ]
+        async function loadSellerRecentOrders() {
+            if (!currentUser) return;
+            
+            try {
+                const { data: orders, error } = await supabase
+                    .from('orders')
+                    .select(`
+                        *,
+                        order_items (
+                            quantity,
+                            products (
+                                name,
+                                seller_id
+                            )
+                        )
+                    `)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+                
+                if (error) {
+                    console.error('Error loading seller orders:', error);
+                    return;
                 }
-            ];
-            
-            const container = document.getElementById('seller-recent-orders');
-            container.innerHTML = '';
-            
-            orders.forEach(order => {
-                const orderCard = document.createElement('div');
-                orderCard.className = 'order-card';
                 
-                const itemsHtml = order.items.map(item => `
-                    <div class="order-item">
-                        <span>${item.name} x ${item.quantity}</span>
-                    </div>
-                `).join('');
+                // Filter orders that contain products from this seller
+                const sellerOrders = orders.filter(order => 
+                    order.order_items.some(item => item.products.seller_id === currentUser.id)
+                );
                 
-                orderCard.innerHTML = `
-                    <div class="order-header">
-                        <div>
-                            <h3>${order.id}</h3>
-                            <p style="color: var(--gray); font-size: 14px;">${order.date} • ${order.customer}</p>
+                const container = document.getElementById('seller-recent-orders');
+                container.innerHTML = '';
+                
+                if (sellerOrders.length === 0) {
+                    container.innerHTML = '<p>No recent orders</p>';
+                    return;
+                }
+                
+                sellerOrders.forEach(order => {
+                    const sellerItems = order.order_items.filter(item => item.products.seller_id === currentUser.id);
+                    const total = sellerItems.reduce((sum, item) => sum + (item.quantity * item.products.price), 0);
+                    
+                    const itemsHtml = sellerItems.map(item => `
+                        <div class="order-item">
+                            <span>${item.products.name} x ${item.quantity}</span>
                         </div>
-                        <div class="order-status status-${order.status}">${order.status}</div>
-                    </div>
-                    <div class="order-items">
-                        ${itemsHtml}
-                    </div>
-                    <div class="order-total">
-                        Total: KSh ${order.total}
-                    </div>
-                `;
-                
-                container.appendChild(orderCard);
-            });
+                    `).join('');
+                    
+                    const orderCard = document.createElement('div');
+                    orderCard.className = 'order-card';
+                    
+                    orderCard.innerHTML = `
+                        <div class="order-header">
+                            <div>
+                                <h3>ORD-${order.id.slice(-6)}</h3>
+                                <p style="color: var(--gray); font-size: 14px;">${new Date(order.created_at).toLocaleDateString()}</p>
+                            </div>
+                            <div class="order-status status-${order.status}">${order.status}</div>
+                        </div>
+                        <div class="order-items">
+                            ${itemsHtml}
+                        </div>
+                        <div class="order-total">
+                            Total: KSh ${total}
+                        </div>
+                    `;
+                    
+                    container.appendChild(orderCard);
+                });
+            } catch (error) {
+                console.error('Error loading seller recent orders:', error);
+            }
         }
         
-        function loadSellerTopProducts() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
-            const topProducts = [
-                { name: 'Margherita Pizza', sales: 42, revenue: 33600 },
-                { name: 'Chicken Burger', sales: 38, revenue: 17100 },
-                { name: 'Fresh Orange Juice', sales: 25, revenue: 3750 }
-            ];
+        async function loadSellerTopProducts() {
+            if (!currentUser) return;
             
-            const container = document.getElementById('seller-top-products');
-            container.innerHTML = '';
-            
-            topProducts.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'order-card';
+            try {
+                const { data: products, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .eq('seller_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(3);
                 
-                productCard.innerHTML = `
-                    <div class="order-header">
-                        <div>
+                if (error) {
+                    console.error('Error loading seller products:', error);
+                    return;
+                }
+                
+                const container = document.getElementById('seller-top-products');
+                container.innerHTML = '';
+                
+                if (products.length === 0) {
+                    container.innerHTML = '<p>No products yet</p>';
+                    return;
+                }
+                
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'order-card';
+                    
+                    productCard.innerHTML = `
+                        <div class="order-header">
+                            <div>
+                                <h3>${product.name}</h3>
+                            </div>
+                        </div>
+                        <div class="order-items">
+                            <div class="order-item">
+                                <span>Price</span>
+                                <span>KSh ${product.price}</span>
+                            </div>
+                            <div class="order-item">
+                                <span>Stock</span>
+                                <span>${product.stock}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(productCard);
+                });
+            } catch (error) {
+                console.error('Error loading seller top products:', error);
+            }
+        }
+        
+        async function loadSellerProducts() {
+            if (!currentUser) return;
+            
+            try {
+                const { data: products, error } = await supabase
+                    .from('products')
+                    .select('*')
+                    .eq('seller_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Error loading seller products:', error);
+                    return;
+                }
+                
+                const container = document.getElementById('seller-products-list');
+                container.innerHTML = '';
+                
+                if (products.length === 0) {
+                    container.innerHTML = '<p>No products yet. Add your first product!</p>';
+                    return;
+                }
+                
+                products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    
+                    productCard.innerHTML = `
+                        <div class="product-image" style="background-image: url('${product.image_url || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'}');"></div>
+                        <div class="product-info">
                             <h3>${product.name}</h3>
+                            <p>${product.description}</p>
+                            <div class="product-price">KSh ${product.price}</div>
+                            <p>Stock: ${product.stock}</p>
+                            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                <button class="btn btn-outline btn-sm" onclick="editProduct('${product.id}')">Edit</button>
+                                <button class="btn btn-outline btn-sm" onclick="updateProductStock('${product.id}')">Update Stock</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="order-items">
-                        <div class="order-item">
-                            <span>Units Sold</span>
-                            <span>${product.sales}</span>
-                        </div>
-                        <div class="order-item">
-                            <span>Revenue</span>
-                            <span>KSh ${product.revenue}</span>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(productCard);
-            });
-        }
-        
-        function loadSellerProducts() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
-            const products = [
-                {
-                    id: '1',
-                    name: 'Margherita Pizza',
-                    description: 'Classic pizza with tomato sauce and mozzarella',
-                    price: 800,
-                    category: 'Food',
-                    image: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
-                    stock: 15
-                },
-                {
-                    id: '2',
-                    name: 'Chicken Burger',
-                    description: 'Juicy chicken burger with fresh vegetables',
-                    price: 450,
-                    category: 'Food',
-                    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
-                    stock: 22
-                },
-                {
-                    id: '3',
-                    name: 'Fresh Orange Juice',
-                    description: 'Freshly squeezed orange juice',
-                    price: 150,
-                    category: 'Beverages',
-                    image: 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80',
-                    stock: 30
-                }
-            ];
-            
-            const container = document.getElementById('seller-products-list');
-            container.innerHTML = '';
-            
-            products.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                
-                productCard.innerHTML = `
-                    <div class="product-image" style="background-image: url('${product.image}');"></div>
-                    <div class="product-info">
-                        <h3>${product.name}</h3>
-                        <p>${product.description}</p>
-                        <div class="product-price">KSh ${product.price}</div>
-                        <p>Stock: ${product.stock}</p>
-                        <div style="margin-top: 15px; display: flex; gap: 10px;">
-                            <button class="btn btn-outline btn-sm">Edit</button>
-                            <button class="btn btn-outline btn-sm">Update Stock</button>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(productCard);
-            });
+                    `;
+                    
+                    container.appendChild(productCard);
+                });
+            } catch (error) {
+                console.error('Error loading seller products:', error);
+            }
         }
         
         function openAddProductModal() {
             document.getElementById('add-product-modal').style.display = 'flex';
+            // Reset form
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-description').value = '';
+            document.getElementById('product-price').value = '';
+            document.getElementById('product-stock').value = '1';
+            document.getElementById('image-preview').innerHTML = '';
+            uploadedImageFile = null;
         }
         
         function closeAddProductModal() {
             document.getElementById('add-product-modal').style.display = 'none';
         }
         
-        function addProduct() {
+        async function addProduct() {
+            if (!currentUser) return;
+            
             const name = document.getElementById('product-name').value;
             const description = document.getElementById('product-description').value;
-            const price = document.getElementById('product-price').value;
+            const price = parseFloat(document.getElementById('product-price').value);
             const category = document.getElementById('product-category').value;
-            const image = document.getElementById('product-image').value;
+            const stock = parseInt(document.getElementById('product-stock').value);
             
-            if (!name || !description || !price) {
+            if (!name || !description || !price || !stock) {
                 showNotification('Please fill in all required fields', 'error');
                 return;
             }
             
-            // In a real app, this would save to the database
-            showNotification('Product added successfully', 'success');
-            closeAddProductModal();
-            
-            // Reset form
-            document.getElementById('product-name').value = '';
-            document.getElementById('product-description').value = '';
-            document.getElementById('product-price').value = '';
-            document.getElementById('product-image').value = '';
-        }
-        
-        async function loadSellerOrders() {
-            // In a real app, this would fetch from the database
-            // For demo, we'll use mock data
-            const orders = [
-                {
-                    id: 'ORD-001',
-                    date: '2023-06-15',
-                    customer: 'John Doe',
-                    total: 1250,
-                    status: 'delivered',
-                    items: [
-                        { name: 'Pizza', quantity: 1, price: 800 },
-                        { name: 'Soda', quantity: 2, price: 225 }
-                    ]
-                },
-                {
-                    id: 'ORD-002',
-                    date: '2023-06-14',
-                    customer: 'Jane Smith',
-                    total: 3500,
-                    status: 'picked',
-                    items: [
-                        { name: 'Laptop Case', quantity: 1, price: 3500 }
-                    ]
-                },
-                {
-                    id: 'ORD-003',
-                    date: '2023-06-13',
-                    customer: 'Mike Johnson',
-                    total: 1800,
-                    status: 'assigned',
-                    items: [
-                        { name: 'Chicken Burger', quantity: 2, price: 900 }
-                    ]
-                },
-                {
-                    id: 'ORD-004',
-                    date: '2023-06-12',
-                    customer: 'Sarah Williams',
-                    total: 600,
-                    status: 'pending',
-                    items: [
-                        { name: 'Orange Juice', quantity: 4, price: 150 }
-                    ]
-                }
-            ];
-            
-            const container = document.getElementById('seller-orders-list');
-            container.innerHTML = '';
-            
-            const statusFilter = document.getElementById('sellerOrderStatusFilter').value;
-            
-            const filteredOrders = statusFilter === 'all' 
-                ? orders 
-                : orders.filter(order => order.status === statusFilter);
-            
-            if (filteredOrders.length === 0) {
-                container.innerHTML = '<p>No orders found</p>';
+            if (price <= 0) {
+                showNotification('Price must be greater than 0', 'error');
                 return;
             }
             
-            filteredOrders.forEach(order => {
-                const orderCard = document.createElement('div');
-                orderCard.className = 'order-card';
-                
-                const itemsHtml = order.items.map(item => `
-                    <div class="order-item">
-                        <span>${item.name} x ${item.quantity}</span>
-                        <span>KSh ${item.price * item.quantity}</span>
-                    </div>
-                `).join('');
-                
-                orderCard.innerHTML = `
-                    <div class="order-header">
-                        <div>
-                            <h3>${order.id}</h3>
-                            <p style="color: var(--gray); font-size: 14px;">${order.date} • ${order.customer}</p>
-                        </div>
-                        <div class="order-status status-${order.status}">${order.status}</div>
-                    </div>
-                    <div class="order-items">
-                        ${itemsHtml}
-                    </div>
-                    <div class="order-total">
-                        Total: KSh ${order.total}
-                    </div>
-                    <div style="margin-top: 15px; display: flex; gap: 10px;">
-                        ${order.status === 'pending' ? `
-                            <button class="btn btn-primary btn-sm" onclick="updateOrderStatus('${order.id}', 'accepted')">Accept Order</button>
-                            <button class="btn btn-outline btn-sm" onclick="updateOrderStatus('${order.id}', 'cancelled')">Cancel Order</button>
-                        ` : ''}
-                        ${order.status === 'accepted' ? `
-                            <button class="btn btn-primary btn-sm" onclick="updateOrderStatus('${order.id}', 'ready')">Mark as Ready</button>
-                        ` : ''}
-                    </div>
-                `;
-                
-                container.appendChild(orderCard);
-            });
-        }
-        
-        function updateOrderStatus(orderId, status) {
-            // In a real app, this would update the database
-            showNotification(`Order ${orderId} marked as ${status}`, 'success');
+            if (stock < 0) {
+                showNotification('Stock cannot be negative', 'error');
+                return;
+            }
             
-            // Refresh orders list
-            loadSellerOrders();
+            showLoading(true);
+            
+            try {
+                let imageUrl = null;
+                
+                // Upload image if provided
+                if (uploadedImageFile) {
+                    const fileExt = uploadedImageFile.name.split('.').pop();
+                    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+                    const filePath = `products/${currentUser.id}/${fileName}`;
+                    
+                    const { error: uploadError } = await supabase.storage
+                        .from('product-images')
+                        .upload(filePath, uploadedImageFile);
+                    
+                    if (uploadError) {
+                        console.error('Error uploading image:', uploadError);
+                        showNotification('Error uploading image', 'error');
+                        showLoading(false);
+                        return;
+                    }
+                    
+                    // Get public URL
+                    const { data: urlData } = supabase.storage
+                        .from('product-images')
+                        .getPublicUrl(filePath);
+                    
+                    imageUrl = urlData.publicUrl;
+                }
+                
+                // Add product to database
+                const { data, error } = await supabase
+                    .from('products')
+                    .insert([
+                        {
+                            seller_id: currentUser.id,
+                            name: name,
+                            description: description,
+                            price: price,
+                            category: category,
+                            stock: stock,
+                            image_url: imageUrl,
+                            created_at: new Date()
+                        }
+                    ])
+                    .select();
+                
+                if (error) {
+                    console.error('Error adding product:', error);
+                    showNotification('Error adding product', 'error');
+                    showLoading(false);
+                    return;
+                }
+                
+                showNotification('Product added successfully', 'success');
+                closeAddProductModal();
+                
+                // Refresh products list
+                loadSellerProducts();
+                
+            } catch (error) {
+                console.error('Error adding product:', error);
+                showNotification('Error adding product', 'error');
+            }
+            
+            showLoading(false);
         }
         
-        // Initialize sample data for demo purposes
-        function initializeSampleData() {
-            // This function would typically set up initial data in the database
-            // For this demo, we're using mock data throughout the application
-            console.log('Sample data initialized for demo');
+        function editProduct(productId) {
+            showNotification('Edit functionality coming soon!', 'info');
+        }
+        
+        function updateProductStock(productId) {
+            showNotification('Update stock functionality coming soon!', 'info');
+        }
+        
+        async function loadSellerOrders() {
+            if (!currentUser) return;
+            
+            try {
+                const { data: orders, error } = await supabase
+                    .from('orders')
+                    .select(`
+                        *,
+                        order_items (
+                            quantity,
+                            price,
+                            products (
+                                name,
+                                seller_id
+                            )
+                        )
+                    `)
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Error loading seller orders:', error);
+                    return;
+                }
+                
+                // Filter orders that contain products from this seller
+                const sellerOrders = orders.filter(order => 
+                    order.order_items.some(item => item.products.seller_id === currentUser.id)
+                );
+                
+                const container = document.getElementById('seller-orders-list');
+                container.innerHTML = '';
+                
+                const statusFilter = document.getElementById('sellerOrderStatusFilter').value;
+                
+                const filteredOrders = statusFilter === 'all' 
+                    ? sellerOrders 
+                    : sellerOrders.filter(order => order.status === statusFilter);
+                
+                if (filteredOrders.length === 0) {
+                    container.innerHTML = '<p>No orders found</p>';
+                    return;
+                }
+                
+                filteredOrders.forEach(order => {
+                    const sellerItems = order.order_items.filter(item => item.products.seller_id === currentUser.id);
+                    const total = sellerItems.reduce((sum, item) => sum + (item.quantity * item.price), 0);
+                    
+                    const itemsHtml = sellerItems.map(item => `
+                        <div class="order-item">
+                            <span>${item.products.name} x ${item.quantity}</span>
+                            <span>KSh ${item.price * item.quantity}</span>
+                        </div>
+                    `).join('');
+                    
+                    const orderCard = document.createElement('div');
+                    orderCard.className = 'order-card';
+                    
+                    orderCard.innerHTML = `
+                        <div class="order-header">
+                            <div>
+                                <h3>ORD-${order.id.slice(-6)}</h3>
+                                <p style="color: var(--gray); font-size: 14px;">${new Date(order.created_at).toLocaleDateString()}</p>
+                            </div>
+                            <div class="order-status status-${order.status}">${order.status}</div>
+                        </div>
+                        <div class="order-items">
+                            ${itemsHtml}
+                        </div>
+                        <div class="order-total">
+                            Total: KSh ${total}
+                        </div>
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            ${order.status === 'pending' ? `
+                                <button class="btn btn-primary btn-sm" onclick="updateOrderStatus('${order.id}', 'accepted')">Accept Order</button>
+                                <button class="btn btn-outline btn-sm" onclick="updateOrderStatus('${order.id}', 'cancelled')">Cancel Order</button>
+                            ` : ''}
+                            ${order.status === 'accepted' ? `
+                                <button class="btn btn-primary btn-sm" onclick="updateOrderStatus('${order.id}', 'ready')">Mark as Ready</button>
+                            ` : ''}
+                        </div>
+                    `;
+                    
+                    container.appendChild(orderCard);
+                });
+            } catch (error) {
+                console.error('Error loading seller orders:', error);
+            }
+        }
+        
+        async function updateOrderStatus(orderId, status) {
+            showLoading(true);
+            
+            try {
+                const { error } = await supabase
+                    .from('orders')
+                    .update({ status: status })
+                    .eq('id', orderId);
+                
+                if (error) {
+                    console.error('Error updating order status:', error);
+                    showNotification('Error updating order status', 'error');
+                    showLoading(false);
+                    return;
+                }
+                
+                showNotification(`Order status updated to ${status}`, 'success');
+                
+                // Refresh orders list
+                loadSellerOrders();
+                
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                showNotification('Error updating order status', 'error');
+            }
+            
+            showLoading(false);
+        }
+        
+        // Rider Dashboard Functions (simplified for demo)
+        function showRiderSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.rider-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Update nav links
+            document.querySelectorAll('.dashboard-nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`rider-${section}-section`).classList.add('active');
+            
+            // Update active nav link
+            event.target.classList.add('active');
+        }
+        
+        function loadRiderDashboard() {
+            // This would load real data in a production app
+            showNotification('Rider dashboard loaded', 'info');
         }
         
         // Close modals when clicking outside
