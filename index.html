@@ -1094,7 +1094,14 @@
                         
                         <h3 style="margin: 30px 0 20px 0;">Recent Orders</h3>
                         <div id="customer-recent-orders">
-                            <!-- Recent orders will load here -->
+                            <div class="empty-state">
+                                <i class="fas fa-shopping-bag"></i>
+                                <h3>No orders yet</h3>
+                                <p>Start shopping to see your orders here</p>
+                                <button class="btn btn-primary" onclick="showCustomerSection('products')" style="margin-top: 15px;">
+                                    Start Shopping
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
@@ -1138,7 +1145,14 @@
                         </div>
                         
                         <div id="customer-orders-list">
-                            <!-- Orders will load here -->
+                            <div class="empty-state">
+                                <i class="fas fa-box-open"></i>
+                                <h3>No orders yet</h3>
+                                <p>Start shopping to see your orders here</p>
+                                <button class="btn btn-primary" onclick="showCustomerSection('products')" style="margin-top: 15px;">
+                                    Start Shopping
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
@@ -1149,7 +1163,14 @@
                         </div>
                         
                         <div class="cart-items" id="cart-items">
-                            <!-- Cart items will load here -->
+                            <div class="empty-state">
+                                <i class="fas fa-shopping-cart"></i>
+                                <h3>Your cart is empty</h3>
+                                <p>Add some products to get started!</p>
+                                <button class="btn btn-primary" onclick="showCustomerSection('products')" style="margin-top: 15px;">
+                                    Browse Products
+                                </button>
+                            </div>
                         </div>
                         
                         <div class="order-card">
@@ -1292,7 +1313,11 @@
                             <p>Manage your current and past deliveries</p>
                         </div>
                         <div id="myDeliveriesContent">
-                            <!-- Deliveries content will be loaded here -->
+                            <div class="empty-state">
+                                <i class="fas fa-clipboard-list"></i>
+                                <h3>No deliveries yet</h3>
+                                <p>When you accept delivery assignments, they will appear here</p>
+                            </div>
                         </div>
                     </div>
 
@@ -1302,7 +1327,11 @@
                             <p>Track your earnings and performance</p>
                         </div>
                         <div id="earningsContent">
-                            <!-- Earnings content will be loaded here -->
+                            <div class="empty-state">
+                                <i class="fas fa-chart-line"></i>
+                                <h3>No earnings data</h3>
+                                <p>Your earnings will appear here after completing deliveries</p>
+                            </div>
                         </div>
                     </div>
 
@@ -1312,7 +1341,11 @@
                             <p>Manage your delivery schedule</p>
                         </div>
                         <div id="scheduleContent">
-                            <!-- Schedule content will be loaded here -->
+                            <div class="empty-state">
+                                <i class="fas fa-calendar-alt"></i>
+                                <h3>No schedule set</h3>
+                                <p>Set your availability schedule to receive delivery requests</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1413,7 +1446,14 @@
                             </button>
                         </div>
                         <div class="customer-products-grid" id="sellerProducts">
-                            <!-- Products will be loaded here -->
+                            <div class="empty-state">
+                                <i class="fas fa-box-open"></i>
+                                <h3>No products listed</h3>
+                                <p>Add your products to start selling</p>
+                                <button class="btn btn-primary" style="margin-top: 15px;">
+                                    <i class="fas fa-plus"></i> Add Your First Product
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
@@ -1433,7 +1473,11 @@
                             </div>
                         </div>
                         <div class="orders-list" id="sellerOrders">
-                            <!-- Orders will be loaded here -->
+                            <div class="empty-state">
+                                <i class="fas fa-clipboard-list"></i>
+                                <h3>No orders received</h3>
+                                <p>When customers place orders, they will appear here</p>
+                            </div>
                         </div>
                     </div>
                     
@@ -1615,6 +1659,11 @@
             // Load cart from localStorage
             loadCartFromStorage();
             updateCartCount();
+            
+            // Product search and filter
+            document.getElementById('searchProducts')?.addEventListener('input', filterProducts);
+            document.getElementById('categoryFilter')?.addEventListener('change', filterProducts);
+            document.getElementById('orderStatusFilter')?.addEventListener('change', filterOrders);
         }
 
         // Show notification
@@ -1658,7 +1707,7 @@
             loadingSpinner.style.display = 'none';
         }
 
-        // Show page - FIXED VERSION
+        // Show page
         function showPage(pageId) {
             // Hide all pages
             document.querySelectorAll('.page').forEach(page => {
@@ -2377,7 +2426,7 @@
             displayCustomerOrders(filteredOrders);
         }
 
-        // Initialize the application - FIXED VERSION
+        // Initialize the application
         async function initializeApp() {
             showLoading();
             
@@ -2415,28 +2464,448 @@
             }
         }
 
-        // Checkout function (simplified for demo)
-        function openCheckoutModal() {
+        // =============================================
+        // ENHANCED ORDER MANAGEMENT INTEGRATIONS
+        // =============================================
+
+        // 1. placeOrder() - Customer → Seller
+        async function placeOrder(orderData) {
+            showLoading();
+            try {
+                const { data, error } = await supabase
+                    .from('orders')
+                    .insert([
+                        {
+                            customer_id: currentUser.id,
+                            seller_id: orderData.seller_id,
+                            items: orderData.items,
+                            total_amount: orderData.total_amount,
+                            delivery_address: orderData.delivery_address,
+                            status: 'pending',
+                            created_at: new Date()
+                        }
+                    ])
+                    .select();
+                
+                if (error) throw error;
+                
+                // Send notification to seller
+                await notifyNewOrder(data[0].id, orderData.seller_id);
+                
+                showNotification('Order placed successfully!', 'success');
+                return data[0];
+            } catch (error) {
+                console.error('Error placing order:', error);
+                showNotification('Failed to place order', 'error');
+                throw error;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 2. cancelOrder() - Customer → Seller
+        async function cancelOrder(orderId) {
+            showLoading();
+            try {
+                const { data, error } = await supabase
+                    .from('orders')
+                    .update({ 
+                        status: 'cancelled',
+                        cancelled_at: new Date()
+                    })
+                    .eq('id', orderId)
+                    .eq('customer_id', currentUser.id);
+                
+                if (error) throw error;
+                
+                // Get order details for notification
+                const { data: order } = await supabase
+                    .from('orders')
+                    .select('seller_id, rider_id')
+                    .eq('id', orderId)
+                    .single();
+                    
+                if (order) {
+                    await sendNotification(order.seller_id, `Order #${orderId} was cancelled by customer`, 'order_cancelled');
+                    if (order.rider_id) {
+                        await sendNotification(order.rider_id, `Delivery for order #${orderId} was cancelled`, 'order_cancelled');
+                    }
+                }
+                
+                showNotification('Order cancelled successfully', 'success');
+                return true;
+            } catch (error) {
+                console.error('Error cancelling order:', error);
+                showNotification('Failed to cancel order', 'error');
+                return false;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 3. assignRider() - Seller → Rider
+        async function assignRider(orderId, riderId) {
+            showLoading();
+            try {
+                const { data, error } = await supabase
+                    .from('orders')
+                    .update({ 
+                        rider_id: riderId,
+                        status: 'assigned',
+                        assigned_at: new Date()
+                    })
+                    .eq('id', orderId);
+                
+                if (error) throw error;
+                
+                // Notify rider
+                await notifyRiderAssignment(orderId, riderId);
+                
+                // Update order status for all parties
+                await updateOrderStatus(orderId, 'assigned');
+                
+                showNotification('Rider assigned successfully', 'success');
+                return true;
+            } catch (error) {
+                console.error('Error assigning rider:', error);
+                showNotification('Failed to assign rider', 'error');
+                return false;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 4. acceptDelivery() - Rider → Seller
+        async function acceptDelivery(orderId) {
+            showLoading();
+            try {
+                const { data, error } = await supabase
+                    .from('orders')
+                    .update({ 
+                        status: 'accepted',
+                        accepted_at: new Date()
+                    })
+                    .eq('id', orderId)
+                    .eq('rider_id', currentUser.id);
+                
+                if (error) throw error;
+                
+                // Notify seller
+                const { data: order } = await supabase
+                    .from('orders')
+                    .select('seller_id')
+                    .eq('id', orderId)
+                    .single();
+                    
+                if (order) {
+                    await sendNotification(order.seller_id, `Rider accepted delivery for order #${orderId}`, 'delivery_accepted');
+                }
+                
+                showNotification('Delivery accepted', 'success');
+                return true;
+            } catch (error) {
+                console.error('Error accepting delivery:', error);
+                showNotification('Failed to accept delivery', 'error');
+                return false;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 5. updateOrderStatus() - Seller → All
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                const { data, error } = await supabase
+                    .from('orders')
+                    .update({ 
+                        status: newStatus,
+                        updated_at: new Date()
+                    })
+                    .eq('id', orderId);
+                
+                if (error) throw error;
+                
+                // Get order details for notifications
+                const { data: order } = await supabase
+                    .from('orders')
+                    .select('customer_id, rider_id, seller_id')
+                    .eq('id', orderId)
+                    .single();
+                    
+                if (order) {
+                    // Notify customer and rider
+                    const statusMessage = `Order #${orderId} status updated to: ${newStatus}`;
+                    await sendNotification(order.customer_id, statusMessage, 'order_updated');
+                    if (order.rider_id) {
+                        await sendNotification(order.rider_id, statusMessage, 'order_updated');
+                    }
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                return false;
+            }
+        }
+
+        // 6. updateDeliveryStatus() - Rider → All
+        async function updateDeliveryStatus(orderId, newStatus, location = null) {
+            try {
+                const updateData = { 
+                    delivery_status: newStatus,
+                    delivery_updated_at: new Date()
+                };
+                
+                if (location) {
+                    updateData.current_location = location;
+                }
+                
+                const { data, error } = await supabase
+                    .from('orders')
+                    .update(updateData)
+                    .eq('id', orderId)
+                    .eq('rider_id', currentUser.id);
+                
+                if (error) throw error;
+                
+                // Update order tracking for customer
+                await updateOrderTracking(orderId, newStatus, location);
+                
+                return true;
+            } catch (error) {
+                console.error('Error updating delivery status:', error);
+                return false;
+            }
+        }
+
+        // 7. markDelivered() - Rider → Seller + Customer
+        async function markDelivered(orderId, proofImage = null) {
+            showLoading();
+            try {
+                const updateData = { 
+                    status: 'delivered',
+                    delivery_status: 'delivered',
+                    delivered_at: new Date()
+                };
+                
+                if (proofImage) {
+                    updateData.delivery_proof = proofImage;
+                }
+                
+                const { data, error } = await supabase
+                    .from('orders')
+                    .update(updateData)
+                    .eq('id', orderId)
+                    .eq('rider_id', currentUser.id);
+                
+                if (error) throw error;
+                
+                // Get order details for notifications
+                const { data: order } = await supabase
+                    .from('orders')
+                    .select('customer_id, seller_id')
+                    .eq('id', orderId)
+                    .single();
+                    
+                if (order) {
+                    // Notify customer and seller
+                    const deliveryMessage = `Order #${orderId} has been delivered successfully`;
+                    await sendNotification(order.customer_id, deliveryMessage, 'order_delivered');
+                    await sendNotification(order.seller_id, deliveryMessage, 'order_delivered');
+                }
+                
+                showNotification('Delivery marked as complete', 'success');
+                return true;
+            } catch (error) {
+                console.error('Error marking delivery:', error);
+                showNotification('Failed to mark delivery', 'error');
+                return false;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // 8. rateOrder() - Customer → Seller + Rider
+        async function rateOrder(orderId, sellerRating, riderRating, comments = '') {
+            showLoading();
+            try {
+                const { data: order } = await supabase
+                    .from('orders')
+                    .select('seller_id, rider_id')
+                    .eq('id', orderId)
+                    .single();
+                    
+                if (!order) throw new Error('Order not found');
+                
+                // Insert ratings
+                const ratingsData = [];
+                
+                if (sellerRating) {
+                    ratingsData.push({
+                        order_id: orderId,
+                        rated_user_id: order.seller_id,
+                        rating_by: currentUser.id,
+                        rating: sellerRating,
+                        comments: comments,
+                        type: 'seller',
+                        created_at: new Date()
+                    });
+                }
+                
+                if (riderRating && order.rider_id) {
+                    ratingsData.push({
+                        order_id: orderId,
+                        rated_user_id: order.rider_id,
+                        rating_by: currentUser.id,
+                        rating: riderRating,
+                        comments: comments,
+                        type: 'rider',
+                        created_at: new Date()
+                    });
+                }
+                
+                const { error } = await supabase
+                    .from('ratings')
+                    .insert(ratingsData);
+                
+                if (error) throw error;
+                
+                // Update order to mark as rated
+                await supabase
+                    .from('orders')
+                    .update({ is_rated: true })
+                    .eq('id', orderId);
+                
+                showNotification('Thank you for your rating!', 'success');
+                return true;
+            } catch (error) {
+                console.error('Error submitting rating:', error);
+                showNotification('Failed to submit rating', 'error');
+                return false;
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // =============================================
+        // NOTIFICATION SYSTEM INTEGRATIONS
+        // =============================================
+
+        // 9. sendNotification() - All roles
+        async function sendNotification(userId, message, type = 'info') {
+            try {
+                const { data, error } = await supabase
+                    .from('notifications')
+                    .insert([
+                        {
+                            user_id: userId,
+                            message: message,
+                            type: type,
+                            is_read: false,
+                            created_at: new Date()
+                        }
+                    ]);
+                
+                if (error) throw error;
+                
+                // Real-time notification for online users
+                if (currentUser && currentUser.id === userId) {
+                    showNotification(message, type);
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Error sending notification:', error);
+                return false;
+            }
+        }
+
+        // 10. notifyNewOrder() - Customer → Seller
+        async function notifyNewOrder(orderId, sellerId) {
+            const message = `New order received! Order #${orderId}`;
+            return await sendNotification(sellerId, message, 'new_order');
+        }
+
+        // 11. notifyRiderAssignment() - Seller → Rider
+        async function notifyRiderAssignment(orderId, riderId) {
+            const message = `You have been assigned to deliver order #${orderId}`;
+            return await sendNotification(riderId, message, 'rider_assigned');
+        }
+
+        // 12. updateOrderTracking() - Rider → Customer
+        async function updateOrderTracking(orderId, status, location = null) {
+            const { data: order } = await supabase
+                .from('orders')
+                .select('customer_id')
+                .eq('id', orderId)
+                .single();
+                
+            if (order) {
+                let message = `Your order #${orderId} status: ${status}`;
+                if (location) {
+                    message += ` | Current location: ${location}`;
+                }
+                
+                return await sendNotification(order.customer_id, message, 'order_tracking');
+            }
+            
+            return false;
+        }
+
+        // =============================================
+        // ENHANCED CHECKOUT FUNCTION
+        // =============================================
+
+        async function openCheckoutModal() {
             if (cart.length === 0) {
                 showNotification('Your cart is empty', 'error');
                 return;
             }
             
-            // For demo purposes, simulate successful order
-            Swal.fire({
-                title: 'Order Placed!',
-                text: 'Your order has been placed successfully. This is a demo - in a real app, this would connect to payment processing.',
-                icon: 'success',
-                confirmButtonText: 'Great!',
-                confirmButtonColor: '#FF6B00'
-            }).then(() => {
-                // Clear cart after successful "order"
-                cart = [];
-                saveCartToStorage();
-                updateCartCount();
-                loadCartItems();
-                showNotification('Order placed successfully!', 'success');
-            });
+            // Calculate totals
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const deliveryFee = 150;
+            const total = subtotal + deliveryFee;
+            
+            // For demo, we'll use a mock seller
+            const mockSellerId = 'seller-123';
+            
+            const orderData = {
+                seller_id: mockSellerId,
+                items: cart,
+                total_amount: total,
+                delivery_address: 'Nairobi, Kenya', // In real app, get from user profile
+                delivery_fee: deliveryFee
+            };
+            
+            try {
+                const order = await placeOrder(orderData);
+                
+                Swal.fire({
+                    title: 'Order Placed Successfully!',
+                    text: `Order #${order.id} has been placed. Total: KSh ${total}`,
+                    icon: 'success',
+                    confirmButtonText: 'Track Order',
+                    confirmButtonColor: '#FF6B00'
+                }).then(() => {
+                    // Clear cart after successful order
+                    cart = [];
+                    saveCartToStorage();
+                    updateCartCount();
+                    loadCartItems();
+                    
+                    // Redirect to orders section
+                    showCustomerSection('orders');
+                });
+            } catch (error) {
+                Swal.fire({
+                    title: 'Order Failed',
+                    text: 'There was an error placing your order. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#FF6B00'
+                });
+            }
         }
     </script>
 </body>
