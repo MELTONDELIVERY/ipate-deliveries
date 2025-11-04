@@ -2384,19 +2384,12 @@
     </div>
 
     <script>
-        // Supabase Configuration with YOUR actual credentials
+        // Supabase Configuration
         const SUPABASE_URL = 'https://stnodqdazzenapubqbou.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0bm9kcWRhenplbmFwdWJxYm91Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMDAxMzksImV4cCI6MjA3NzY3NjEzOX0.DdeYFmLgwb5_rSSAitibIKXavOtT3BNTVvj5ny4nEmk';
         
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        // MPESA Configuration with YOUR actual credentials
-        const MPESA_CONFIG = {
-            consumerKey: 'OEN1B3ABYfbLpeoM639unjaG93KY6ixvXUi6YcZEfx3YXiY1',
-            consumerSecret: 'P3xjtdLYDXkcycs8hyhORluuZQNRj0eOFGXWvOS0dGNPxJCF0hgD27xgauZgJWJ3',
-            environment: 'sandbox' // Change to 'production' for live environment
-        };
         
         // Global State
         let currentUser = null;
@@ -3126,7 +3119,7 @@
                     </div>
                 `;
                 
-                elements.customerCartItems.appendChild(cartItem);
+                elements.customerCartItems.appendChild(productCard);
             });
             
             // Add event listeners to quantity buttons
