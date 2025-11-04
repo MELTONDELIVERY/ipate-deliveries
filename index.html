@@ -2111,7 +2111,120 @@
                     </div>
 
                     <div class="products-grid" id="sellerProductsGrid">
-                        <!-- Seller products will be loaded here -->
+                      // Load seller products - FIXED VERSION
+async function loadSellerProducts() {
+    try {
+        const { data: products, error } = await supabase
+            .from('products')
+            .select('*')
+            .eq('seller_id', currentUser.id)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        elements.sellerProductsGrid.innerHTML = '';
+
+        if (!products || products.length === 0) {
+            elements.sellerProductsGrid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <h3>No Products Yet</h3>
+                    <p>Add your first product to start selling.</p>
+                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="showAddProductModal()">
+                        <i class="fas fa-plus"></i> Add Product
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        products.forEach(product => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            productCard.innerHTML = `
+                <div class="product-image" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                    <div style="position: relative; z-index: 2; text-align: center; color: white;">
+                        <i class="fas fa-box" style="font-size: 48px; margin-bottom: 10px;"></i>
+                        <div>${product.category}</div>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h4>${product.name}</h4>
+                    <p>${product.description}</p>
+                    <div class="product-price">KSh ${product.price.toLocaleString()}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                        <span>Stock: ${product.stock}</span>
+                        <div>
+                            <button class="btn btn-outline btn-sm edit-product-btn" data-product-id="${product.id}" style="margin-right: 10px;">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-outline btn-sm delete-product-btn" data-product-id="${product.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            elements.sellerProductsGrid.appendChild(productCard);
+        });
+
+        // Add event listeners for edit and delete buttons
+        document.querySelectorAll('.edit-product-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                editProduct(productId);
+            });
+        });
+
+        document.querySelectorAll('.delete-product-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                deleteProduct(productId);
+            });
+        });
+
+    } catch (error) {
+        console.error('Error loading seller products:', error);
+        showNotification('Error', 'Failed to load products', 'error');
+    }
+}
+
+// Update seller stats - FIXED VERSION
+async function updateSellerStats() {
+    try {
+        // Get seller products count
+        const { data: products, error: productsError } = await supabase
+            .from('products')
+            .select('id')
+            .eq('seller_id', currentUser.id);
+
+        if (productsError) throw productsError;
+
+        // Get seller orders count (simplified approach)
+        const { data: orders, error: ordersError } = await supabase
+            .from('orders')
+            .select('id, status, total')
+            .eq('customer_id', currentUser.id); // For now, using customer_id as seller_id for demo
+
+        if (ordersError) throw ordersError;
+
+        const pendingOrders = orders ? orders.filter(order => 
+            order.status === 'pending' || order.status === 'accepted'
+        ).length : 0;
+
+        const revenue = orders ? orders
+            .filter(order => order.status === 'delivered')
+            .reduce((total, order) => total + order.total, 0) : 0;
+
+        elements.sellerTotalProducts.textContent = products ? products.length : 0;
+        elements.sellerTotalOrders.textContent = orders ? orders.length : 0;
+        elements.sellerPendingOrders.textContent = pendingOrders;
+        elements.sellerRevenue.textContent = `KSh ${revenue.toLocaleString()}`;
+    } catch (error) {
+        console.error('Error updating seller stats:', error);
+    }
+}
                     </div>
                 </div>
 
@@ -2221,7 +2334,116 @@
 
                     <h3 style="color: white; margin: 30px 0 20px;">Active Deliveries</h3>
                     <div class="orders-list" id="riderActiveDeliveriesList">
-                        <!-- Active deliveries will be loaded here -->
+                      // Initialize sample data with rider assignments
+async function initializeSampleData() {
+    // Check if products already exist
+    const { data: existingProducts, error } = await supabase
+        .from('products')
+        .select('*')
+        .limit(1);
+
+    if (error || existingProducts.length === 0) {
+        // Create sample products
+        const sampleProducts = [
+            {
+                name: 'Fresh Groceries Package',
+                description: 'A package of fresh vegetables and fruits from local farmers.',
+                price: 1500,
+                category: 'food',
+                stock: 20,
+                seller_id: '00000000-0000-0000-0000-000000000000',
+                image_url: 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+            },
+            {
+                name: 'Smartphone',
+                description: 'Latest smartphone with advanced features and camera.',
+                price: 25000,
+                category: 'electronics',
+                stock: 10,
+                seller_id: '00000000-0000-0000-0000-000000000000',
+                image_url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+            },
+            {
+                name: 'Fashion T-Shirt',
+                description: 'Comfortable and stylish cotton t-shirt for everyday wear.',
+                price: 800,
+                category: 'clothing',
+                stock: 50,
+                seller_id: '00000000-0000-0000-0000-000000000000',
+                image_url: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+            }
+        ];
+
+        const { data: productsData, error: productsError } = await supabase
+            .from('products')
+            .insert(sampleProducts);
+
+        if (productsError) {
+            console.error('Error creating sample products:', productsError);
+        }
+
+        // Create sample orders for riders
+        const sampleOrders = [
+            {
+                customer_id: '00000000-0000-0000-0000-000000000000',
+                rider_id: '00000000-0000-0000-0000-000000000000', // Demo rider ID
+                total: 1600,
+                delivery_fee: 100,
+                status: 'assigned',
+                delivery_address: '123 Main Street, Nairobi',
+                delivery_instructions: 'Call before delivery',
+                payment_method: 'mpesa',
+                payment_status: 'completed'
+            },
+            {
+                customer_id: '00000000-0000-0000-0000-000000000000',
+                rider_id: '00000000-0000-0000-0000-000000000000',
+                total: 25100,
+                delivery_fee: 100,
+                status: 'picked',
+                delivery_address: '456 Westlands, Nairobi',
+                payment_method: 'mpesa',
+                payment_status: 'completed'
+            }
+        ];
+
+        const { data: ordersData, error: ordersError } = await supabase
+            .from('orders')
+            .insert(sampleOrders);
+
+        if (ordersError) {
+            console.error('Error creating sample orders:', ordersError);
+        }
+    }
+}
+
+// Toggle rider availability - FIXED VERSION
+async function toggleRiderAvailability() {
+    const isAvailable = elements.riderAvailabilityToggle.checked;
+    elements.riderStatusText.textContent = isAvailable ? 'Online' : 'Offline';
+    
+    try {
+        // Save availability status to profile
+        const { error } = await supabase
+            .from('profiles')
+            .update({ 
+                available: isAvailable,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', currentUser.id);
+
+        if (error) throw error;
+
+        if (isAvailable) {
+            showNotification('Success', 'You are now available for deliveries!', 'success');
+        } else {
+            showNotification('Info', 'You are now offline.', 'info');
+        }
+    } catch (error) {
+        console.error('Error updating rider availability:', error);
+        showNotification('Error', 'Failed to update availability', 'error');
+    }
+}
                     </div>
                 </div>
 
@@ -4181,60 +4403,70 @@
         }
     }
     
-    // Add to cart
-    async function addToCart(productId) {
-        try {
-            // Check if product is already in cart
-            const { data: existingItem, error: checkError } = await supabase
-                .from('cart_items')
-                .select('*')
-                .eq('user_id', currentUser.id)
-                .eq('product_id', productId)
-                .single();
-            
-            if (checkError && checkError.code !== 'PGRST116') { // PGRST116 is "not found"
-                throw checkError;
-            }
-            
-            if (existingItem) {
-                // Update quantity
-                const { error } = await supabase
-                    .from('cart_items')
-                    .update({ quantity: existingItem.quantity + 1 })
-                    .eq('id', existingItem.id);
-                
-                if (error) throw error;
-            } else {
-                // Insert new item
-                const { error } = await supabase
-                    .from('cart_items')
-                    .insert([
-                        {
-                            user_id: currentUser.id,
-                            product_id: productId,
-                            quantity: 1
-                        }
-                    ]);
-                
-                if (error) throw error;
-            }
-            
-            // Get product name for notification
-            const { data: product, error: productError } = await supabase
-                .from('products')
-                .select('name')
-                .eq('id', productId)
-                .single();
-            
-            if (productError) throw productError;
-            
-            updateCustomerStats();
-            showNotification('Success', `${product.name} added to cart!`, 'success');
-        } catch (error) {
-            showNotification('Error', 'Failed to add to cart: ' + error.message, 'error');
+    // Add to cart - ENHANCED VERSION
+async function addToCart(productId) {
+    try {
+        // First check if product exists and has stock
+        const { data: product, error: productError } = await supabase
+            .from('products')
+            .select('name, price, stock')
+            .eq('id', productId)
+            .single();
+
+        if (productError) throw productError;
+
+        if (product.stock < 1) {
+            showNotification('Error', 'Product is out of stock!', 'error');
+            return;
         }
+
+        // Check if product is already in cart
+        const { data: existingItem, error: checkError } = await supabase
+            .from('cart_items')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .eq('product_id', productId)
+            .single();
+
+        if (checkError && checkError.code !== 'PGRST116') {
+            throw checkError;
+        }
+
+        if (existingItem) {
+            // Check if adding more than available stock
+            if (existingItem.quantity + 1 > product.stock) {
+                showNotification('Error', 'Not enough stock available!', 'error');
+                return;
+            }
+
+            // Update quantity
+            const { error } = await supabase
+                .from('cart_items')
+                .update({ quantity: existingItem.quantity + 1 })
+                .eq('id', existingItem.id);
+
+            if (error) throw error;
+        } else {
+            // Insert new item
+            const { error } = await supabase
+                .from('cart_items')
+                .insert([
+                    {
+                        user_id: currentUser.id,
+                        product_id: productId,
+                        quantity: 1
+                    }
+                ]);
+
+            if (error) throw error;
+        }
+
+        updateCustomerStats();
+        showNotification('Success', `${product.name} added to cart!`, 'success');
+    } catch (error) {
+        showNotification('Error', 'Failed to add to cart: ' + error.message, 'error');
     }
-    
+}
     // Update cart quantity
     async function updateCartQuantity(cartItemId, change) {
         try {
@@ -4552,7 +4784,51 @@
     document.head.appendChild(style);
 </script>
     </script>
+    // Edit product function
+async function editProduct(productId) {
+    showNotification('Info', 'Edit product functionality coming soon!', 'info');
+}
+
+// Delete product function
+async function deleteProduct(productId) {
+    if (confirm('Are you sure you want to delete this product?')) {
+        try {
+            const { error } = await supabase
+                .from('products')
+                .delete()
+                .eq('id', productId)
+                .eq('seller_id', currentUser.id);
+
+            if (error) throw error;
+
+            showNotification('Success', 'Product deleted successfully!', 'success');
+            loadSellerProducts();
+            updateSellerStats();
+        } catch (error) {
+            showNotification('Error', 'Failed to delete product: ' + error.message, 'error');
+        }
+    }
+}
+
+// Load rider availability status
+async function loadRiderAvailability() {
+    try {
+        const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('available')
+            .eq('id', currentUser.id)
+            .single();
+
+        if (!error && profile) {
+            elements.riderAvailabilityToggle.checked = profile.available || false;
+            elements.riderStatusText.textContent = profile.available ? 'Online' : 'Offline';
+        }
+    } catch (error) {
+        console.error('Error loading rider availability:', error);
+    }
+}
 </body>
 </html>
+
 
 
