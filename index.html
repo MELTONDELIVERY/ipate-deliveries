@@ -2838,18 +2838,73 @@
         
         // Handle signup
         async function handleSignup(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            const role = document.getElementById('userRole').value;
-            
-            // Basic validation
-            if (!name || !email || !password || !role) {
-                showNotification('Error', 'Please fill in all fields', 'error');
-                return;
+    e.preventDefault();
+    
+    const name = document.getElementById('signupName').value;
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    const role = document.getElementById('userRole').value;
+    
+    // Basic validation
+    if (!name || !email || !password || !role) {
+        showNotification('Error', 'Please fill in all fields', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showNotification('Error', 'Password must be at least 6 characters', 'error');
+        return;
+    }
+    
+    showLoading();
+    
+    try {
+        console.log('Attempting signup for:', email);
+        
+        // Create user in Supabase Auth
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    name,
+                    role
+                }
             }
+        });
+        
+        if (error) {
+            console.error('Signup error:', error);
+            throw error;
+        }
+        
+        console.log('Auth user created:', data.user);
+        
+        // Don't try to create profile - let the trigger handle it
+        // This avoids the 409 Conflict error
+        console.log('Profile will be created automatically by database trigger');
+        
+        hideLoading();
+        hideAuthModal();
+        
+        if (data.user && data.user.identities && data.user.identities.length === 0) {
+            showNotification('Error', 'User already exists with this email', 'error');
+        } else {
+            showNotification('Success', 'Account created successfully! Please check your email for verification.', 'success');
+            document.getElementById('signupForm').reset();
+        }
+        
+    } catch (error) {
+        hideLoading();
+        console.error('Full signup error:', error);
+        
+        if (error.message.includes('User already registered')) {
+            showNotification('Error', 'An account with this email already exists.', 'error');
+        } else {
+            showNotification('Error', error.message, 'error');
+        }
+    }
+}
             
             if (password.length < 6) {
                 showNotification('Error', 'Password must be at least 6 characters', 'error');
@@ -4176,3 +4231,4 @@
     </script>
 </body>
 </html>
+
