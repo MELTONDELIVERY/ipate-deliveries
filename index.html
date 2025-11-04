@@ -1582,12 +1582,12 @@
             <form class="auth-form active" id="loginForm">
                 <div class="form-group">
                     <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
                     <div class="error-message" id="loginEmailError"></div>
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
                     <div class="error-message" id="loginPasswordError"></div>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Login</button>
@@ -1595,17 +1595,17 @@
             <form class="auth-form" id="signupForm">
                 <div class="form-group">
                     <label for="signupName">Full Name</label>
-                    <input type="text" id="signupName" class="form-control" placeholder="Enter your full name" required>
+                    <input type="text" id="signupName" class="form-control" placeholder="Enter your full name" required autocomplete="name">
                     <div class="error-message" id="signupNameError"></div>
                 </div>
                 <div class="form-group">
                     <label for="signupEmail">Email</label>
-                    <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email" required>
+                    <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
                     <div class="error-message" id="signupEmailError"></div>
                 </div>
                 <div class="form-group">
                     <label for="signupPassword">Password</label>
-                    <input type="password" id="signupPassword" class="form-control" placeholder="Create a password" required>
+                    <input type="password" id="signupPassword" class="form-control" placeholder="Create a password" required autocomplete="new-password">
                     <div class="error-message" id="signupPasswordError"></div>
                 </div>
                 <div class="form-group">
@@ -1709,19 +1709,19 @@
                     <div class="profile-form">
                         <div class="form-group">
                             <label for="customerProfileName">Full Name</label>
-                            <input type="text" id="customerProfileName" class="form-control" placeholder="Enter your full name">
+                            <input type="text" id="customerProfileName" class="form-control" placeholder="Enter your full name" autocomplete="name">
                         </div>
                         <div class="form-group">
                             <label for="customerProfileEmail">Email</label>
-                            <input type="email" id="customerProfileEmail" class="form-control" placeholder="Enter your email" readonly>
+                            <input type="email" id="customerProfileEmail" class="form-control" placeholder="Enter your email" readonly autocomplete="email">
                         </div>
                         <div class="form-group">
                             <label for="customerProfilePhone">Phone Number</label>
-                            <input type="tel" id="customerProfilePhone" class="form-control" placeholder="Enter your phone number">
+                            <input type="tel" id="customerProfilePhone" class="form-control" placeholder="Enter your phone number" autocomplete="tel">
                         </div>
                         <div class="form-group">
                             <label for="customerProfileAddress">Delivery Address</label>
-                            <textarea id="customerProfileAddress" class="form-control" placeholder="Enter your delivery address" rows="3"></textarea>
+                            <textarea id="customerProfileAddress" class="form-control" placeholder="Enter your delivery address" rows="3" autocomplete="street-address"></textarea>
                         </div>
                         <button class="btn btn-primary" id="customerProfileSaveBtn">Save Changes</button>
                     </div>
@@ -1832,19 +1832,19 @@
                     <div class="profile-form">
                         <div class="form-group">
                             <label for="sellerProfileName">Business Name</label>
-                            <input type="text" id="sellerProfileName" class="form-control" placeholder="Enter your business name">
+                            <input type="text" id="sellerProfileName" class="form-control" placeholder="Enter your business name" autocomplete="organization">
                         </div>
                         <div class="form-group">
                             <label for="sellerProfileEmail">Email</label>
-                            <input type="email" id="sellerProfileEmail" class="form-control" placeholder="Enter your email" readonly>
+                            <input type="email" id="sellerProfileEmail" class="form-control" placeholder="Enter your email" readonly autocomplete="email">
                         </div>
                         <div class="form-group">
                             <label for="sellerProfilePhone">Phone Number</label>
-                            <input type="tel" id="sellerProfilePhone" class="form-control" placeholder="Enter your phone number">
+                            <input type="tel" id="sellerProfilePhone" class="form-control" placeholder="Enter your phone number" autocomplete="tel">
                         </div>
                         <div class="form-group">
                             <label for="sellerProfileAddress">Business Address</label>
-                            <textarea id="sellerProfileAddress" class="form-control" placeholder="Enter your business address" rows="3"></textarea>
+                            <textarea id="sellerProfileAddress" class="form-control" placeholder="Enter your business address" rows="3" autocomplete="street-address"></textarea>
                         </div>
                         <button class="btn btn-primary" id="sellerProfileSaveBtn">Save Changes</button>
                     </div>
@@ -1973,15 +1973,15 @@
                     <div class="profile-form">
                         <div class="form-group">
                             <label for="riderProfileName">Full Name</label>
-                            <input type="text" id="riderProfileName" class="form-control" placeholder="Enter your full name">
+                            <input type="text" id="riderProfileName" class="form-control" placeholder="Enter your full name" autocomplete="name">
                         </div>
                         <div class="form-group">
                             <label for="riderProfileEmail">Email</label>
-                            <input type="email" id="riderProfileEmail" class="form-control" placeholder="Enter your email" readonly>
+                            <input type="email" id="riderProfileEmail" class="form-control" placeholder="Enter your email" readonly autocomplete="email">
                         </div>
                         <div class="form-group">
                             <label for="riderProfilePhone">Phone Number</label>
-                            <input type="tel" id="riderProfilePhone" class="form-control" placeholder="Enter your phone number">
+                            <input type="tel" id="riderProfilePhone" class="form-control" placeholder="Enter your phone number" autocomplete="tel">
                         </div>
                         <div class="form-group">
                             <label for="riderProfileVehicle">Vehicle Type</label>
@@ -2076,7 +2076,7 @@
                 <form class="mpesa-form active" id="mpesaDetailsForm">
                     <div class="form-group">
                         <label for="deliveryAddress">Delivery Address</label>
-                        <textarea id="deliveryAddress" class="form-control" placeholder="Enter your delivery address" rows="3" required></textarea>
+                        <textarea id="deliveryAddress" class="form-control" placeholder="Enter your delivery address" rows="3" required autocomplete="street-address"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="deliveryInstructions">Delivery Instructions (Optional)</label>
@@ -2098,7 +2098,7 @@
                                 <option value="+256">+256</option>
                                 <option value="+257">+257</option>
                             </select>
-                            <input type="tel" id="mpesaPhone" class="form-control" placeholder="7XX XXX XXX" required>
+                            <input type="tel" id="mpesaPhone" class="form-control" placeholder="7XX XXX XXX" required autocomplete="tel">
                         </div>
                         <p style="font-size: 14px; color: rgba(255, 255, 255, 0.7); margin-top: 10px;">
                             You will receive a prompt on your phone to complete the payment.
@@ -2360,10 +2360,10 @@
                         <h4 style="margin-bottom: 20px;">Send us a Message</h4>
                         <form id="contactForm">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Your Name" required>
+                                <input type="text" class="form-control" placeholder="Your Name" required autocomplete="name">
                             </div>
                             <div class="form-group">
-                                <input type="email" class="form-control" placeholder="Your Email" required>
+                                <input type="email" class="form-control" placeholder="Your Email" required autocomplete="email">
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" placeholder="Subject" required>
@@ -3119,7 +3119,7 @@
                     </div>
                 `;
                 
-                elements.customerCartItems.appendChild(productCard);
+                elements.customerCartItems.appendChild(cartItem);
             });
             
             // Add event listeners to quantity buttons
