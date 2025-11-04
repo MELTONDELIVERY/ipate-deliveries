@@ -297,103 +297,106 @@
         }
 
         /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
+       /* Modal Fixes */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
 
-        .modal-content {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-radius: 20px;
-            width: 90%;
-            max-width: 500px;
-            padding: 40px;
-            position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: white;
-        }
+.modal-content {
+    background: var(--glass);
+    backdrop-filter: var(--blur);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 40px;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: white;
+    animation: modalSlideIn 0.3s ease-out;
+}
 
-        .close-modal {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            color: white;
-            transition: color 0.3s;
-        }
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
 
-        .close-modal:hover {
-            color: var(--primary);
-        }
+/* Form improvements */
+.form-group {
+    margin-bottom: 25px;
+}
 
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 30px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
+.form-control {
+    width: 100%;
+    padding: 15px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: all 0.3s;
+}
 
-        .auth-tab {
-            padding: 15px 30px;
-            cursor: pointer;
-            font-weight: 600;
-            color: rgba(255, 255, 255, 0.7);
-            transition: all 0.3s;
-        }
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+}
 
-        .auth-tab.active {
-            color: var(--primary);
-            border-bottom: 3px solid var(--primary);
-        }
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
 
-        .auth-form {
-            display: none;
-        }
+/* Select dropdown styling */
+select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px;
+    padding-right: 40px;
+}
 
-        .auth-form.active {
-            display: block;
-        }
+/* Button improvements */
+.btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
 
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 15px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            font-size: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            transition: all 0.3s;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
-        }
-
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
         }
 
         /* Dashboard Styles */
@@ -2126,12 +2129,14 @@ async function loadSellerProducts() {
 
         if (!products || products.length === 0) {
             elements.sellerProductsGrid.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-box-open"></i>
-                    <h3>No Products Yet</h3>
-                    <p>Add your first product to start selling.</p>
-                    <button class="btn btn-primary" style="margin-top: 20px;" onclick="showAddProductModal()">
-                        <i class="fas fa-plus"></i> Add Product
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <i class="fas fa-box-open" style="font-size: 80px; margin-bottom: 20px; opacity: 0.5;"></i>
+                    <h3 style="color: white; margin-bottom: 15px;">No Products Yet</h3>
+                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 30px;">
+                        Start your business by adding your first product. It's quick and easy!
+                    </p>
+                    <button class="btn btn-primary btn-large" onclick="showAddProductModal()">
+                        <i class="fas fa-plus"></i> Add Your First Product
                     </button>
                 </div>
             `;
@@ -2143,23 +2148,26 @@ async function loadSellerProducts() {
             productCard.className = 'product-card';
             productCard.innerHTML = `
                 <div class="product-image" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-                    <div style="position: relative; z-index: 2; text-align: center; color: white;">
-                        <i class="fas fa-box" style="font-size: 48px; margin-bottom: 10px;"></i>
-                        <div>${product.category}</div>
+                    <div style="position: relative; z-index: 2; text-align: center; color: white; padding: 20px;">
+                        <i class="fas fa-${getProductIcon(product.category)}" style="font-size: 48px; margin-bottom: 10px;"></i>
+                        <div style="text-transform: capitalize; font-weight: 600;">${product.category}</div>
                     </div>
                 </div>
                 <div class="product-info">
-                    <h4>${product.name}</h4>
-                    <p>${product.description}</p>
+                    <h4 style="color: white; margin-bottom: 10px;">${product.name}</h4>
+                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 15px; line-height: 1.5;">${product.description}</p>
                     <div class="product-price">KSh ${product.price.toLocaleString()}</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-                        <span>Stock: ${product.stock}</span>
-                        <div>
-                            <button class="btn btn-outline btn-sm edit-product-btn" data-product-id="${product.id}" style="margin-right: 10px;">
-                                <i class="fas fa-edit"></i> Edit
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <span style="color: rgba(255, 255, 255, 0.8); font-size: 14px;">Stock: ${product.stock}</span>
+                            <span style="color: rgba(255, 255, 255, 0.6); font-size: 12px;">Added: ${new Date(product.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-outline btn-sm edit-product-btn" data-product-id="${product.id}">
+                                <i class="fas fa-edit"></i>
                             </button>
                             <button class="btn btn-outline btn-sm delete-product-btn" data-product-id="${product.id}">
-                                <i class="fas fa-trash"></i> Delete
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>
@@ -2169,7 +2177,7 @@ async function loadSellerProducts() {
             elements.sellerProductsGrid.appendChild(productCard);
         });
 
-        // Add event listeners for edit and delete buttons
+        // Add event listeners
         document.querySelectorAll('.edit-product-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const productId = this.getAttribute('data-product-id');
@@ -2186,8 +2194,21 @@ async function loadSellerProducts() {
 
     } catch (error) {
         console.error('Error loading seller products:', error);
-        showNotification('Error', 'Failed to load products', 'error');
+        showNotification('Error', 'Failed to load products. Please try again.', 'error');
     }
+}
+
+// Helper function for product icons
+function getProductIcon(category) {
+    const icons = {
+        food: 'utensils',
+        electronics: 'mobile-alt',
+        clothing: 'tshirt',
+        books: 'book',
+        other: 'box'
+    };
+    return icons[category] || 'box';
+}
 }
 
 // Update seller stats - FIXED VERSION
@@ -2791,7 +2812,7 @@ async function toggleRiderAvailability() {
     }
     
     // Set up event listeners
-    function setupEventListeners() {
+   function setupEventListeners() {
         // Authentication
         elements.loginBtn.addEventListener('click', () => showAuthModal('login'));
         elements.signupBtn.addEventListener('click', () => showAuthModal('signup'));
@@ -2817,9 +2838,29 @@ async function toggleRiderAvailability() {
         elements.riderLogoutBtn.addEventListener('click', handleLogout);
         
         // Product Management
-        elements.addProductBtn.addEventListener('click', () => showAddProductModal());
-        elements.closeAddProductModal.addEventListener('click', () => hideAddProductModal());
+       if (elements.addProductBtn) {
+        elements.addProductBtn.addEventListener('click', showAddProductModal);
+    }
+    
+    if (elements.closeAddProductModal) {
+        elements.closeAddProductModal.addEventListener('click', hideAddProductModal);
+    }
+    
+    if (elements.addProductForm) {
         elements.addProductForm.addEventListener('submit', handleAddProduct);
+        
+         // Close modals when clicking outside
+    document.addEventListener('click', (e) => {
+        if (e.target === elements.addProductModal) {
+            hideAddProductModal();
+        }
+        if (e.target === elements.authModal) {
+            hideAuthModal();
+        }
+        if (e.target === elements.checkoutModal) {
+            elements.checkoutModal.style.display = 'none';
+        }
+    });
         
         // MPESA Payment
         elements.proceedToPaymentBtn.addEventListener('click', proceedToPayment);
@@ -3370,54 +3411,110 @@ async function toggleRiderAvailability() {
         }
     }
     
-    // Show add product modal
-    function showAddProductModal() {
-        elements.addProductModal.style.display = 'flex';
+   // Show add product modal - FIXED VERSION
+function showAddProductModal() {
+    // Reset the form first
+    elements.addProductForm.reset();
+    
+    // Show the modal
+    elements.addProductModal.style.display = 'flex';
+    
+    // Add a small delay to ensure the modal is visible before focusing
+    setTimeout(() => {
+        document.getElementById('productName').focus();
+    }, 100);
+}
+
+// Hide add product modal - FIXED VERSION
+function hideAddProductModal() {
+    elements.addProductModal.style.display = 'none';
+    elements.addProductForm.reset();
+}
+
+// Handle add product - FIXED VERSION
+async function handleAddProduct(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('productName').value.trim();
+    const description = document.getElementById('productDescription').value.trim();
+    const price = parseInt(document.getElementById('productPrice').value);
+    const category = document.getElementById('productCategory').value;
+    const stock = parseInt(document.getElementById('productStock').value);
+    
+    // Validation
+    if (!name) {
+        showNotification('Error', 'Please enter product name', 'error');
+        return;
     }
     
-    // Hide add product modal
-    function hideAddProductModal() {
-        elements.addProductModal.style.display = 'none';
-        elements.addProductForm.reset();
+    if (!description) {
+        showNotification('Error', 'Please enter product description', 'error');
+        return;
     }
     
-    // Handle add product
-    async function handleAddProduct(e) {
-        e.preventDefault();
+    if (!price || price < 1) {
+        showNotification('Error', 'Please enter a valid price', 'error');
+        return;
+    }
+    
+    if (!category) {
+        showNotification('Error', 'Please select a category', 'error');
+        return;
+    }
+    
+    if (!stock || stock < 1) {
+        showNotification('Error', 'Please enter a valid stock quantity', 'error');
+        return;
+    }
+    
+    showLoading();
+    
+    try {
+        // Get a random product image based on category
+        const getProductImage = (category) => {
+            const images = {
+                food: 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                electronics: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                clothing: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                books: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80',
+                other: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+            };
+            return images[category] || images.other;
+        };
+
+        const { data, error } = await supabase
+            .from('products')
+            .insert([
+                {
+                    name,
+                    description,
+                    price,
+                    category,
+                    stock,
+                    seller_id: currentUser.id,
+                    image_url: getProductImage(category)
+                }
+            ])
+            .select()
+            .single();
         
-        const name = document.getElementById('productName').value;
-        const description = document.getElementById('productDescription').value;
-        const price = parseInt(document.getElementById('productPrice').value);
-        const category = document.getElementById('productCategory').value;
-        const stock = parseInt(document.getElementById('productStock').value);
+        if (error) throw error;
         
-        try {
-            const { data, error } = await supabase
-                .from('products')
-                .insert([
-                    {
-                        name,
-                        description,
-                        price,
-                        category,
-                        stock,
-                        seller_id: currentUser.id,
-                        image_url: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
-                    }
-                ])
-                .select()
-                .single();
-            
-            if (error) throw error;
-            
-            hideAddProductModal();
-            loadSellerProducts();
-            showNotification('Success', 'Product added successfully!', 'success');
-        } catch (error) {
-            showNotification('Error', 'Failed to add product: ' + error.message, 'error');
-        }
+        hideLoading();
+        hideAddProductModal();
+        
+        // Refresh the seller products list
+        await loadSellerProducts();
+        await updateSellerStats();
+        
+        showNotification('Success', 'Product added successfully!', 'success');
+        
+    } catch (error) {
+        hideLoading();
+        console.error('Error adding product:', error);
+        showNotification('Error', 'Failed to add product: ' + error.message, 'error');
     }
-    
+}
     // Load customer data
     async function loadCustomerData() {
         await updateCustomerStats();
@@ -4829,6 +4926,7 @@ async function loadRiderAvailability() {
 }
 </body>
 </html>
+
 
 
 
