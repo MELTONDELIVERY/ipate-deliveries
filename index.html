@@ -3737,35 +3737,40 @@
             }
         }
 
-        // Save customer profile
-        async function saveCustomerProfile() {
-            const name = document.getElementById('customerProfileName').value;
-            const phone = document.getElementById('customerProfilePhone').value;
-            const address = document.getElementById('customerProfileAddress').value;
-            
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .update({
-                        name,
-                        phone,
-                        address
-                    })
-                    .eq('id', currentUser.id)
-                    .select()
-                    .single();
-                
-                if (error) throw error;
-                
-                elements.customerName.textContent = name;
-                elements.customerWelcomeName.textContent = name;
-                elements.customerAvatar.textContent = name.charAt(0).toUpperCase();
-                
-                showNotification('Success', 'Profile updated successfully!', 'success');
-            } catch (error) {
-                showNotification('Error', 'Failed to update profile: ' + error.message, 'error');
-            }
-        }
+       // Save customer profile
+async function saveCustomerProfile() {
+    const name = document.getElementById('customerProfileName').value;
+    const phone = document.getElementById('customerProfilePhone').value;
+    const address = document.getElementById('customerProfileAddress').value;
+    
+    if (!address) {
+        showNotification('Error', 'Delivery address is required', 'error');
+        return;
+    }
+    
+    try {
+        const { data, error } = await supabase
+            .from('profiles')
+            .update({
+                name,
+                phone,
+                address
+            })
+            .eq('id', currentUser.id)
+            .select()
+            .single();
+        
+        if (error) throw error;
+        
+        elements.customerName.textContent = name;
+        elements.customerWelcomeName.textContent = name;
+        elements.customerAvatar.textContent = name.charAt(0).toUpperCase();
+        
+        showNotification('Success', 'Profile updated successfully!', 'success');
+    } catch (error) {
+        showNotification('Error', 'Failed to update profile: ' + error.message, 'error');
+    }
+}
 
         // Add to cart
         async function addToCart(productId) {
@@ -4810,4 +4815,5 @@ async function handleCheckout() {
     </script>
 </body>
 </html>
+
 
