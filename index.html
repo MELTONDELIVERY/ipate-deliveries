@@ -3029,45 +3029,358 @@
     </div>
 
     <!-- Privacy Policy Page -->
-    <div class="page legal-page" id="privacyPolicyPage">
-        <div class="container">
-            <div class="legal-content">
-                <h1>Privacy Policy</h1>
-                <p>Last updated: January 1, 2025</p>
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - iPate Deliveries</title>
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #2E7D32;
+            --primary-dark: #1B5E20;
+            --primary-light: #4CAF50;
+            --text: #333333;
+            --text-light: #666666;
+            --background: #F9F9F9;
+            --white: #FFFFFF;
+            --border: #E0E0E0;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--background);
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .policy-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .policy-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+        
+        .last-updated {
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+        
+        .policy-content {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+        }
+        
+        .section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .section h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .section h3 {
+            color: var(--primary);
+            margin: 1.5rem 0 0.5rem 0;
+        }
+        
+        .section p, .section ul {
+            margin-bottom: 1rem;
+        }
+        
+        .section ul {
+            padding-left: 1.5rem;
+        }
+        
+        .section li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: var(--white);
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .contact-info {
+            text-align: center;
+        }
+        
+        .contact-info p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .policy-content {
+                padding: 1.5rem;
+            }
+            
+            .policy-header h1 {
+                font-size: 2rem;
+            }
+            
+            .section h2 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .logo-text {
+                font-size: 1.2rem;
+            }
+            
+            .policy-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .policy-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <div class="logo-icon">iP</div>
+                <div class="logo-text">iPate Deliveries</div>
+            </a>
+        </nav>
+    </header>
+    
+    <main class="container">
+        <div class="policy-header">
+            <h1>Privacy Policy</h1>
+            <p class="last-updated">Last Updated: <span id="current-date"></span></p>
+        </div>
+        
+        <div class="policy-content">
+            <section class="section">
+                <h2>1. Introduction</h2>
+                <p>Welcome to iPate Deliveries ("we," "our," "us"). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application, website, and related services (collectively, the "Services").</p>
+                <p>By accessing or using our Services, you signify that you have read, understood, and agree to our collection, storage, use, and disclosure of your personal information as described in this Privacy Policy and our Terms of Service.</p>
+            </section>
+            
+            <section class="section">
+                <h2>2. Information We Collect</h2>
+                <p>We collect several types of information to provide and improve our Services to you.</p>
                 
-                <h2>1. Information We Collect</h2>
-                <p>We collect information you provide directly to us, including:</p>
+                <h3>A. Information You Provide Directly to Us:</h3>
                 <ul>
-                    <li>Personal identification information (Name, email address, phone number)</li>
-                    <li>Delivery addresses and location data</li>
-                    <li>Payment information</li>
-                    <li>Communications with us</li>
+                    <li><strong>Account Information:</strong> When you create an account, we collect your name, email address, phone number, and a hashed version of your password.</li>
+                    <li><strong>Delivery Details:</strong> We collect precise delivery addresses (including drop-off instructions), recipient names and phone numbers (for group orders or gifts), and your current location.</li>
+                    <li><strong>Order Information:</strong> We collect the details of the orders you place, including the restaurant or store, items purchased, special instructions, and payment method.</li>
+                    <li><strong>Payment Information:</strong> When you make a purchase, we collect payment information through our secure third-party payment processors.</li>
+                    <li><strong>Communications:</strong> When you contact our customer support team, we collect the content of your messages and any other information you provide.</li>
                 </ul>
                 
-                <h2>2. How We Use Your Information</h2>
-                <p>We use the information we collect to:</p>
+                <h3>B. Information We Collect Automatically:</h3>
                 <ul>
-                    <li>Provide, maintain, and improve our services</li>
-                    <li>Process transactions and send related information</li>
-                    <li>Send you technical notices and support messages</li>
-                    <li>Respond to your comments and questions</li>
+                    <li><strong>Device Information:</strong> We collect information about the device you use to access our Services.</li>
+                    <li><strong>Usage Data:</strong> We automatically collect information about your interaction with our Services.</li>
+                    <li><strong>Location Data:</strong> With your permission, we collect precise (GPS-level) location data from your mobile device.</li>
+                    <li><strong>Cookies and Tracking Technologies:</strong> We use cookies and similar technologies to collect information about your browsing and ordering behavior.</li>
                 </ul>
                 
-                <h2>3. Information Sharing</h2>
-                <p>We do not sell, trade, or rent users' personal identification information to others.</p>
-                
-                <h2>4. Security</h2>
-                <p>We implement appropriate security measures to protect your personal information.</p>
-                
-                <h2>5. Your Rights</h2>
-                <p>You have the right to access, correct, or delete your personal information.</p>
-                
-                <h2>6. Contact Us</h2>
-                <p>If you have any questions about this Privacy Policy, please contact us at privacy@ipatedeliveries.com</p>
+                <h3>C. Information from Third Parties:</h3>
+                <ul>
+                    <li><strong>Restaurants and Retail Partners:</strong> We may receive information about your orders from the restaurants and stores you order from.</li>
+                    <li><strong>Social Media Platforms:</strong> If you create an account through a social media platform, we may receive certain information from that platform.</li>
+                    <li><strong>Background Check Providers:</strong> For our delivery drivers, we receive the results of background checks.</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h2>3. How We Use Your Information</h2>
+                <p>We use the information we collect for the following business purposes:</p>
+                <ul>
+                    <li><strong>To Provide and Maintain Our Services:</strong> To create and manage your account, process your orders and payments, facilitate delivery, and provide customer support.</li>
+                    <li><strong>To Personalize Your Experience:</strong> To suggest restaurants and items you might like and customize the content we show you.</li>
+                    <li><strong>To Improve and Develop Our Services:</strong> To analyze usage trends, troubleshoot issues, and develop new features.</li>
+                    <li><strong>To Communicate With You:</strong> To send you transactional messages and respond to your inquiries.</li>
+                    <li><strong>For Marketing and Advertising:</strong> To send you promotional communications, subject to your preferences.</li>
+                    <li><strong>For Security and Fraud Prevention:</strong> To verify accounts, monitor for suspicious activity, and protect our users and services.</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h2>4. How We Share Your Information</h2>
+                <p>We do not sell your personal information to third parties. We may share your information in the following limited circumstances:</p>
+                <ul>
+                    <li><strong>With Delivery Drivers:</strong> We share your delivery address, name, phone number, and order details with the assigned delivery driver.</li>
+                    <li><strong>With Restaurants and Retail Partners:</strong> We share your name and order details with the restaurant or store.</li>
+                    <li><strong>With Service Providers:</strong> We share information with trusted third-party vendors who perform services on our behalf.</li>
+                    <li><strong>For Legal Reasons:</strong> We may disclose your information if required by law or in response to valid requests by public authorities.</li>
+                    <li><strong>Business Transfers:</strong> In connection with a merger, acquisition, or sale of company assets.</li>
+                    <li><strong>With Your Consent:</strong> We may share your information for any other purpose disclosed to you with your consent.</li>
+                </ul>
+            </section>
+            
+            <section class="section">
+                <h2>5. Your Privacy Rights and Choices</h2>
+                <p>Depending on your location, you may have the following rights regarding your personal information:</p>
+                <ul>
+                    <li><strong>Access and Portability:</strong> You can request a copy of the personal information we hold about you.</li>
+                    <li><strong>Correction:</strong> You can update or correct inaccurate information in your account settings.</li>
+                    <li><strong>Deletion:</strong> You can request the deletion of your personal information.</li>
+                    <li><strong>Opt-Out of Marketing:</strong> You can unsubscribe from our marketing communications.</li>
+                    <li><strong>Restrict Processing:</strong> You can object to or restrict the processing of your personal information.</li>
+                </ul>
+                <p>To exercise any of these rights, please contact us at <strong>privacy@ipatedeliveries.com</strong>.</p>
+            </section>
+            
+            <section class="section">
+                <h2>6. Data Security</h2>
+                <p>We implement a variety of security measures designed to protect your personal information from unauthorized access, alteration, disclosure, or destruction. These include encryption for data in transit, secure servers for data at rest, and strict access controls. However, no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security.</p>
+            </section>
+            
+            <section class="section">
+                <h2>7. Data Retention</h2>
+                <p>We will retain your personal information only for as long as is necessary for the purposes set out in this Privacy Policy, or as needed to comply with our legal obligations. When we no longer have a legitimate business need to process your personal information, we will securely delete or anonymize it.</p>
+            </section>
+            
+            <section class="section">
+                <h2>8. Children's Privacy</h2>
+                <p>Our Services are not directed to individuals under the age of 16. We do not knowingly collect personal information from children. If we become aware that a child under 16 has provided us with personal information, we will take steps to delete such information.</p>
+            </section>
+            
+            <section class="section">
+                <h2>9. Changes to This Privacy Policy</h2>
+                <p>We may update this Privacy Policy from time to time. The updated version will be indicated by a revised "Last Updated" date at the top of this page. We will notify you of any material changes by posting the new Privacy Policy on this page and/or through in-app notifications. You are advised to review this Privacy Policy periodically for any changes.</p>
+            </section>
+            
+            <section class="section">
+                <h2>10. Contact Us</h2>
+                <p>If you have any questions, concerns, or complaints about this Privacy Policy or our data practices, please contact us at:</p>
+                <p><strong>iPate Deliveries</strong><br>
+                Email: privacy@ipatedeliveries.com<br>
+                Mailing Address: [Your Company's Physical Address]<br>
+                Phone: [Your Customer Support Phone Number]</p>
+                <p>For users in the European Union, you have the right to lodge a complaint with a supervisory authority.</p>
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="contact-info">
+                <p><strong>iPate Deliveries</strong></p>
+                <p>Delivering your favorites with care and privacy</p>
+            </div>
+            <div class="copyright">
+                <p>&copy; <span id="current-year"></span> iPate Deliveries. All rights reserved.</p>
             </div>
         </div>
-    </div>
-
+    </footer>
+    
+    <script>
+        // Set current date and year
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
     <!-- Terms of Service Page -->
     <div class="page legal-page" id="termsPage">
         <div class="container">
@@ -6737,6 +7050,7 @@
     </script>
 </body>
 </html>
+
 
 
 
