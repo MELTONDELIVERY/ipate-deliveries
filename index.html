@@ -7,7 +7,6 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚚</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #FF6B00;
@@ -1461,6 +1460,10 @@
             background: var(--primary);
             transform: translateY(-3px);
         }
+
+        .mt-3 {
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -2847,46 +2850,104 @@
     </div>
 
     <script>
-        // Supabase Configuration
-        const SUPABASE_URL = 'https://xbwvsswycdskxkorharu.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid3Zzc3d5Y2Rza3hrb3JoYXJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNDI4MjcsImV4cCI6MjA3NzgxODgyN30.8PWNCjErZ4194dBT48ph4PyMWTO0EqLsZIDK8j2O1yc';
-        
-        // Initialize Supabase client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        // Global State
+        // Application State
         let currentUser = null;
         let userRole = null;
-        let userProfile = null;
         let cart = [];
-        let realTimeSubscription = null;
         
+        // Sample data for demonstration
+        const sampleProducts = [
+            {
+                id: 1,
+                name: "Fresh Groceries Package",
+                description: "A package of fresh vegetables and fruits from local farmers",
+                price: 1500,
+                category: "food",
+                stock_quantity: 20,
+                image_url: ""
+            },
+            {
+                id: 2,
+                name: "Smartphone",
+                description: "Latest smartphone with advanced features",
+                price: 25000,
+                category: "electronics",
+                stock_quantity: 10,
+                image_url: ""
+            },
+            {
+                id: 3,
+                name: "Designer T-Shirt",
+                description: "Premium quality cotton t-shirt",
+                price: 1200,
+                category: "clothing",
+                stock_quantity: 15,
+                image_url: ""
+            },
+            {
+                id: 4,
+                name: "Home Decor Set",
+                description: "Beautiful home decoration items",
+                price: 3500,
+                category: "home",
+                stock_quantity: 8,
+                image_url: ""
+            }
+        ];
+        
+        const sampleOrders = [
+            {
+                id: 1001,
+                customer_id: 1,
+                total_amount: 1500,
+                status: "delivered",
+                created_at: "2025-01-15",
+                items: [
+                    { product_name: "Fresh Groceries Package", quantity: 1, price: 1500 }
+                ]
+            },
+            {
+                id: 1002,
+                customer_id: 1,
+                total_amount: 25000,
+                status: "pending",
+                created_at: "2025-01-20",
+                items: [
+                    { product_name: "Smartphone", quantity: 1, price: 25000 }
+                ]
+            }
+        ];
+        
+        const sampleDeliveries = [
+            {
+                id: 2001,
+                order_id: 1002,
+                pickup_address: "Westlands, Nairobi",
+                delivery_address: "Kilimani, Nairobi",
+                distance: 8.5,
+                delivery_fee: 350,
+                status: "pending"
+            },
+            {
+                id: 2002,
+                order_id: 1003,
+                pickup_address: "CBD, Nairobi",
+                delivery_address: "Karen, Nairobi",
+                distance: 15.2,
+                delivery_fee: 600,
+                status: "accepted"
+            }
+        ];
+
         // DOM Elements
         const elements = {
-            // Pages
-            landingPage: document.getElementById('landingPage'),
-            customerDashboard: document.getElementById('customerDashboard'),
-            sellerDashboard: document.getElementById('sellerDashboard'),
-            riderDashboard: document.getElementById('riderDashboard'),
-            contactPage: document.getElementById('contactPage'),
-            privacyPolicyPage: document.getElementById('privacyPolicyPage'),
-            termsPage: document.getElementById('termsPage'),
-            teamPage: document.getElementById('teamPage'),
-            
-            // Authentication
-            authModal: document.getElementById('authModal'),
-            loginForm: document.getElementById('loginForm'),
-            signupForm: document.getElementById('signupForm'),
-            
-            // Notification
+            loadingSpinner: document.getElementById('loadingSpinner'),
             notification: document.getElementById('notification'),
             notificationTitle: document.getElementById('notificationTitle'),
             notificationMessage: document.getElementById('notificationMessage'),
-            
-            // Loading Spinner
-            loadingSpinner: document.getElementById('loadingSpinner'),
-            
-            // Emergency Button
+            authModal: document.getElementById('authModal'),
+            loginForm: document.getElementById('loginForm'),
+            signupForm: document.getElementById('signupForm'),
             emergencyBtn: document.getElementById('emergencyBtn')
         };
 
@@ -2895,12 +2956,13 @@
             initializeApp();
         });
 
-        async function initializeApp() {
+        function initializeApp() {
             setupEventListeners();
             setupFAQ();
             setupHeaderScroll();
-            await checkAuthState();
+            checkAuthState();
             loadCartFromStorage();
+            loadSampleData();
         }
 
         // Set up event listeners
@@ -2930,6 +2992,11 @@
 
             // Emergency button
             elements.emergencyBtn.addEventListener('click', handleEmergency);
+            
+            // Product search and filter
+            document.getElementById('productSearch').addEventListener('input', filterProducts);
+            document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+            document.getElementById('sortFilter').addEventListener('change', sortProducts);
         }
 
         // Setup FAQ functionality
@@ -3019,6 +3086,20 @@
             });
         }
 
+        // Load sample data for demonstration
+        function loadSampleData() {
+            // Store sample data in localStorage for demo purposes
+            if (!localStorage.getItem('ipateProducts')) {
+                localStorage.setItem('ipateProducts', JSON.stringify(sampleProducts));
+            }
+            if (!localStorage.getItem('ipateOrders')) {
+                localStorage.setItem('ipateOrders', JSON.stringify(sampleOrders));
+            }
+            if (!localStorage.getItem('ipateDeliveries')) {
+                localStorage.setItem('ipateDeliveries', JSON.stringify(sampleDeliveries));
+            }
+        }
+
         // Scroll to section
         function scrollToSection(sectionId) {
             const section = document.getElementById(sectionId);
@@ -3040,52 +3121,34 @@
         }
 
         // Check authentication state
-        async function checkAuthState() {
-            try {
-                const { data: { user } } = await supabase.auth.getUser();
-                
-                if (user) {
-                    currentUser = user;
-                    await loadUserProfile(user.id);
-                    
-                    if (userProfile) {
-                        userRole = userProfile.role;
-                        updateUIForUser();
-                        setupRealTimeSubscriptions();
-                    }
-                }
-            } catch (error) {
-                console.error('Error checking auth state:', error);
-            }
-        }
-
-        // Load user profile
-        async function loadUserProfile(userId) {
-            try {
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', userId)
-                    .single();
-                
-                if (error) {
-                    console.error('Error loading user profile:', error);
-                    return;
-                }
-                
-                userProfile = data;
-            } catch (error) {
-                console.error('Error loading user profile:', error);
+        function checkAuthState() {
+            const savedUser = localStorage.getItem('ipateCurrentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                userRole = currentUser.role;
+                updateUIForUser();
             }
         }
 
         // Update UI for logged in user
         function updateUIForUser() {
-            if (currentUser && userProfile) {
+            if (currentUser) {
+                // Update user info in dashboards
+                document.getElementById('customerName').textContent = currentUser.name;
+                document.getElementById('customerWelcomeName').textContent = currentUser.name;
+                document.getElementById('sellerName').textContent = currentUser.name;
+                document.getElementById('riderName').textContent = currentUser.name;
+                
+                // Update profile forms
+                document.getElementById('customerProfileName').value = currentUser.name;
+                document.getElementById('customerProfileEmail').value = currentUser.email;
+                document.getElementById('sellerProfileEmail').value = currentUser.email;
+                document.getElementById('riderProfileEmail').value = currentUser.email;
+                
                 // Update auth buttons
                 const authButtons = `
-                    <button class="btn btn-outline" onclick="logout()">
-                        <i class="fas fa-user"></i> ${userProfile.name || currentUser.email}
+                    <button class="btn btn-outline" onclick="showUserMenu()">
+                        <i class="fas fa-user"></i> ${currentUser.name}
                     </button>
                     <button class="btn btn-secondary" onclick="showCart()">
                         <i class="fas fa-shopping-cart"></i> Cart (${cart.length})
@@ -3115,6 +3178,11 @@
                         break;
                 }
             }
+        }
+
+        // Show user menu (dropdown)
+        function showUserMenu() {
+            showNotification('Info', 'User menu would open here', 'success');
         }
 
         // Show page
@@ -3193,7 +3261,7 @@
         }
 
         // Handle login
-        async function handleLogin(e) {
+        function handleLogin(e) {
             e.preventDefault();
             
             const email = document.getElementById('loginEmail').value;
@@ -3206,37 +3274,34 @@
             
             showLoading();
             
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email,
-                    password
-                });
+            // Simulate API call
+            setTimeout(() => {
+                // For demo purposes, create a user based on email
+                const role = email.includes('seller') ? 'seller' : 
+                            email.includes('rider') ? 'rider' : 'customer';
                 
-                if (error) {
-                    throw error;
-                }
+                currentUser = {
+                    id: Date.now(),
+                    name: email.split('@')[0],
+                    email: email,
+                    role: role
+                };
                 
-                currentUser = data.user;
-                await loadUserProfile(data.user.id);
+                userRole = role;
                 
-                if (userProfile) {
-                    userRole = userProfile.role;
-                    updateUIForUser();
-                    setupRealTimeSubscriptions();
-                }
+                // Save to localStorage
+                localStorage.setItem('ipateCurrentUser', JSON.stringify(currentUser));
                 
                 hideLoading();
                 hideAuthModal();
+                updateUIForUser();
                 showNotification('Success', 'Logged in successfully!', 'success');
                 
-            } catch (error) {
-                hideLoading();
-                showNotification('Error', error.message, 'error');
-            }
+            }, 1500);
         }
 
         // Handle signup
-        async function handleSignup(e) {
+        function handleSignup(e) {
             e.preventDefault();
             
             const name = document.getElementById('signupName').value;
@@ -3262,147 +3327,55 @@
             
             showLoading();
             
-            try {
-                // Create user in Supabase Auth
-                const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        data: {
-                            name: name,
-                            role: role
-                        }
-                    }
-                });
+            // Simulate API call
+            setTimeout(() => {
+                currentUser = {
+                    id: Date.now(),
+                    name: name,
+                    email: email,
+                    role: role
+                };
                 
-                if (error) {
-                    throw error;
-                }
+                userRole = role;
                 
-                // Create user profile in database
-                if (data.user) {
-                    await createUserProfile(data.user, role, name);
-                }
+                // Save to localStorage
+                localStorage.setItem('ipateCurrentUser', JSON.stringify(currentUser));
                 
                 hideLoading();
                 hideAuthModal();
+                updateUIForUser();
+                showNotification('Success', 'Account created successfully!', 'success');
+                document.getElementById('signupForm').reset();
                 
-                if (data.user && data.user.identities && data.user.identities.length === 0) {
-                    showNotification('Error', 'User already exists with this email', 'error');
-                } else {
-                    showNotification('Success', 'Account created successfully! Please check your email for verification.', 'success');
-                    document.getElementById('signupForm').reset();
-                }
-                
-            } catch (error) {
-                hideLoading();
-                showNotification('Error', error.message, 'error');
-            }
-        }
-
-        // Create user profile
-        async function createUserProfile(user, role, name) {
-            try {
-                const profileData = {
-                    id: user.id,
-                    name: name,
-                    email: user.email,
-                    role: role,
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                };
-                
-                // Add role-specific fields
-                if (role === 'seller') {
-                    profileData.verification_status = 'pending';
-                    profileData.business_name = '';
-                    profileData.business_type = '';
-                } else if (role === 'rider') {
-                    profileData.verification_status = 'pending';
-                    profileData.vehicle_type = 'motorcycle';
-                    profileData.is_available = true;
-                }
-                
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .insert([profileData])
-                    .select()
-                    .single();
-                
-                if (error) {
-                    console.error('Error creating user profile:', error);
-                    throw error;
-                }
-                
-                userProfile = data;
-                userRole = role;
-                
-                return data;
-            } catch (error) {
-                console.error('Failed to create user profile:', error);
-                throw error;
-            }
+            }, 1500);
         }
 
         // Logout
-        async function logout() {
-            try {
-                await supabase.auth.signOut();
-                currentUser = null;
-                userProfile = null;
-                userRole = null;
-                cart = [];
-                saveCartToStorage();
-                
-                // Reset UI
-                document.getElementById('authButtons').innerHTML = `
-                    <button class="btn btn-outline" onclick="showAuthModal('login')">Login</button>
-                    <button class="btn btn-primary" onclick="showAuthModal('signup')">Sign Up</button>
-                `;
-                
-                document.getElementById('mobileAuthButtons').innerHTML = `
-                    <button class="btn btn-outline btn-block" onclick="showAuthModal('login'); hideMobileMenu()">Login</button>
-                    <button class="btn btn-primary btn-block" onclick="showAuthModal('signup'); hideMobileMenu()">Sign Up</button>
-                `;
-                
-                // Hide emergency button
-                elements.emergencyBtn.style.display = 'none';
-                
-                // Show landing page
-                showPage('landingPage');
-                
-                // Unsubscribe from real-time
-                if (realTimeSubscription) {
-                    realTimeSubscription.unsubscribe();
-                }
-                
-                showNotification('Success', 'Logged out successfully', 'success');
-            } catch (error) {
-                console.error('Error logging out:', error);
-            }
-        }
-
-        // Setup real-time subscriptions
-        function setupRealTimeSubscriptions() {
-            if (!currentUser) return;
+        function logout() {
+            currentUser = null;
+            userRole = null;
             
-            // Subscribe to profile changes
-            realTimeSubscription = supabase
-                .channel('profile-changes')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: '*',
-                        schema: 'public',
-                        table: 'profiles',
-                        filter: `id=eq.${currentUser.id}`
-                    },
-                    (payload) => {
-                        userProfile = payload.new;
-                        updateUIForUser();
-                    }
-                )
-                .subscribe();
+            // Remove from localStorage
+            localStorage.removeItem('ipateCurrentUser');
+            
+            // Reset UI
+            document.getElementById('authButtons').innerHTML = `
+                <button class="btn btn-outline" onclick="showAuthModal('login')">Login</button>
+                <button class="btn btn-primary" onclick="showAuthModal('signup')">Sign Up</button>
+            `;
+            
+            document.getElementById('mobileAuthButtons').innerHTML = `
+                <button class="btn btn-outline btn-block" onclick="showAuthModal('login'); hideMobileMenu()">Login</button>
+                <button class="btn btn-primary btn-block" onclick="showAuthModal('signup'); hideMobileMenu()">Sign Up</button>
+            `;
+            
+            // Hide emergency button
+            elements.emergencyBtn.style.display = 'none';
+            
+            // Show landing page
+            showPage('landingPage');
+            
+            showNotification('Success', 'Logged out successfully', 'success');
         }
 
         // Show notification
@@ -3503,27 +3476,28 @@
                 });
                 
                 cartItemsContainer.innerHTML = cartHTML;
-                document.getElementById('cartTotalAmount').textContent = total;
+                document.getElementById('cartTotalAmount').textContent = total.toFixed(2);
                 cartSummary.style.display = 'block';
             }
         }
 
-        function addToCart(productName, productPrice) {
-            const existingItem = cart.find(item => item.name === productName);
+        function addToCart(product) {
+            const existingItem = cart.find(item => item.id === product.id);
             
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
                 cart.push({
-                    name: productName,
-                    price: productPrice,
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
                     quantity: 1
                 });
             }
             
             saveCartToStorage();
             updateCartUI();
-            showNotification('Success', `${productName} added to cart`, 'success');
+            showNotification('Success', `${product.name} added to cart`, 'success');
         }
 
         function updateCartQuantity(index, change) {
@@ -3552,7 +3526,7 @@
             }
         }
 
-        async function checkout() {
+        function checkout() {
             if (cart.length === 0) {
                 showNotification('Error', 'Your cart is empty', 'error');
                 return;
@@ -3566,37 +3540,27 @@
             
             showLoading();
             
-            try {
+            // Simulate API call
+            setTimeout(() => {
                 // Create order
-                const orderData = {
+                const orderId = Date.now();
+                const totalAmount = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+                
+                // Save order to localStorage
+                const orders = JSON.parse(localStorage.getItem('ipateOrders') || '[]');
+                orders.push({
+                    id: orderId,
                     customer_id: currentUser.id,
-                    total_amount: cart.reduce((total, item) => total + (item.price * item.quantity), 0),
+                    total_amount: totalAmount,
                     status: 'pending',
-                    created_at: new Date().toISOString()
-                };
-                
-                const { data: order, error: orderError } = await supabase
-                    .from('orders')
-                    .insert([orderData])
-                    .select()
-                    .single();
-                
-                if (orderError) throw orderError;
-                
-                // Create order items
-                const orderItems = cart.map(item => ({
-                    order_id: order.id,
-                    product_name: item.name,
-                    quantity: item.quantity,
-                    price: item.price,
-                    created_at: new Date().toISOString()
-                }));
-                
-                const { error: itemsError } = await supabase
-                    .from('order_items')
-                    .insert(orderItems);
-                
-                if (itemsError) throw itemsError;
+                    created_at: new Date().toISOString(),
+                    items: cart.map(item => ({
+                        product_name: item.name,
+                        quantity: item.quantity,
+                        price: item.price
+                    }))
+                });
+                localStorage.setItem('ipateOrders', JSON.stringify(orders));
                 
                 // Clear cart
                 cart = [];
@@ -3607,14 +3571,11 @@
                 showNotification('Success', 'Order placed successfully!', 'success');
                 switchDashboardSection('orders');
                 
-            } catch (error) {
-                hideLoading();
-                showNotification('Error', 'Failed to place order: ' + error.message, 'error');
-            }
+            }, 2000);
         }
 
         // Image upload handler
-        async function handleImageUpload(event, userType) {
+        function handleImageUpload(event, userType) {
             const file = event.target.files[0];
             if (!file) return;
             
@@ -3623,55 +3584,46 @@
                 return;
             }
             
+            // Check file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('Error', 'File size must be less than 5MB', 'error');
+                return;
+            }
+            
             showLoading();
             
-            try {
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Math.random()}.${fileExt}`;
-                const filePath = `${userType}-avatars/${fileName}`;
-                
-                const { error: uploadError } = await supabase.storage
-                    .from('avatars')
-                    .upload(filePath, file);
-                
-                if (uploadError) throw uploadError;
-                
-                // Get public URL
-                const { data: { publicUrl } } = supabase.storage
-                    .from('avatars')
-                    .getPublicUrl(filePath);
-                
-                // Update user profile with avatar URL
-                const { error: updateError } = await supabase
-                    .from('profiles')
-                    .update({ avatar_url: publicUrl })
-                    .eq('id', currentUser.id);
-                
-                if (updateError) throw updateError;
-                
-                // Update UI
-                const avatarElement = document.getElementById(`${userType}Avatar`);
-                if (avatarElement) {
-                    avatarElement.style.backgroundImage = `url('${publicUrl}')`;
-                    avatarElement.textContent = '';
-                }
-                
-                hideLoading();
-                showNotification('Success', 'Profile photo updated successfully', 'success');
-                
-            } catch (error) {
-                hideLoading();
-                showNotification('Error', 'Failed to upload image: ' + error.message, 'error');
-            }
+            // Simulate upload
+            setTimeout(() => {
+                // Create a preview URL
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Update UI
+                    const avatarElement = document.getElementById(`${userType}Avatar`);
+                    if (avatarElement) {
+                        avatarElement.style.backgroundImage = `url('${e.target.result}')`;
+                        avatarElement.textContent = '';
+                    }
+                    
+                    hideLoading();
+                    showNotification('Success', 'Profile photo updated successfully', 'success');
+                };
+                reader.readAsDataURL(file);
+            }, 1500);
         }
 
         // Product image upload handler
-        async function handleProductImageUpload(event) {
+        function handleProductImageUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
             
             if (!file.type.startsWith('image/')) {
                 showNotification('Error', 'Please select an image file', 'error');
+                return;
+            }
+            
+            // Check file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('Error', 'File size must be less than 5MB', 'error');
                 return;
             }
             
@@ -3685,7 +3637,7 @@
         }
 
         // Handle add product
-        async function handleAddProduct(e) {
+        function handleAddProduct(e) {
             e.preventDefault();
             
             if (!currentUser || userRole !== 'seller') {
@@ -3698,56 +3650,44 @@
             const category = document.getElementById('productCategory').value;
             const stock = parseInt(document.getElementById('productStock').value);
             const description = document.getElementById('productDescription').value;
-            const imageFile = document.getElementById('productImageInput').files[0];
             
             if (!name || !price || !category || !stock || !description) {
                 showNotification('Error', 'Please fill in all required fields', 'error');
                 return;
             }
             
+            if (price < 0) {
+                showNotification('Error', 'Price cannot be negative', 'error');
+                return;
+            }
+            
+            if (stock < 0) {
+                showNotification('Error', 'Stock cannot be negative', 'error');
+                return;
+            }
+            
             showLoading();
             
-            try {
-                let imageUrl = null;
-                
-                // Upload product image if provided
-                if (imageFile) {
-                    const fileExt = imageFile.name.split('.').pop();
-                    const fileName = `${Math.random()}.${fileExt}`;
-                    const filePath = `product-images/${fileName}`;
-                    
-                    const { error: uploadError } = await supabase.storage
-                        .from('products')
-                        .upload(filePath, imageFile);
-                    
-                    if (uploadError) throw uploadError;
-                    
-                    const { data: { publicUrl } } = supabase.storage
-                        .from('products')
-                        .getPublicUrl(filePath);
-                    
-                    imageUrl = publicUrl;
-                }
-                
+            // Simulate API call
+            setTimeout(() => {
                 // Create product
-                const productData = {
+                const productId = Date.now();
+                const newProduct = {
+                    id: productId,
                     seller_id: currentUser.id,
                     name: name,
                     price: price,
                     category: category,
                     stock_quantity: stock,
                     description: description,
-                    image_url: imageUrl,
                     is_active: true,
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
+                    created_at: new Date().toISOString()
                 };
                 
-                const { error: productError } = await supabase
-                    .from('products')
-                    .insert([productData]);
-                
-                if (productError) throw productError;
+                // Save to localStorage
+                const products = JSON.parse(localStorage.getItem('ipateProducts') || '[]');
+                products.push(newProduct);
+                localStorage.setItem('ipateProducts', JSON.stringify(products));
                 
                 // Reset form
                 document.getElementById('addProductForm').reset();
@@ -3757,278 +3697,458 @@
                 showNotification('Success', 'Product added successfully!', 'success');
                 switchDashboardSection('sellerProducts');
                 
-            } catch (error) {
-                hideLoading();
-                showNotification('Error', 'Failed to add product: ' + error.message, 'error');
-            }
+            }, 1500);
         }
 
         // Load customer data
-        async function loadCustomerData() {
+        function loadCustomerData() {
             if (!currentUser) return;
             
-            try {
-                // Load products
-                const { data: products, error } = await supabase
-                    .from('products')
-                    .select('*')
-                    .eq('is_active', true)
-                    .order('created_at', { ascending: false });
-                
-                if (error) throw error;
-                
-                // Display products
-                const productsGrid = document.getElementById('customerProductsGrid');
-                if (products && products.length > 0) {
-                    productsGrid.innerHTML = products.map(product => `
-                        <div class="product-card">
-                            <div class="product-image" style="background-image: url('${product.image_url || ''}')">
-                                ${!product.image_url ? '<i class="fas fa-image"></i>' : ''}
-                            </div>
-                            <div class="product-info">
-                                <h3>${product.name}</h3>
-                                <p>${product.description}</p>
-                                <div class="product-price">KSh ${product.price}</div>
-                                <p>Category: ${product.category}</p>
-                                <p>Stock: ${product.stock_quantity}</p>
-                                <button class="btn btn-primary" onclick="addToCart('${product.name}', ${product.price})">
-                                    <i class="fas fa-cart-plus"></i> Add to Cart
-                                </button>
-                            </div>
+            // Load products
+            loadProducts();
+            
+            // Load orders
+            loadCustomerOrders();
+        }
+
+        // Load products with search and filter
+        function loadProducts() {
+            const products = JSON.parse(localStorage.getItem('ipateProducts') || '[]');
+            
+            // Store products for filtering
+            window.allProducts = products;
+            
+            // Apply initial filters
+            filterProducts();
+        }
+
+        // Filter products based on search and category
+        function filterProducts() {
+            const searchTerm = document.getElementById('productSearch').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            
+            let filteredProducts = window.allProducts || [];
+            
+            // Apply search filter
+            if (searchTerm) {
+                filteredProducts = filteredProducts.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Apply category filter
+            if (categoryFilter) {
+                filteredProducts = filteredProducts.filter(product => 
+                    product.category === categoryFilter
+                );
+            }
+            
+            // Apply sorting
+            filteredProducts = sortProductsList(filteredProducts, sortFilter);
+            
+            // Display products
+            displayProducts(filteredProducts);
+        }
+
+        // Sort products
+        function sortProducts() {
+            filterProducts();
+        }
+
+        // Sort products list based on selected option
+        function sortProductsList(products, sortOption) {
+            const sortedProducts = [...products];
+            
+            switch (sortOption) {
+                case 'price-low':
+                    return sortedProducts.sort((a, b) => a.price - b.price);
+                case 'price-high':
+                    return sortedProducts.sort((a, b) => b.price - a.price);
+                case 'name':
+                    return sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+                case 'rating':
+                    // This would require a rating system
+                    return sortedProducts;
+                default:
+                    return sortedProducts;
+            }
+        }
+
+        // Display products in grid
+        function displayProducts(products) {
+            const productsGrid = document.getElementById('customerProductsGrid');
+            
+            if (products && products.length > 0) {
+                productsGrid.innerHTML = products.map(product => `
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('${product.image_url || ''}')">
+                            ${!product.image_url ? '<i class="fas fa-image"></i>' : ''}
                         </div>
-                    `).join('');
-                } else {
-                    productsGrid.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-store"></i>
-                            <h3>No Products Available</h3>
-                            <p>Check back later for new products</p>
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <p>${product.description}</p>
+                            <div class="product-price">KSh ${product.price.toFixed(2)}</div>
+                            <p>Category: ${product.category}</p>
+                            <p>Stock: ${product.stock_quantity}</p>
+                            <button class="btn btn-primary" onclick="addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})" ${product.stock_quantity === 0 ? 'disabled' : ''}>
+                                <i class="fas fa-cart-plus"></i> ${product.stock_quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
+                            </button>
                         </div>
-                    `;
-                }
-                
-                // Load orders
-                await loadCustomerOrders();
-                
-            } catch (error) {
-                console.error('Error loading customer data:', error);
+                    </div>
+                `).join('');
+            } else {
+                productsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-store"></i>
+                        <h3>No Products Found</h3>
+                        <p>Try adjusting your search or filters</p>
+                    </div>
+                `;
             }
         }
 
         // Load customer orders
-        async function loadCustomerOrders() {
+        function loadCustomerOrders() {
             if (!currentUser) return;
             
-            try {
-                const { data: orders, error } = await supabase
-                    .from('orders')
-                    .select(`
-                        *,
-                        order_items (*)
-                    `)
-                    .eq('customer_id', currentUser.id)
-                    .order('created_at', { ascending: false });
-                
-                if (error) throw error;
-                
-                // Update stats
-                document.getElementById('customerTotalOrders').textContent = orders?.length || 0;
-                document.getElementById('customerPendingOrders').textContent = orders?.filter(o => o.status === 'pending').length || 0;
-                document.getElementById('customerDeliveredOrders').textContent = orders?.filter(o => o.status === 'delivered').length || 0;
-                document.getElementById('customerCartItems').textContent = cart.length;
-                
-                // Display orders
-                const ordersList = document.getElementById('customerOrdersList');
-                if (orders && orders.length > 0) {
-                    ordersList.innerHTML = orders.map(order => `
-                        <div class="order-item">
-                            <div class="order-item-info">
-                                <h4>Order #${order.id}</h4>
-                                <p>Status: <span class="delivery-status status-${order.status}">${order.status}</span></p>
-                                <p>Total: KSh ${order.total_amount}</p>
-                                <p>Date: ${new Date(order.created_at).toLocaleDateString()}</p>
-                            </div>
-                            <div class="order-item-actions">
-                                <button class="btn btn-outline btn-sm" onclick="viewOrderDetails(${order.id})">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
+            const orders = JSON.parse(localStorage.getItem('ipateOrders') || '[]');
+            const userOrders = orders.filter(order => order.customer_id === currentUser.id);
+            
+            // Update stats
+            document.getElementById('customerTotalOrders').textContent = userOrders.length;
+            document.getElementById('customerPendingOrders').textContent = userOrders.filter(o => o.status === 'pending').length;
+            document.getElementById('customerDeliveredOrders').textContent = userOrders.filter(o => o.status === 'delivered').length;
+            document.getElementById('customerCartItems').textContent = cart.length;
+            
+            // Display orders
+            const ordersList = document.getElementById('customerOrdersList');
+            if (userOrders.length > 0) {
+                ordersList.innerHTML = userOrders.map(order => `
+                    <div class="order-item">
+                        <div class="order-item-info">
+                            <h4>Order #${order.id}</h4>
+                            <p>Status: <span class="delivery-status status-${order.status}">${order.status}</span></p>
+                            <p>Total: KSh ${order.total_amount.toFixed(2)}</p>
+                            <p>Date: ${new Date(order.created_at).toLocaleDateString()}</p>
+                            <div class="order-items">
+                                ${order.items.map(item => `
+                                    <div>${item.product_name} x ${item.quantity} - KSh ${item.price.toFixed(2)}</div>
+                                `).join('')}
                             </div>
                         </div>
-                    `).join('');
-                }
-                
-            } catch (error) {
-                console.error('Error loading customer orders:', error);
+                        <div class="order-item-actions">
+                            <button class="btn btn-outline btn-sm" onclick="viewOrderDetails(${order.id})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
             }
         }
 
         // Load seller data
-        async function loadSellerData() {
+        function loadSellerData() {
             if (!currentUser) return;
             
-            try {
-                // Load seller products
-                await loadSellerProducts();
-                
-                // Load seller orders
-                await loadSellerOrders();
-                
-                // Update stats
-                await updateSellerStats();
-                
-            } catch (error) {
-                console.error('Error loading seller data:', error);
-            }
+            // Load seller products
+            loadSellerProducts();
+            
+            // Load seller orders
+            loadSellerOrders();
+            
+            // Update stats
+            updateSellerStats();
         }
 
         // Load seller products
-        async function loadSellerProducts() {
+        function loadSellerProducts() {
             if (!currentUser) return;
             
-            try {
-                const { data: products, error } = await supabase
-                    .from('products')
-                    .select('*')
-                    .eq('seller_id', currentUser.id)
-                    .order('created_at', { ascending: false });
-                
-                if (error) throw error;
-                
-                const productsGrid = document.getElementById('sellerProductsGrid');
-                if (products && products.length > 0) {
-                    productsGrid.innerHTML = products.map(product => `
-                        <div class="product-card">
-                            <div class="product-image" style="background-image: url('${product.image_url || ''}')">
-                                ${!product.image_url ? '<i class="fas fa-image"></i>' : ''}
-                            </div>
-                            <div class="product-info">
-                                <h3>${product.name}</h3>
-                                <p>${product.description}</p>
-                                <div class="product-price">KSh ${product.price}</div>
-                                <p>Category: ${product.category}</p>
-                                <p>Stock: ${product.stock_quantity}</p>
-                                <p>Status: ${product.is_active ? 'Active' : 'Inactive'}</p>
-                                <div class="seller-actions">
-                                    <button class="btn btn-outline btn-sm" onclick="editProduct(${product.id})">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </div>
+            const products = JSON.parse(localStorage.getItem('ipateProducts') || '[]');
+            const sellerProducts = products.filter(product => product.seller_id === currentUser.id);
+            
+            const productsGrid = document.getElementById('sellerProductsGrid');
+            if (sellerProducts.length > 0) {
+                productsGrid.innerHTML = sellerProducts.map(product => `
+                    <div class="product-card">
+                        <div class="product-image" style="background-image: url('${product.image_url || ''}')">
+                            ${!product.image_url ? '<i class="fas fa-image"></i>' : ''}
+                        </div>
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <p>${product.description}</p>
+                            <div class="product-price">KSh ${product.price.toFixed(2)}</div>
+                            <p>Category: ${product.category}</p>
+                            <p>Stock: ${product.stock_quantity}</p>
+                            <p>Status: ${product.is_active ? 'Active' : 'Inactive'}</p>
+                            <div class="seller-actions">
+                                <button class="btn btn-outline btn-sm" onclick="editProduct(${product.id})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
                             </div>
                         </div>
-                    `).join('');
-                }
-                
-            } catch (error) {
-                console.error('Error loading seller products:', error);
+                    </div>
+                `).join('');
+            } else {
+                productsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No Products Yet</h3>
+                        <p>Start by adding your first product</p>
+                        <button class="btn btn-primary mt-3" onclick="switchDashboardSection('addProduct')">Add Product</button>
+                    </div>
+                `;
             }
         }
 
         // Load seller orders
-        async function loadSellerOrders() {
+        function loadSellerOrders() {
             if (!currentUser) return;
             
-            try {
-                // This would require a more complex query to get orders for seller's products
-                // For now, we'll show a placeholder
-                const ordersList = document.getElementById('sellerOrdersList');
+            const orders = JSON.parse(localStorage.getItem('ipateOrders') || '[]');
+            const products = JSON.parse(localStorage.getItem('ipateProducts') || '[]');
+            
+            // Get seller's product IDs
+            const sellerProductIds = products
+                .filter(product => product.seller_id === currentUser.id)
+                .map(product => product.id);
+            
+            // Find orders that contain seller's products
+            const sellerOrders = orders.filter(order => 
+                order.items.some(item => 
+                    sellerProductIds.includes(item.id)
+                )
+            );
+            
+            const ordersList = document.getElementById('sellerOrdersList');
+            if (sellerOrders.length > 0) {
+                ordersList.innerHTML = sellerOrders.map(order => `
+                    <div class="order-item">
+                        <div class="order-item-info">
+                            <h4>Order #${order.id}</h4>
+                            <p>Customer ID: ${order.customer_id}</p>
+                            <p>Status: <span class="delivery-status status-${order.status}">${order.status}</span></p>
+                            <p>Total: KSh ${order.total_amount.toFixed(2)}</p>
+                            <p>Date: ${new Date(order.created_at).toLocaleDateString()}</p>
+                            <div class="order-items">
+                                <h5>Items:</h5>
+                                ${order.items.map(item => `
+                                    <div>${item.product_name} x ${item.quantity} - KSh ${item.price.toFixed(2)}</div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="order-item-actions">
+                            <button class="btn btn-outline btn-sm" onclick="updateOrderStatus(${order.id}, 'processing')">
+                                <i class="fas fa-cog"></i> Process
+                            </button>
+                            <button class="btn btn-primary btn-sm" onclick="updateOrderStatus(${order.id}, 'completed')">
+                                <i class="fas fa-check"></i> Complete
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
                 ordersList.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-clipboard-list"></i>
-                        <h3>Order Management Coming Soon</h3>
-                        <p>This feature will be available in the next update</p>
+                        <h3>No Orders Yet</h3>
+                        <p>Orders will appear here when customers purchase your products</p>
                     </div>
                 `;
-                
-            } catch (error) {
-                console.error('Error loading seller orders:', error);
             }
         }
 
         // Update seller stats
-        async function updateSellerStats() {
+        function updateSellerStats() {
             if (!currentUser) return;
             
-            try {
-                const { data: products, error: productsError } = await supabase
-                    .from('products')
-                    .select('id')
-                    .eq('seller_id', currentUser.id);
-                
-                if (productsError) throw productsError;
-                
-                document.getElementById('sellerTotalProducts').textContent = products?.length || 0;
-                document.getElementById('sellerLowStock').textContent = '0'; // Would need stock tracking
-                document.getElementById('sellerTotalOrders').textContent = '0'; // Would need order tracking
-                document.getElementById('sellerPendingOrders').textContent = '0'; // Would need order tracking
-                
-            } catch (error) {
-                console.error('Error updating seller stats:', error);
-            }
+            const products = JSON.parse(localStorage.getItem('ipateProducts') || '[]');
+            const sellerProducts = products.filter(product => product.seller_id === currentUser.id);
+            const orders = JSON.parse(localStorage.getItem('ipateOrders') || '[]');
+            
+            // Calculate revenue from orders
+            let totalRevenue = 0;
+            let monthlyRevenue = 0;
+            const now = new Date();
+            const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+            
+            orders.forEach(order => {
+                order.items.forEach(item => {
+                    const product = sellerProducts.find(p => p.name === item.product_name);
+                    if (product) {
+                        totalRevenue += item.price * item.quantity;
+                        
+                        const orderDate = new Date(order.created_at);
+                        if (orderDate > oneMonthAgo) {
+                            monthlyRevenue += item.price * item.quantity;
+                        }
+                    }
+                });
+            });
+            
+            document.getElementById('sellerTotalProducts').textContent = sellerProducts.length;
+            document.getElementById('sellerLowStock').textContent = sellerProducts.filter(p => p.stock_quantity < 10).length;
+            document.getElementById('sellerTotalOrders').textContent = orders.filter(order => 
+                order.items.some(item => 
+                    sellerProducts.find(p => p.name === item.product_name)
+                )
+            ).length;
+            document.getElementById('sellerTotalRevenue').textContent = totalRevenue.toFixed(2);
+            document.getElementById('sellerMonthlyRevenue').textContent = monthlyRevenue.toFixed(2);
+            document.getElementById('sellerAvgOrder').textContent = (totalRevenue / Math.max(orders.length, 1)).toFixed(2);
         }
 
         // Load rider data
-        async function loadRiderData() {
+        function loadRiderData() {
             if (!currentUser) return;
             
-            try {
-                // Load available deliveries
-                await loadAvailableDeliveries();
-                
-                // Load rider's active deliveries
-                await loadRiderDeliveries();
-                
-                // Update rider stats
-                await updateRiderStats();
-                
-            } catch (error) {
-                console.error('Error loading rider data:', error);
-            }
+            // Load available deliveries
+            loadAvailableDeliveries();
+            
+            // Load rider's active deliveries
+            loadRiderDeliveries();
+            
+            // Update rider stats
+            updateRiderStats();
         }
 
         // Load available deliveries
-        async function loadAvailableDeliveries() {
-            // This would require a delivery system implementation
+        function loadAvailableDeliveries() {
+            const deliveries = JSON.parse(localStorage.getItem('ipateDeliveries') || '[]');
+            const availableDeliveries = deliveries.filter(delivery => delivery.status === 'pending');
+            
             const deliveriesList = document.getElementById('availableDeliveriesList');
-            deliveriesList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-search"></i>
-                    <h3>Delivery System Coming Soon</h3>
-                    <p>This feature will be available in the next update</p>
-                </div>
-            `;
+            if (availableDeliveries.length > 0) {
+                deliveriesList.innerHTML = availableDeliveries.map(delivery => `
+                    <div class="delivery-card">
+                        <div class="delivery-header">
+                            <h4>Delivery #${delivery.id}</h4>
+                            <span class="delivery-status status-pending">Pending</span>
+                        </div>
+                        <p><strong>Pickup:</strong> ${delivery.pickup_address}</p>
+                        <p><strong>Delivery:</strong> ${delivery.delivery_address}</p>
+                        <p><strong>Distance:</strong> ${delivery.distance || 'N/A'} km</p>
+                        <p><strong>Earnings:</strong> KSh ${delivery.delivery_fee || '0.00'}</p>
+                        <div class="seller-actions" style="margin-top: 15px;">
+                            <button class="btn btn-primary btn-sm" onclick="acceptDelivery(${delivery.id})">
+                                <i class="fas fa-check"></i> Accept Delivery
+                            </button>
+                            <button class="btn btn-outline btn-sm" onclick="viewDeliveryDetails(${delivery.id})">
+                                <i class="fas fa-info-circle"></i> Details
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                deliveriesList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>No Available Deliveries</h3>
+                        <p>New delivery requests will appear here when available</p>
+                    </div>
+                `;
+            }
         }
 
         // Load rider deliveries
-        async function loadRiderDeliveries() {
-            // This would require a delivery system implementation
+        function loadRiderDeliveries() {
+            const deliveries = JSON.parse(localStorage.getItem('ipateDeliveries') || '[]');
+            const riderDeliveries = deliveries.filter(delivery => 
+                delivery.rider_id === currentUser.id && delivery.status !== 'completed'
+            );
+            
             const deliveriesList = document.getElementById('myDeliveriesList');
-            deliveriesList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-truck"></i>
-                    <h3>Delivery System Coming Soon</h3>
-                    <p>This feature will be available in the next update</p>
-                </div>
-            `;
+            if (riderDeliveries.length > 0) {
+                deliveriesList.innerHTML = riderDeliveries.map(delivery => `
+                    <div class="delivery-card">
+                        <div class="delivery-header">
+                            <h4>Delivery #${delivery.id}</h4>
+                            <span class="delivery-status status-${delivery.status}">${delivery.status}</span>
+                        </div>
+                        <p><strong>Pickup:</strong> ${delivery.pickup_address}</p>
+                        <p><strong>Delivery:</strong> ${delivery.delivery_address}</p>
+                        <p><strong>Status:</strong> ${delivery.status}</p>
+                        <p><strong>Earnings:</strong> KSh ${delivery.delivery_fee || '0.00'}</p>
+                        <div class="seller-actions" style="margin-top: 15px;">
+                            ${delivery.status === 'accepted' ? `
+                                <button class="btn btn-primary btn-sm" onclick="updateDeliveryStatus(${delivery.id}, 'picked_up')">
+                                    <i class="fas fa-box"></i> Mark as Picked Up
+                                </button>
+                            ` : ''}
+                            ${delivery.status === 'picked_up' ? `
+                                <button class="btn btn-success btn-sm" onclick="updateDeliveryStatus(${delivery.id}, 'delivered')">
+                                    <i class="fas fa-check-circle"></i> Mark as Delivered
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-outline btn-sm" onclick="viewDeliveryDetails(${delivery.id})">
+                                <i class="fas fa-info-circle"></i> Details
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                deliveriesList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-truck"></i>
+                        <h3>No Active Deliveries</h3>
+                        <p>You don't have any active deliveries at the moment</p>
+                        <button class="btn btn-primary mt-3" onclick="switchDashboardSection('availableDeliveries')">Find Deliveries</button>
+                    </div>
+                `;
+            }
         }
 
         // Update rider stats
-        async function updateRiderStats() {
-            // Placeholder stats - would come from delivery system
-            document.getElementById('availableDeliveries').textContent = '0';
-            document.getElementById('activeDeliveries').textContent = '0';
-            document.getElementById('completedDeliveries').textContent = '0';
-            document.getElementById('riderRating').textContent = '0.0';
-            document.getElementById('todayEarnings').textContent = '0';
-            document.getElementById('weekEarnings').textContent = '0';
-            document.getElementById('monthEarnings').textContent = '0';
-            document.getElementById('totalDeliveries').textContent = '0';
+        function updateRiderStats() {
+            const deliveries = JSON.parse(localStorage.getItem('ipateDeliveries') || '[]');
+            const riderDeliveries = deliveries.filter(delivery => delivery.rider_id === currentUser.id);
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const todayDeliveries = riderDeliveries.filter(d => {
+                const deliveryDate = new Date(d.created_at);
+                deliveryDate.setHours(0, 0, 0, 0);
+                return deliveryDate.getTime() === today.getTime() && d.status === 'completed';
+            });
+            
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            
+            const weekDeliveries = riderDeliveries.filter(d => {
+                const deliveryDate = new Date(d.created_at);
+                return deliveryDate > weekAgo && d.status === 'completed';
+            });
+            
+            const monthAgo = new Date();
+            monthAgo.setDate(monthAgo.getDate() - 30);
+            
+            const monthDeliveries = riderDeliveries.filter(d => {
+                const deliveryDate = new Date(d.created_at);
+                return deliveryDate > monthAgo && d.status === 'completed';
+            });
+            
+            const todayEarnings = todayDeliveries.reduce((sum, d) => sum + (d.delivery_fee || 0), 0);
+            const weekEarnings = weekDeliveries.reduce((sum, d) => sum + (d.delivery_fee || 0), 0);
+            const monthEarnings = monthDeliveries.reduce((sum, d) => sum + (d.delivery_fee || 0), 0);
+            
+            document.getElementById('availableDeliveries').textContent = '2'; // Sample data
+            document.getElementById('activeDeliveries').textContent = riderDeliveries.filter(d => d.status !== 'completed').length;
+            document.getElementById('completedDeliveries').textContent = todayDeliveries.length;
+            document.getElementById('riderRating').textContent = '4.8'; // Sample rating
+            document.getElementById('todayEarnings').textContent = todayEarnings.toFixed(2);
+            document.getElementById('weekEarnings').textContent = weekEarnings.toFixed(2);
+            document.getElementById('monthEarnings').textContent = monthEarnings.toFixed(2);
+            document.getElementById('totalDeliveries').textContent = riderDeliveries.filter(d => d.status === 'completed').length;
         }
 
         // Handle contact form submission
-        async function handleContactSubmit(e) {
+        function handleContactSubmit(e) {
             e.preventDefault();
             
             showLoading();
@@ -4051,29 +4171,180 @@
             console.log('Emergency alert from rider:', currentUser.id);
         }
 
-        // Placeholder functions for future implementation
-        function showForgotPassword() {
-            showNotification('Info', 'Password reset feature coming soon', 'success');
+        // Delivery management functions
+        function acceptDelivery(deliveryId) {
+            showLoading();
+            
+            // Simulate API call
+            setTimeout(() => {
+                const deliveries = JSON.parse(localStorage.getItem('ipateDeliveries') || '[]');
+                const deliveryIndex = deliveries.findIndex(d => d.id === deliveryId);
+                
+                if (deliveryIndex !== -1) {
+                    deliveries[deliveryIndex].rider_id = currentUser.id;
+                    deliveries[deliveryIndex].status = 'accepted';
+                    deliveries[deliveryIndex].accepted_at = new Date().toISOString();
+                    
+                    localStorage.setItem('ipateDeliveries', JSON.stringify(deliveries));
+                }
+                
+                hideLoading();
+                showNotification('Success', 'Delivery accepted successfully!', 'success');
+                loadAvailableDeliveries();
+                loadRiderDeliveries();
+                
+            }, 1000);
         }
 
+        function updateDeliveryStatus(deliveryId, status) {
+            showLoading();
+            
+            // Simulate API call
+            setTimeout(() => {
+                const deliveries = JSON.parse(localStorage.getItem('ipateDeliveries') || '[]');
+                const deliveryIndex = deliveries.findIndex(d => d.id === deliveryId);
+                
+                if (deliveryIndex !== -1) {
+                    deliveries[deliveryIndex].status = status;
+                    
+                    if (status === 'picked_up') {
+                        deliveries[deliveryIndex].picked_up_at = new Date().toISOString();
+                    } else if (status === 'delivered') {
+                        deliveries[deliveryIndex].delivered_at = new Date().toISOString();
+                    }
+                    
+                    localStorage.setItem('ipateDeliveries', JSON.stringify(deliveries));
+                }
+                
+                hideLoading();
+                showNotification('Success', `Delivery marked as ${status.replace('_', ' ')}!`, 'success');
+                loadRiderDeliveries();
+                
+            }, 1000);
+        }
+
+        function updateOrderStatus(orderId, status) {
+            showLoading();
+            
+            // Simulate API call
+            setTimeout(() => {
+                const orders = JSON.parse(localStorage.getItem('ipateOrders') || '[]');
+                const orderIndex = orders.findIndex(o => o.id === orderId);
+                
+                if (orderIndex !== -1) {
+                    orders[orderIndex].status = status;
+                    localStorage.setItem('ipateOrders', JSON.stringify(orders));
+                }
+                
+                hideLoading();
+                showNotification('Success', `Order status updated to ${status}!`, 'success');
+                loadSellerOrders();
+                
+            }, 1000);
+        }
+
+        // Profile update functions
         function updateCustomerProfile() {
-            showNotification('Success', 'Profile updated successfully', 'success');
+            showLoading();
+            
+            // Simulate API call
+            setTimeout(() => {
+                const name = document.getElementById('customerProfileName').value;
+                const phone = document.getElementById('customerProfilePhone').value;
+                const address = document.getElementById('customerProfileAddress').value;
+                
+                // Update current user
+                currentUser.name = name;
+                currentUser.phone = phone;
+                currentUser.address = address;
+                
+                // Save to localStorage
+                localStorage.setItem('ipateCurrentUser', JSON.stringify(currentUser));
+                
+                hideLoading();
+                showNotification('Success', 'Profile updated successfully!', 'success');
+                updateUIForUser();
+                
+            }, 1000);
+        }
+
+        function updateSellerProfile() {
+            showLoading();
+            
+            // Simulate API call
+            setTimeout(() => {
+                const businessName = document.getElementById('sellerProfileName').value;
+                const phone = document.getElementById('sellerProfilePhone').value;
+                const address = document.getElementById('sellerProfileAddress').value;
+                const businessType = document.getElementById('sellerBusinessType').value;
+                
+                // Update current user
+                currentUser.business_name = businessName;
+                currentUser.phone = phone;
+                currentUser.business_address = address;
+                currentUser.business_type = businessType;
+                
+                // Save to localStorage
+                localStorage.setItem('ipateCurrentUser', JSON.stringify(currentUser));
+                
+                hideLoading();
+                showNotification('Success', 'Seller profile updated successfully!', 'success');
+                updateUIForUser();
+                
+            }, 1000);
+        }
+
+        function updateRiderProfile() {
+            showLoading();
+            
+            // Simulate API call
+            setTimeout(() => {
+                const name = document.getElementById('riderProfileName').value;
+                const phone = document.getElementById('riderProfilePhone').value;
+                const idNumber = document.getElementById('riderIdNumber').value;
+                const vehicleType = document.getElementById('riderVehicle').value;
+                const license = document.getElementById('riderLicense').value;
+                const vehicleReg = document.getElementById('riderVehicleReg').value;
+                const emergencyName = document.getElementById('emergencyContactName').value;
+                const emergencyPhone = document.getElementById('emergencyContactPhone').value;
+                const emergencyRelation = document.getElementById('emergencyContactRelation').value;
+                
+                // Update current user
+                currentUser.name = name;
+                currentUser.phone = phone;
+                currentUser.id_number = idNumber;
+                currentUser.vehicle_type = vehicleType;
+                currentUser.license_number = license;
+                currentUser.vehicle_registration = vehicleReg;
+                currentUser.emergency_contact_name = emergencyName;
+                currentUser.emergency_contact_phone = emergencyPhone;
+                currentUser.emergency_contact_relation = emergencyRelation;
+                
+                // Save to localStorage
+                localStorage.setItem('ipateCurrentUser', JSON.stringify(currentUser));
+                
+                hideLoading();
+                showNotification('Success', 'Rider profile updated successfully!', 'success');
+                updateUIForUser();
+                
+            }, 1000);
         }
 
         function updateDeliveryPreferences() {
             showNotification('Success', 'Delivery preferences updated', 'success');
         }
 
-        function updateSellerProfile() {
-            showNotification('Success', 'Seller profile updated successfully', 'success');
-        }
-
-        function updateRiderProfile() {
-            showNotification('Success', 'Rider profile updated successfully', 'success');
+        // Placeholder functions for future implementation
+        function showForgotPassword() {
+            showNotification('Info', 'Password reset feature coming soon', 'success');
         }
 
         function viewOrderDetails(orderId) {
             showNotification('Info', `Viewing order #${orderId}`, 'success');
+        }
+
+        function viewDeliveryDetails(deliveryId) {
+            showNotification('Info', `Viewing delivery #${deliveryId} details`, 'success');
         }
 
         function editProduct(productId) {
@@ -4082,6 +4353,10 @@
 
         function deleteProduct(productId) {
             if (confirm('Are you sure you want to delete this product?')) {
+                const products = JSON.parse(localStorage.getItem('ipateProducts') || '[]');
+                const updatedProducts = products.filter(product => product.id !== productId);
+                localStorage.setItem('ipateProducts', JSON.stringify(updatedProducts));
+                
                 showNotification('Success', 'Product deleted successfully', 'success');
                 loadSellerProducts();
             }
