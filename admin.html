@@ -817,10 +817,10 @@
                 </a>
             </p>
             <p style="margin-top: 10px; font-size: 0.9em;">
-                IPATE Deliveries Admin Panel - Hosted on GitHub Pages
+                IPATE Deliveries Admin Panel by Ipate org
             </p>
             <p style="margin-top: 5px; font-size: 0.8em; opacity: 0.7;">
-                &copy; 2024 IPATE Deliveries. All rights reserved.
+                &copy; 2025 IPATE Deliveries. All rights reserved.
             </p>
         </footer>
     </div>
@@ -999,49 +999,38 @@
 
         async function loadRecentActivity() {
             try {
-                const { data: activities, error } = await supabase
+                // Get recent users
+                const { data: users, error } = await supabase
                     .from('users')
                     .select('*')
                     .order('created_at', { ascending: false })
-                    .limit(8);
+                    .limit(5);
 
                 if (error) throw error;
 
-                const activityContainer = document.getElementById('recentActivity');
-                
-                if (!activities || activities.length === 0) {
-                    activityContainer.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-clock"></i>
-                            <h3>No Recent Activity</h3>
-                            <p>User activities will appear here</p>
-                        </div>
-                    `;
-                    return;
-                }
+                const activityHtml = users.map(user => `
+                    <div class="table-row">
+                        <div>${user.id.substring(0, 8)}...</div>
+                        <div>${user.full_name || 'N/A'}</div>
+                        <div>${user.role}</div>
+                        <div>${new Date(user.created_at).toLocaleDateString()}</div>
+                        <div><span class="status-badge ${user.verification_status === 'approved' ? 'status-active' : 'status-pending'}">${user.verification_status}</span></div>
+                    </div>
+                `).join('');
 
-                activityContainer.innerHTML = activities.map(user => {
-                    const status = user.verification_status === 'approved' ? 'status-active' : 
-                                  user.verification_status === 'rejected' ? 'status-suspended' : 'status-pending';
-                    
-                    return `
-                        <div class="table-row">
-                            <div>${user.full_name || 'N/A'}</div>
-                            <div>${user.role} ${user.verification_status === 'pending' ? 'Registration' : 'Activity'}</div>
-                            <div>${user.role}</div>
-                            <div>${new Date(user.created_at).toLocaleDateString()}</div>
-                            <div><span class="status-badge ${status}">${user.verification_status || 'active'}</span></div>
-                        </div>
-                    `;
-                }).join('');
+                document.getElementById('recentActivity').innerHTML = activityHtml || `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>No recent activity found</p>
+                    </div>
+                `;
 
             } catch (error) {
                 console.error('Error loading recent activity:', error);
                 document.getElementById('recentActivity').innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Error Loading Activity</h3>
-                        <p>Please try refreshing the page</p>
+                        <p>Failed to load recent activity</p>
                     </div>
                 `;
             }
@@ -1051,179 +1040,166 @@
             showLoading('usersTableBody');
             
             try {
-                const searchTerm = document.getElementById('userSearch').value.toLowerCase();
-                const typeFilter = document.getElementById('userTypeFilter').value;
-                const statusFilter = document.getElementById('userStatusFilter').value;
-                
-                let query = supabase
+                const { data: users, error } = await supabase
                     .from('users')
                     .select('*')
                     .order('created_at', { ascending: false });
 
-                if (typeFilter) {
-                    query = query.eq('role', typeFilter);
-                }
-
-                if (statusFilter) {
-                    if (statusFilter === 'pending') {
-                        query = query.eq('verification_status', 'pending');
-                    } else {
-                        query = query.eq('status', statusFilter);
-                    }
-                }
-
-                const { data: users, error } = await query;
-
                 if (error) throw error;
 
-                // Apply search filter
-                let filteredUsers = users;
-                if (searchTerm) {
-                    filteredUsers = users.filter(user => 
-                        user.full_name?.toLowerCase().includes(searchTerm) ||
-                        user.email?.toLowerCase().includes(searchTerm) ||
-                        user.id.toString().includes(searchTerm)
-                    );
-                }
-
-                const tableBody = document.getElementById('usersTableBody');
-                
-                if (!filteredUsers || filteredUsers.length === 0) {
-                    tableBody.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-users"></i>
-                            <h3>No Users Found</h3>
-                            <p>Try adjusting your search criteria</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                tableBody.innerHTML = filteredUsers.map(user => {
-                    const statusClass = user.status === 'suspended' ? 'status-suspended' : 
-                                      user.verification_status === 'pending' ? 'status-pending' : 'status-active';
-                    
-                    return `
-                        <div class="table-row">
-                            <div>${user.id}</div>
-                            <div>${user.full_name || 'N/A'}</div>
-                            <div>${user.email || 'N/A'}</div>
-                            <div>
-                                <span class="status-badge ${user.role === 'seller' ? 'status-pending' : user.role === 'rider' ? 'status-approved' : 'status-processing'}">
-                                    ${user.role}
-                                </span>
-                            </div>
-                            <div>
-                                <button class="action-btn btn-info" onclick="viewUserDetails(${user.id})" title="View Details">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                ${user.status === 'active' ? 
-                                    `<button class="action-btn btn-danger" onclick="suspendUser(${user.id})" title="Suspend User">
-                                        <i class="fas fa-ban"></i>
-                                    </button>` :
-                                    `<button class="action-btn btn-success" onclick="activateUser(${user.id})" title="Activate User">
-                                        <i class="fas fa-check"></i>
-                                    </button>`
-                                }
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+                window.allUsers = users || [];
+                displayUsers(window.allUsers);
 
             } catch (error) {
                 console.error('Error loading users:', error);
                 document.getElementById('usersTableBody').innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Error Loading Users</h3>
-                        <p>Please try refreshing the page</p>
+                        <p>Failed to load users</p>
                     </div>
                 `;
-                showNotification('Error', 'Failed to load users', 'error');
             }
+        }
+
+        function displayUsers(users) {
+            if (!users || users.length === 0) {
+                document.getElementById('usersTableBody').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users-slash"></i>
+                        <p>No users found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const usersHtml = users.map(user => `
+                <div class="table-row">
+                    <div>${user.id.substring(0, 8)}...</div>
+                    <div>${user.full_name || 'N/A'}</div>
+                    <div>${user.email}</div>
+                    <div>
+                        <span class="status-badge ${user.role === 'admin' ? 'status-delivered' : user.role === 'seller' ? 'status-processing' : 'status-pending'}">
+                            ${user.role}
+                        </span>
+                    </div>
+                    <div>
+                        <button class="action-btn btn-info" onclick="viewUserDetails('${user.id}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="action-btn ${user.verification_status === 'approved' ? 'btn-warning' : 'btn-success'}" 
+                                onclick="toggleUserStatus('${user.id}', '${user.verification_status}')">
+                            <i class="fas ${user.verification_status === 'approved' ? 'fa-pause' : 'fa-check'}"></i> 
+                            ${user.verification_status === 'approved' ? 'Suspend' : 'Approve'}
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('usersTableBody').innerHTML = usersHtml;
+        }
+
+        function filterUsers() {
+            if (!window.allUsers) return;
+            
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('userTypeFilter').value;
+            const statusFilter = document.getElementById('userStatusFilter').value;
+
+            const filteredUsers = window.allUsers.filter(user => {
+                const matchesSearch = !searchTerm || 
+                    user.full_name?.toLowerCase().includes(searchTerm) ||
+                    user.email?.toLowerCase().includes(searchTerm) ||
+                    user.id.toLowerCase().includes(searchTerm);
+                
+                const matchesType = !typeFilter || user.role === typeFilter;
+                const matchesStatus = !statusFilter || 
+                    (statusFilter === 'active' && user.verification_status === 'approved') ||
+                    (statusFilter === 'suspended' && user.verification_status === 'rejected') ||
+                    (statusFilter === 'pending' && user.verification_status === 'pending');
+
+                return matchesSearch && matchesType && matchesStatus;
+            });
+
+            displayUsers(filteredUsers);
         }
 
         async function loadOrders() {
             showLoading('ordersTableBody');
             
             try {
-                const searchTerm = document.getElementById('orderSearch').value.toLowerCase();
-                const statusFilter = document.getElementById('orderStatusFilter').value;
-                
-                let query = supabase
+                const { data: orders, error } = await supabase
                     .from('orders')
-                    .select(`
-                        *,
-                        users!orders_customer_id_fkey(full_name, email)
-                    `)
+                    .select('*')
                     .order('created_at', { ascending: false });
-
-                if (statusFilter) {
-                    query = query.eq('status', statusFilter);
-                }
-
-                const { data: orders, error } = await query;
 
                 if (error) throw error;
 
-                // Apply search filter
-                let filteredOrders = orders;
-                if (searchTerm) {
-                    filteredOrders = orders.filter(order => 
-                        order.id.toString().includes(searchTerm) ||
-                        order.users?.full_name?.toLowerCase().includes(searchTerm) ||
-                        order.total_amount?.toString().includes(searchTerm)
-                    );
-                }
-
-                const tableBody = document.getElementById('ordersTableBody');
-                
-                if (!filteredOrders || filteredOrders.length === 0) {
-                    tableBody.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-shopping-cart"></i>
-                            <h3>No Orders Found</h3>
-                            <p>Try adjusting your search criteria</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                tableBody.innerHTML = filteredOrders.map(order => {
-                    const customerName = order.users?.full_name || 'Unknown Customer';
-                    return `
-                        <div class="table-row">
-                            <div>#${order.id}</div>
-                            <div>${customerName}</div>
-                            <div>KSh ${order.total_amount ? order.total_amount.toFixed(2) : '0.00'}</div>
-                            <div>
-                                <span class="status-badge status-${order.status || 'pending'}">
-                                    ${order.status || 'pending'}
-                                </span>
-                            </div>
-                            <div>
-                                <button class="action-btn btn-info" onclick="viewOrderDetails(${order.id})" title="View Details">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn btn-success" onclick="updateOrderStatus(${order.id}, 'processing')" title="Process Order">
-                                    <i class="fas fa-cog"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+                window.allOrders = orders || [];
+                displayOrders(window.allOrders);
 
             } catch (error) {
                 console.error('Error loading orders:', error);
                 document.getElementById('ordersTableBody').innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Error Loading Orders</h3>
-                        <p>Please try refreshing the page</p>
+                        <p>Failed to load orders</p>
                     </div>
                 `;
-                showNotification('Error', 'Failed to load orders', 'error');
             }
+        }
+
+        function displayOrders(orders) {
+            if (!orders || orders.length === 0) {
+                document.getElementById('ordersTableBody').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>No orders found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const ordersHtml = orders.map(order => `
+                <div class="table-row">
+                    <div>${order.id.substring(0, 8)}...</div>
+                    <div>${order.customer_name || 'N/A'}</div>
+                    <div>KSh ${order.total_amount?.toFixed(2) || '0.00'}</div>
+                    <div>
+                        <span class="status-badge status-${order.status}">
+                            ${order.status || 'pending'}
+                        </span>
+                    </div>
+                    <div>
+                        <button class="action-btn btn-info" onclick="viewOrderDetails('${order.id}')">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <button class="action-btn btn-warning" onclick="updateOrderStatus('${order.id}')">
+                            <i class="fas fa-edit"></i> Update
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('ordersTableBody').innerHTML = ordersHtml;
+        }
+
+        function filterOrders() {
+            if (!window.allOrders) return;
+            
+            const searchTerm = document.getElementById('orderSearch').value.toLowerCase();
+            const statusFilter = document.getElementById('orderStatusFilter').value;
+
+            const filteredOrders = window.allOrders.filter(order => {
+                const matchesSearch = !searchTerm || 
+                    order.customer_name?.toLowerCase().includes(searchTerm) ||
+                    order.id.toLowerCase().includes(searchTerm);
+                
+                const matchesStatus = !statusFilter || order.status === statusFilter;
+
+                return matchesSearch && matchesStatus;
+            });
+
+            displayOrders(filteredOrders);
         }
 
         async function loadVerifications() {
@@ -1232,7 +1208,7 @@
             try {
                 const typeFilter = document.getElementById('verificationTypeFilter').value;
                 const statusFilter = document.getElementById('verificationStatusFilter').value;
-                
+
                 let query = supabase
                     .from('users')
                     .select('*')
@@ -1251,147 +1227,78 @@
 
                 if (error) throw error;
 
-                const tableBody = document.getElementById('verificationTableBody');
-                
-                if (!users || users.length === 0) {
-                    tableBody.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-shield-alt"></i>
-                            <h3>No Verifications Found</h3>
-                            <p>No pending verifications at the moment</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                tableBody.innerHTML = users.map(user => `
-                    <div class="table-row">
-                        <div>${user.id}</div>
-                        <div>${user.full_name || 'N/A'}</div>
-                        <div>${user.role}</div>
-                        <div>
-                            <span class="status-badge status-${user.verification_status || 'pending'}">
-                                ${user.verification_status || 'pending'}
-                            </span>
-                        </div>
-                        <div>
-                            <button class="action-btn btn-info" onclick="viewVerificationDetails(${user.id})" title="View Details">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="action-btn btn-success" onclick="approveVerification(${user.id})" title="Approve">
-                                <i class="fas fa-check"></i>
-                            </button>
-                            <button class="action-btn btn-danger" onclick="rejectVerification(${user.id})" title="Reject">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
+                displayVerifications(users || []);
 
             } catch (error) {
                 console.error('Error loading verifications:', error);
                 document.getElementById('verificationTableBody').innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Error Loading Verifications</h3>
-                        <p>Please try refreshing the page</p>
+                        <p>Failed to load verifications</p>
                     </div>
                 `;
-                showNotification('Error', 'Failed to load verifications', 'error');
             }
         }
 
-        // Filter Functions
-        function filterUsers() {
-            loadUsers();
-        }
+        function displayVerifications(users) {
+            if (!users || users.length === 0) {
+                document.getElementById('verificationTableBody').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-check"></i>
+                        <p>No verifications found</p>
+                    </div>
+                `;
+                return;
+            }
 
-        function filterOrders() {
-            loadOrders();
+            const verificationsHtml = users.map(user => `
+                <div class="table-row">
+                    <div>${user.id.substring(0, 8)}...</div>
+                    <div>${user.full_name || 'N/A'}</div>
+                    <div>
+                        <span class="status-badge ${user.role === 'seller' ? 'status-processing' : 'status-pending'}">
+                            ${user.role}
+                        </span>
+                    </div>
+                    <div>
+                        <span class="status-badge ${user.verification_status === 'approved' ? 'status-approved' : user.verification_status === 'rejected' ? 'status-rejected' : 'status-pending'}">
+                            ${user.verification_status}
+                        </span>
+                    </div>
+                    <div>
+                        <button class="action-btn btn-info" onclick="viewUserDetails('${user.id}')">
+                            <i class="fas fa-eye"></i> Details
+                        </button>
+                        ${user.verification_status === 'pending' ? `
+                            <button class="action-btn btn-success" onclick="approveVerification('${user.id}')">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="action-btn btn-danger" onclick="rejectVerification('${user.id}')">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('verificationTableBody').innerHTML = verificationsHtml;
         }
 
         // Action Functions
-        function viewUserDetails(userId) {
-            showNotification('Info', `Loading user details for ID: ${userId}`, 'info');
-        }
-
-        async function suspendUser(userId) {
-            if (confirm('Are you sure you want to suspend this user?')) {
-                try {
-                    const { error } = await supabase
-                        .from('users')
-                        .update({ status: 'suspended' })
-                        .eq('id', userId);
-
-                    if (error) throw error;
-
-                    showNotification('Success', `User ${userId} suspended`, 'success');
-                    loadUsers();
-                } catch (error) {
-                    console.error('Error suspending user:', error);
-                    showNotification('Error', 'Failed to suspend user', 'error');
-                }
-            }
-        }
-
-        async function activateUser(userId) {
-            try {
-                const { error } = await supabase
-                    .from('users')
-                    .update({ status: 'active' })
-                    .eq('id', userId);
-
-                if (error) throw error;
-
-                showNotification('Success', `User ${userId} activated`, 'success');
-                loadUsers();
-            } catch (error) {
-                console.error('Error activating user:', error);
-                showNotification('Error', 'Failed to activate user', 'error');
-            }
-        }
-
-        function viewOrderDetails(orderId) {
-            showNotification('Info', `Loading order details for ID: ${orderId}`, 'info');
-        }
-
-        async function updateOrderStatus(orderId, status) {
-            try {
-                const { error } = await supabase
-                    .from('orders')
-                    .update({ status: status })
-                    .eq('id', orderId);
-
-                if (error) throw error;
-
-                showNotification('Success', `Order ${orderId} status updated to ${status}`, 'success');
-                loadOrders();
-            } catch (error) {
-                console.error('Error updating order status:', error);
-                showNotification('Error', 'Failed to update order status', 'error');
-            }
-        }
-
-        function viewVerificationDetails(userId) {
-            showNotification('Info', `Loading verification details for user ID: ${userId}`, 'info');
-        }
-
         async function approveVerification(userId) {
-            if (confirm('Approve this verification?')) {
+            if (confirm('Are you sure you want to approve this verification?')) {
                 try {
                     const { error } = await supabase
                         .from('users')
-                        .update({ 
-                            verification_status: 'approved',
-                            status: 'active'
-                        })
+                        .update({ verification_status: 'approved' })
                         .eq('id', userId);
 
                     if (error) throw error;
 
-                    showNotification('Success', 'Verification approved! User is now active.', 'success');
+                    showNotification('Success', 'User verification approved successfully', 'success');
                     loadVerifications();
                     loadAdminOverview();
+
                 } catch (error) {
                     console.error('Error approving verification:', error);
                     showNotification('Error', 'Failed to approve verification', 'error');
@@ -1400,22 +1307,19 @@
         }
 
         async function rejectVerification(userId) {
-            const reason = prompt('Please enter rejection reason:');
-            if (reason) {
+            if (confirm('Are you sure you want to reject this verification?')) {
                 try {
                     const { error } = await supabase
                         .from('users')
-                        .update({ 
-                            verification_status: 'rejected',
-                            rejection_reason: reason
-                        })
+                        .update({ verification_status: 'rejected' })
                         .eq('id', userId);
 
                     if (error) throw error;
 
-                    showNotification('Success', 'Verification rejected!', 'success');
+                    showNotification('Success', 'User verification rejected', 'success');
                     loadVerifications();
                     loadAdminOverview();
+
                 } catch (error) {
                     console.error('Error rejecting verification:', error);
                     showNotification('Error', 'Failed to reject verification', 'error');
@@ -1423,7 +1327,53 @@
             }
         }
 
+        async function toggleUserStatus(userId, currentStatus) {
+            const newStatus = currentStatus === 'approved' ? 'rejected' : 'approved';
+            const action = newStatus === 'approved' ? 'approve' : 'suspend';
+            
+            if (confirm(`Are you sure you want to ${action} this user?`)) {
+                try {
+                    const { error } = await supabase
+                        .from('users')
+                        .update({ verification_status: newStatus })
+                        .eq('id', userId);
+
+                    if (error) throw error;
+
+                    showNotification('Success', `User ${action}d successfully`, 'success');
+                    loadUsers();
+                    loadAdminOverview();
+
+                } catch (error) {
+                    console.error('Error updating user status:', error);
+                    showNotification('Error', `Failed to ${action} user`, 'error');
+                }
+            }
+        }
+
         // Utility Functions
+        function showLoading(elementId) {
+            document.getElementById(elementId).innerHTML = `
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading data...</p>
+                </div>
+            `;
+        }
+
+        function showNotification(title, text, icon) {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: icon,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+
         function refreshAllData() {
             showNotification('Info', 'Refreshing all data...', 'info');
             loadAdminOverview();
@@ -1432,33 +1382,22 @@
             loadVerifications();
         }
 
-        function loadAnalytics(period) {
-            showNotification('Info', `Loading analytics for ${period}...`, 'info');
+        // Placeholder functions for future implementation
+        function viewUserDetails(userId) {
+            showNotification('Info', `Viewing user details for: ${userId}`, 'info');
         }
 
-        function showLoading(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Loading...</p></div>';
-            }
+        function viewOrderDetails(orderId) {
+            showNotification('Info', `Viewing order details for: ${orderId}`, 'info');
         }
 
-        // Notification System
-        function showNotification(title, message, type = 'success') {
-            Swal.fire({
-                title: title,
-                text: message,
-                icon: type,
-                position: 'top-end',
-                toast: true,
-                showConfirmButton: false,
-                timer: 4000,
-                timerProgressBar: true
-            });
+        function updateOrderStatus(orderId) {
+            showNotification('Info', `Updating order status for: ${orderId}`, 'info');
         }
 
-        // GitHub Pages ready
-        console.log('✅ IPATE Admin Panel Ready for GitHub Pages');
+        function loadAnalytics(range) {
+            showNotification('Info', `Loading analytics for: ${range}`, 'info');
+        }
     </script>
 </body>
 </html>
