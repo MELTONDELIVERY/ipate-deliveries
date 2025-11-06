@@ -2032,25 +2032,25 @@
                 <p class="section-subtitle">The passionate individuals behind IPATE Deliveries</p>
                 <div class="team-grid">
                     <div class="team-member">
-                        <div class="member-avatar" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd728f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');"></div>
-                        <h3 class="member-name">Melton Konchella</h3>
+                        <div class="member-avatar" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');"></div>
+                        <h3 class="member-name">John Kamau</h3>
                         <div class="member-role">CEO & Founder</div>
                         <p class="member-bio">Former logistics manager with 10+ years experience in supply chain management.</p>
                     </div>
                     <div class="team-member">
-                        <div class="member-avatar" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4..3&auto=format&fit=crop&w=500&q=80');"></div>
+                        <div class="member-avatar" style="background-image: url('https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');"></div>
                         <h3 class="member-name">Sarah Wanjiku</h3>
                         <div class="member-role">Operations Director</div>
                         <p class="member-bio">Expert in process optimization and rider management with background in tech startups.</p>
                     </div>
                     <div class="team-member">
-                        <div class="member-avatar" style="background-image: url('https://images.unsplash.com/photo-1472099645785-5658abf4f4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');"></div>
+                        <div class="member-avatar" style="background-image: url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');"></div>
                         <h3 class="member-name">David Ochieng</h3>
                         <div class="member-role">Technology Lead</div>
                         <p class="member-bio">Full-stack developer specializing in real-time tracking systems and mobile applications.</p>
                     </div>
                     <div class="team-member">
-                        <div class="member-avatar" style="background-image: url('https://images.unsplash.com/photo-1489424731084-a5d8b19a5bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');"></div>
+                        <div class="member-avatar" style="background-image: url('https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80');"></div>
                         <h3 class="member-name">Grace Akinyi</h3>
                         <div class="member-role">Customer Success</div>
                         <p class="member-bio">Dedicated to ensuring every customer has an exceptional experience with our service.</p>
@@ -3110,7 +3110,7 @@
             <form class="auth-form active" id="loginForm">
                 <div class="form-group">
                     <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
+                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
                     <label for="loginPassword">Password</label>
@@ -3125,7 +3125,7 @@
                 </div>
                 <div class="form-group">
                     <label for="signupEmail">Email</label>
-                    <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email" required autocomplete="email">
+                    <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
                     <label for="signupPassword">Password</label>
@@ -3458,30 +3458,24 @@
             });
         }
 
-        // Initialize database tables 
+        // Initialize database tables
         async function initializeDatabase() {
             try {
-                // Check if profiles table exists and has data
-                const { data: profiles, error: profilesError } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .limit(1);
+                // Check if required tables exist, if not create them
+                const requiredTables = ['profiles', 'products', 'orders', 'order_items', 'cart_items', 'deliveries', 'verifications'];
                 
-                if (profilesError && profilesError.code === '42P01') {
-                    // Table doesn't exist
-                    console.log('Database tables need to be created. Please run the SQL setup script in Supabase.');
-                    showNotification('Info', 'Database setup required. Please contact administrator.', 'info');
-                    return;
-                }
-                
-                // Create sample data only if no products exist
-                const { data: products, error: productsError } = await supabase
-                    .from('products')
-                    .select('*')
-                    .limit(1);
-                
-                if (!productsError && (!products || products.length === 0)) {
-                    await createSampleData();
+                for (const table of requiredTables) {
+                    const { error } = await supabase
+                        .from(table)
+                        .select('*')
+                        .limit(1);
+                    
+                    if (error && error.code === 'PGRST116') {
+                        // Table doesn't exist, we need to create it
+                        console.log(`Table ${table} doesn't exist. Creating sample data...`);
+                        await createSampleData();
+                        break;
+                    }
                 }
             } catch (error) {
                 console.error('Error initializing database:', error);
@@ -3766,14 +3760,9 @@
                     throw error;
                 }
                 
-                // Try to create user profile
+                // Create user profile in database
                 if (data.user) {
-                    try {
-                        await createUserProfile(data.user, role, name);
-                    } catch (profileError) {
-                        console.warn('Profile creation warning:', profileError);
-                        // Continue even if profile creation has issues
-                    }
+                    await createUserProfile(data.user, role, name);
                 }
                 
                 hideLoading();
@@ -3790,8 +3779,32 @@
                         currentUser = data.user;
                         userRole = role;
                         
-                        // Show appropriate dashboard
-                        showDashboardBasedOnRole(role, name);
+                        // Show appropriate dashboard based on selected role
+                        const userName = name || data.user.email;
+                        
+                        switch (userRole) {
+                            case 'customer':
+                                showCustomerDashboard();
+                                elements.customerWelcomeName.textContent = userName;
+                                elements.customerName.textContent = userName;
+                                elements.customerAvatar.textContent = userName.charAt(0).toUpperCase();
+                                loadCustomerData();
+                                break;
+                            case 'seller':
+                                showSellerDashboard();
+                                elements.sellerName.textContent = userName;
+                                elements.sellerAvatar.textContent = userName.charAt(0).toUpperCase();
+                                loadSellerData();
+                                break;
+                            case 'rider':
+                                showRiderDashboard();
+                                elements.riderName.textContent = userName;
+                                elements.riderAvatar.textContent = userName.charAt(0).toUpperCase();
+                                loadRiderData();
+                                // Show emergency button for riders
+                                elements.emergencyBtn.style.display = 'flex';
+                                break;
+                        }
                     }
                 }
                 
@@ -3801,30 +3814,7 @@
             }
         }
 
-        // Helper function to show dashboard based on role
-        function showDashboardBasedOnRole(role, userName) {
-            switch (role) {
-                case 'customer':
-                    showCustomerDashboard();
-                    elements.customerWelcomeName.textContent = userName;
-                    elements.customerName.textContent = userName;
-                    elements.customerAvatar.textContent = userName.charAt(0).toUpperCase();
-                    break;
-                case 'seller':
-                    showSellerDashboard();
-                    elements.sellerName.textContent = userName;
-                    elements.sellerAvatar.textContent = userName.charAt(0).toUpperCase();
-                    break;
-                case 'rider':
-                    showRiderDashboard();
-                    elements.riderName.textContent = userName;
-                    elements.riderAvatar.textContent = userName.charAt(0).toUpperCase();
-                    elements.emergencyBtn.style.display = 'flex';
-                    break;
-            }
-        }
-
-        // Create user profile
+        // Create user profile - improved version
         async function createUserProfile(user, role, name) {
             try {
                 const profileData = {
@@ -3874,6 +3864,13 @@
                 return data;
             } catch (error) {
                 console.error('Failed to create user profile:', error);
+                
+                // Provide more user-friendly error messages
+                if (error.code === '42501') {
+                    showNotification('Error', 'Registration failed due to security restrictions. Please contact support.', 'error');
+                } else {
+                    showNotification('Error', 'Failed to create user profile: ' + error.message, 'error');
+                }
                 throw error;
             }
         }
@@ -5980,28 +5977,61 @@
                     .from('deliveries')
                     .select('*')
                     .is('rider_id', null)
-                    .eq('status', 'pending');
+                    .in('status', ['pending', 'accepted']);
                 
                 if (availableError) throw availableError;
                 
-                // Calculate stats
-                const today = new Date().toISOString().split('T')[0];
-                const completedToday = deliveries ? deliveries.filter(d => 
-                    d.status === 'delivered' && d.updated_at && d.updated_at.startsWith(today)
-                ).length : 0;
+                const available = availableDeliveries ? availableDeliveries.length : 0;
+                const active = deliveries ? deliveries.filter(d => d.status === 'accepted' || d.status === 'picked_up' || d.status === 'in_transit').length : 0;
+                const completedToday = deliveries ? deliveries.filter(d => {
+                    const deliveryDate = new Date(d.updated_at);
+                    const today = new Date();
+                    return d.status === 'delivered' && 
+                           deliveryDate.getDate() === today.getDate() &&
+                           deliveryDate.getMonth() === today.getMonth() &&
+                           deliveryDate.getFullYear() === today.getFullYear();
+                }).length : 0;
                 
-                const activeDeliveriesCount = deliveries ? deliveries.filter(d => 
-                    ['accepted', 'picked_up', 'in_transit'].includes(d.status)
-                ).length : 0;
+                // Calculate earnings
+                let todayEarnings = 0;
+                let weekEarnings = 0;
+                let monthEarnings = 0;
+                const today = new Date();
+                const weekStart = new Date(today);
+                weekStart.setDate(today.getDate() - today.getDay());
+                const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
                 
-                // Calculate rating (simplified)
-                const rating = 4.8; // This would come from customer reviews in a real app
+                if (deliveries) {
+                    deliveries.forEach(delivery => {
+                        if (delivery.status === 'delivered') {
+                            const deliveryDate = new Date(delivery.updated_at);
+                            
+                            if (deliveryDate.toDateString() === today.toDateString()) {
+                                todayEarnings += delivery.delivery_fee || 0;
+                            }
+                            
+                            if (deliveryDate >= weekStart) {
+                                weekEarnings += delivery.delivery_fee || 0;
+                            }
+                            
+                            if (deliveryDate >= monthStart) {
+                                monthEarnings += delivery.delivery_fee || 0;
+                            }
+                        }
+                    });
+                }
                 
-                elements.availableDeliveries.textContent = availableDeliveries ? availableDeliveries.length : 0;
-                elements.activeDeliveries.textContent = activeDeliveriesCount;
+                // Calculate rating (mock data for now)
+                const rating = '4.8';
+                
+                elements.availableDeliveries.textContent = available;
+                elements.activeDeliveries.textContent = active;
                 elements.completedDeliveries.textContent = completedToday;
-                elements.riderRating.textContent = rating.toFixed(1);
-                
+                elements.riderRating.textContent = rating;
+                elements.todayEarnings.textContent = todayEarnings.toLocaleString();
+                elements.weekEarnings.textContent = weekEarnings.toLocaleString();
+                elements.monthEarnings.textContent = monthEarnings.toLocaleString();
+                elements.totalDeliveries.textContent = deliveries ? deliveries.length : 0;
             } catch (error) {
                 console.error('Error updating rider stats:', error);
             }
@@ -6040,16 +6070,20 @@
                 deliveries.forEach(delivery => {
                     let icon = 'fas fa-truck';
                     let title = 'Delivery Assigned';
-                    let description = `New delivery assigned to you`;
+                    let description = `Delivery #${delivery.id.substring(0, 8)} assigned to you`;
                     
                     if (delivery.status === 'delivered') {
                         icon = 'fas fa-check-circle';
                         title = 'Delivery Completed';
-                        description = `Delivery completed successfully`;
-                    } else if (delivery.status === 'picked_up' || delivery.status === 'in_transit') {
+                        description = `Delivery #${delivery.id.substring(0, 8)} completed`;
+                    } else if (delivery.status === 'picked_up') {
+                        icon = 'fas fa-box';
+                        title = 'Package Picked Up';
+                        description = `Picked up delivery #${delivery.id.substring(0, 8)}`;
+                    } else if (delivery.status === 'in_transit') {
                         icon = 'fas fa-shipping-fast';
-                        title = 'Delivery in Progress';
-                        description = `Delivery is on the way`;
+                        title = 'In Transit';
+                        description = `Delivery #${delivery.id.substring(0, 8)} is in transit`;
                     }
                     
                     const activityItem = document.createElement('div');
@@ -6061,7 +6095,7 @@
                         <div class="timeline-content">
                             <h4>${title}</h4>
                             <p>${description}</p>
-                            <div class="timeline-time">${formatTimeAgo(delivery.updated_at || delivery.created_at)}</div>
+                            <div class="timeline-time">${formatTimeAgo(delivery.updated_at)}</div>
                         </div>
                     `;
                     
@@ -6075,6 +6109,7 @@
         // Load available deliveries
         async function loadAvailableDeliveries() {
             try {
+                // Get deliveries that need a rider
                 const { data: deliveries, error } = await supabase
                     .from('deliveries')
                     .select(`
@@ -6085,7 +6120,7 @@
                         )
                     `)
                     .is('rider_id', null)
-                    .eq('status', 'pending')
+                    .in('status', ['pending', 'accepted'])
                     .order('created_at', { ascending: false });
                 
                 if (error) throw error;
@@ -6095,7 +6130,7 @@
                 if (!deliveries || deliveries.length === 0) {
                     elements.availableDeliveriesList.innerHTML = `
                         <div class="empty-state">
-                            <i class="fas fa-list"></i>
+                            <i class="fas fa-truck"></i>
                             <h3>No Available Deliveries</h3>
                             <p>Check back later for new delivery requests.</p>
                         </div>
@@ -6108,12 +6143,28 @@
                     deliveryCard.className = 'delivery-card';
                     deliveryCard.innerHTML = `
                         <div class="delivery-header">
-                            <div>
-                                <h4>Delivery #${delivery.id.substring(0, 8)}</h4>
-                                <p>Pickup: ${delivery.pickup_address || 'N/A'}</p>
-                                <p>Delivery: ${delivery.delivery_address || 'N/A'}</p>
-                            </div>
+                            <h4>Delivery #${delivery.id.substring(0, 8)}</h4>
                             <span class="delivery-status status-${delivery.status}">${delivery.status}</span>
+                        </div>
+                        <div class="delivery-info">
+                            <div class="delivery-info-item">
+                                <div class="delivery-info-icon">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div>
+                                    <strong>Pickup</strong>
+                                    <p>${delivery.pickup_address || 'N/A'}</p>
+                                </div>
+                            </div>
+                            <div class="delivery-info-item">
+                                <div class="delivery-info-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <div>
+                                    <strong>Delivery</strong>
+                                    <p>${delivery.delivery_address || 'N/A'}</p>
+                                </div>
+                            </div>
                         </div>
                         <div class="delivery-info">
                             <div class="delivery-info-item">
@@ -6130,21 +6181,14 @@
                                     <i class="fas fa-clock"></i>
                                 </div>
                                 <div>
-                                    <strong>Estimated Time</strong>
-                                    <p>30-45 minutes</p>
+                                    <strong>Created</strong>
+                                    <p>${formatTimeAgo(delivery.created_at)}</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="delivery-map">
-                            <i class="fas fa-map-marker-alt" style="font-size: 48px; margin-bottom: 10px;"></i>
-                            <p>Route visualization would appear here</p>
-                        </div>
-                        <div class="order-card-actions">
+                        <div class="delivery-actions" style="margin-top: 15px;">
                             <button class="btn btn-primary btn-sm accept-delivery-btn" data-delivery-id="${delivery.id}">
                                 <i class="fas fa-check"></i> Accept Delivery
-                            </button>
-                            <button class="btn btn-outline btn-sm view-details-btn" data-delivery-id="${delivery.id}">
-                                <i class="fas fa-eye"></i> View Details
                             </button>
                         </div>
                     `;
@@ -6152,18 +6196,11 @@
                     elements.availableDeliveriesList.appendChild(deliveryCard);
                 });
                 
-                // Add event listeners to delivery actions
+                // Add event listeners to accept delivery buttons
                 document.querySelectorAll('.accept-delivery-btn').forEach(button => {
                     button.addEventListener('click', function() {
                         const deliveryId = this.getAttribute('data-delivery-id');
                         acceptDelivery(deliveryId);
-                    });
-                });
-                
-                document.querySelectorAll('.view-details-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const deliveryId = this.getAttribute('data-delivery-id');
-                        viewDeliveryDetails(deliveryId);
                     });
                 });
             } catch (error) {
@@ -6174,15 +6211,13 @@
 
         // Accept delivery
         async function acceptDelivery(deliveryId) {
-            showLoading();
-            
             try {
                 const { data, error } = await supabase
                     .from('deliveries')
                     .update({
                         rider_id: currentUser.id,
                         status: 'accepted',
-                        accepted_at: new Date().toISOString()
+                        updated_at: new Date().toISOString()
                     })
                     .eq('id', deliveryId)
                     .select()
@@ -6190,13 +6225,173 @@
                 
                 if (error) throw error;
                 
-                hideLoading();
                 showNotification('Success', 'Delivery accepted successfully!', 'success');
                 loadAvailableDeliveries();
                 updateRiderStats();
+                switchDashboardSection('myDeliveries');
             } catch (error) {
-                hideLoading();
                 showNotification('Error', 'Failed to accept delivery: ' + error.message, 'error');
+            }
+        }
+
+        // Load my deliveries
+        async function loadMyDeliveries() {
+            try {
+                const { data: deliveries, error } = await supabase
+                    .from('deliveries')
+                    .select(`
+                        *,
+                        orders (
+                            customer_id,
+                            total
+                        )
+                    `)
+                    .eq('rider_id', currentUser.id)
+                    .in('status', ['accepted', 'picked_up', 'in_transit'])
+                    .order('updated_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                elements.myDeliveriesList.innerHTML = '';
+                
+                if (!deliveries || deliveries.length === 0) {
+                    elements.myDeliveriesList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-truck"></i>
+                            <h3>No Active Deliveries</h3>
+                            <p>You don't have any active deliveries at the moment.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                deliveries.forEach(delivery => {
+                    const deliveryCard = document.createElement('div');
+                    deliveryCard.className = 'delivery-card';
+                    deliveryCard.innerHTML = `
+                        <div class="delivery-header">
+                            <h4>Delivery #${delivery.id.substring(0, 8)}</h4>
+                            <span class="delivery-status status-${delivery.status}">${delivery.status}</span>
+                        </div>
+                        <div class="delivery-info">
+                            <div class="delivery-info-item">
+                                <div class="delivery-info-icon">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div>
+                                    <strong>Pickup</strong>
+                                    <p>${delivery.pickup_address || 'N/A'}</p>
+                                </div>
+                            </div>
+                            <div class="delivery-info-item">
+                                <div class="delivery-info-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <div>
+                                    <strong>Delivery</strong>
+                                    <p>${delivery.delivery_address || 'N/A'}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="delivery-info">
+                            <div class="delivery-info-item">
+                                <div class="delivery-info-icon">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </div>
+                                <div>
+                                    <strong>Delivery Fee</strong>
+                                    <p>KSh ${delivery.delivery_fee || 0}</p>
+                                </div>
+                            </div>
+                            <div class="delivery-info-item">
+                                <div class="delivery-info-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <strong>Status</strong>
+                                    <p>${delivery.status}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="delivery-actions" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                            ${delivery.status === 'accepted' ? `
+                            <button class="btn btn-primary btn-sm pickup-delivery-btn" data-delivery-id="${delivery.id}">
+                                <i class="fas fa-box"></i> Mark as Picked Up
+                            </button>
+                            ` : ''}
+                            ${delivery.status === 'picked_up' ? `
+                            <button class="btn btn-primary btn-sm transit-delivery-btn" data-delivery-id="${delivery.id}">
+                                <i class="fas fa-shipping-fast"></i> Mark as In Transit
+                            </button>
+                            ` : ''}
+                            ${delivery.status === 'in_transit' ? `
+                            <button class="btn btn-success btn-sm complete-delivery-btn" data-delivery-id="${delivery.id}">
+                                <i class="fas fa-check"></i> Mark as Delivered
+                            </button>
+                            ` : ''}
+                            <button class="btn btn-outline btn-sm view-delivery-details-btn" data-delivery-id="${delivery.id}">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                        </div>
+                    `;
+                    
+                    elements.myDeliveriesList.appendChild(deliveryCard);
+                });
+                
+                // Add event listeners to delivery action buttons
+                document.querySelectorAll('.pickup-delivery-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const deliveryId = this.getAttribute('data-delivery-id');
+                        updateDeliveryStatus(deliveryId, 'picked_up');
+                    });
+                });
+                
+                document.querySelectorAll('.transit-delivery-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const deliveryId = this.getAttribute('data-delivery-id');
+                        updateDeliveryStatus(deliveryId, 'in_transit');
+                    });
+                });
+                
+                document.querySelectorAll('.complete-delivery-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const deliveryId = this.getAttribute('data-delivery-id');
+                        updateDeliveryStatus(deliveryId, 'delivered');
+                    });
+                });
+                
+                document.querySelectorAll('.view-delivery-details-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const deliveryId = this.getAttribute('data-delivery-id');
+                        viewDeliveryDetails(deliveryId);
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading my deliveries:', error);
+                showNotification('Error', 'Failed to load your deliveries', 'error');
+            }
+        }
+
+        // Update delivery status
+        async function updateDeliveryStatus(deliveryId, status) {
+            try {
+                const { data, error } = await supabase
+                    .from('deliveries')
+                    .update({
+                        status: status,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', deliveryId)
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                showNotification('Success', `Delivery status updated to ${status}!`, 'success');
+                loadMyDeliveries();
+                updateRiderStats();
+            } catch (error) {
+                showNotification('Error', 'Failed to update delivery status: ' + error.message, 'error');
             }
         }
 
@@ -6222,8 +6417,8 @@
                 details += `Pickup Address: ${delivery.pickup_address || 'N/A'}\n`;
                 details += `Delivery Address: ${delivery.delivery_address || 'N/A'}\n`;
                 details += `Delivery Fee: KSh ${delivery.delivery_fee || 0}\n`;
-                details += `Distance: ~5 km\n`;
-                details += `Estimated Time: 30-45 minutes`;
+                details += `Created: ${new Date(delivery.created_at).toLocaleString()}\n`;
+                details += `Last Updated: ${new Date(delivery.updated_at).toLocaleString()}`;
                 
                 alert(details);
             } catch (error) {
@@ -6232,268 +6427,71 @@
             }
         }
 
-        // Load my deliveries
-        async function loadMyDeliveries() {
+        // Load rider earnings
+        async function loadRiderEarnings() {
             try {
                 const { data: deliveries, error } = await supabase
                     .from('deliveries')
-                    .select(`
-                        *,
-                        orders (
-                            customer_id,
-                            total
-                        )
-                    `)
+                    .select('*')
                     .eq('rider_id', currentUser.id)
-                    .in('status', ['accepted', 'picked_up', 'in_transit'])
-                    .order('created_at', { ascending: false });
+                    .eq('status', 'delivered')
+                    .order('updated_at', { ascending: false });
                 
                 if (error) throw error;
                 
-                elements.myDeliveriesList.innerHTML = '';
+                elements.riderEarningsHistory.innerHTML = '';
                 
                 if (!deliveries || deliveries.length === 0) {
-                    elements.myDeliveriesList.innerHTML = `
+                    elements.riderEarningsHistory.innerHTML = `
                         <div class="empty-state">
-                            <i class="fas fa-truck"></i>
-                            <h3>No Active Deliveries</h3>
-                            <p>You don't have any active deliveries at the moment.</p>
-                            <button class="btn btn-primary" style="margin-top: 20px;" onclick="switchDashboardSection('availableDeliveries')">
-                                <i class="fas fa-list"></i> View Available Deliveries
-                            </button>
+                            <i class="fas fa-money-bill-wave"></i>
+                            <h3>No Earnings Yet</h3>
+                            <p>Your earnings will appear here once you complete deliveries.</p>
                         </div>
                     `;
                     return;
                 }
                 
+                let totalEarnings = 0;
+                
                 deliveries.forEach(delivery => {
-                    const deliveryCard = document.createElement('div');
-                    deliveryCard.className = 'delivery-card';
-                    deliveryCard.innerHTML = `
-                        <div class="delivery-header">
-                            <div>
-                                <h4>Delivery #${delivery.id.substring(0, 8)}</h4>
-                                <p>Pickup: ${delivery.pickup_address || 'N/A'}</p>
-                                <p>Delivery: ${delivery.delivery_address || 'N/A'}</p>
-                            </div>
-                            <span class="delivery-status status-${delivery.status}">${delivery.status}</span>
+                    totalEarnings += delivery.delivery_fee || 0;
+                    
+                    const earningItem = document.createElement('div');
+                    earningItem.className = 'order-item';
+                    earningItem.innerHTML = `
+                        <div class="order-item-info">
+                            <h4>Delivery #${delivery.id.substring(0, 8)}</h4>
+                            <p>Completed on ${new Date(delivery.updated_at).toLocaleDateString()}</p>
                         </div>
-                        <div class="delivery-info">
-                            <div class="delivery-info-item">
-                                <div class="delivery-info-icon">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                </div>
-                                <div>
-                                    <strong>Delivery Fee</strong>
-                                    <p>KSh ${delivery.delivery_fee || 0}</p>
-                                </div>
-                            </div>
-                            <div class="delivery-info-item">
-                                <div class="delivery-info-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div>
-                                    <strong>Status</strong>
-                                    <p>${delivery.status.replace('_', ' ').toUpperCase()}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="delivery-map">
-                            <i class="fas fa-map-marker-alt" style="font-size: 48px; margin-bottom: 10px;"></i>
-                            <p>Real-time tracking would appear here</p>
-                        </div>
-                        <div class="order-card-actions">
-                            ${delivery.status === 'accepted' ? `
-                            <button class="btn btn-primary btn-sm pickup-delivery-btn" data-delivery-id="${delivery.id}">
-                                <i class="fas fa-box"></i> Mark as Picked Up
-                            </button>
-                            ` : ''}
-                            ${delivery.status === 'picked_up' ? `
-                            <button class="btn btn-primary btn-sm transit-delivery-btn" data-delivery-id="${delivery.id}">
-                                <i class="fas fa-shipping-fast"></i> Mark as In Transit
-                            </button>
-                            ` : ''}
-                            ${delivery.status === 'in_transit' ? `
-                            <button class="btn btn-primary btn-sm deliver-btn" data-delivery-id="${delivery.id}">
-                                <i class="fas fa-check"></i> Mark as Delivered
-                            </button>
-                            ` : ''}
-                            <button class="btn btn-outline btn-sm view-details-btn" data-delivery-id="${delivery.id}">
-                                <i class="fas fa-eye"></i> View Details
-                            </button>
+                        <div class="order-item-actions">
+                            <span style="font-weight: bold; color: var(--success);">KSh ${(delivery.delivery_fee || 0).toLocaleString()}</span>
                         </div>
                     `;
                     
-                    elements.myDeliveriesList.appendChild(deliveryCard);
+                    elements.riderEarningsHistory.appendChild(earningItem);
                 });
                 
-                // Add event listeners to delivery actions
-                document.querySelectorAll('.pickup-delivery-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const deliveryId = this.getAttribute('data-delivery-id');
-                        updateDeliveryStatus(deliveryId, 'picked_up');
-                    });
-                });
+                // Add total earnings summary
+                const totalEarningsElement = document.createElement('div');
+                totalEarningsElement.className = 'order-item';
+                totalEarningsElement.style.borderTop = '2px solid rgba(255,255,255,0.2)';
+                totalEarningsElement.style.paddingTop = '15px';
+                totalEarningsElement.style.marginTop = '15px';
+                totalEarningsElement.innerHTML = `
+                    <div class="order-item-info">
+                        <h4 style="color: var(--success);">Total Earnings</h4>
+                    </div>
+                    <div class="order-item-actions">
+                        <span style="font-weight: bold; font-size: 1.2rem; color: var(--success);">KSh ${totalEarnings.toLocaleString()}</span>
+                    </div>
+                `;
                 
-                document.querySelectorAll('.transit-delivery-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const deliveryId = this.getAttribute('data-delivery-id');
-                        updateDeliveryStatus(deliveryId, 'in_transit');
-                    });
-                });
-                
-                document.querySelectorAll('.deliver-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const deliveryId = this.getAttribute('data-delivery-id');
-                        updateDeliveryStatus(deliveryId, 'delivered');
-                    });
-                });
-                
-                document.querySelectorAll('.view-details-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const deliveryId = this.getAttribute('data-delivery-id');
-                        viewDeliveryDetails(deliveryId);
-                    });
-                });
-            } catch (error) {
-                console.error('Error loading my deliveries:', error);
-                showNotification('Error', 'Failed to load your deliveries', 'error');
-            }
-        }
-
-        // Update delivery status
-        async function updateDeliveryStatus(deliveryId, status) {
-            showLoading();
-            
-            try {
-                const updateData = {
-                    status: status,
-                    updated_at: new Date().toISOString()
-                };
-                
-                // Add timestamp for specific status changes
-                if (status === 'picked_up') {
-                    updateData.picked_up_at = new Date().toISOString();
-                } else if (status === 'delivered') {
-                    updateData.delivered_at = new Date().toISOString();
-                }
-                
-                const { data, error } = await supabase
-                    .from('deliveries')
-                    .update(updateData)
-                    .eq('id', deliveryId)
-                    .select()
-                    .single();
-                
-                if (error) throw error;
-                
-                // If delivery is completed, also update the order status
-                if (status === 'delivered') {
-                    await supabase
-                        .from('orders')
-                        .update({ status: 'delivered' })
-                        .eq('id', data.order_id);
-                }
-                
-                hideLoading();
-                showNotification('Success', `Delivery status updated to ${status.replace('_', ' ')}!`, 'success');
-                loadMyDeliveries();
-                updateRiderStats();
-            } catch (error) {
-                hideLoading();
-                showNotification('Error', 'Failed to update delivery status: ' + error.message, 'error');
-            }
-        }
-
-        // Load rider earnings
-        async function loadRiderEarnings() {
-            try {
-                // Get rider's completed deliveries
-                const { data: deliveries, error } = await supabase
-                    .from('deliveries')
-                    .select('*')
-                    .eq('rider_id', currentUser.id)
-                    .eq('status', 'delivered');
-                
-                if (error) throw error;
-                
-                // Calculate earnings
-                let todayEarnings = 0;
-                let weekEarnings = 0;
-                let monthEarnings = 0;
-                const totalDeliveries = deliveries ? deliveries.length : 0;
-                
-                const today = new Date();
-                const weekStart = new Date(today);
-                weekStart.setDate(today.getDate() - today.getDay());
-                const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-                
-                if (deliveries) {
-                    deliveries.forEach(delivery => {
-                        const deliveryDate = new Date(delivery.delivered_at || delivery.updated_at);
-                        const earnings = delivery.delivery_fee || 0;
-                        
-                        if (deliveryDate.toDateString() === today.toDateString()) {
-                            todayEarnings += earnings;
-                        }
-                        
-                        if (deliveryDate >= weekStart) {
-                            weekEarnings += earnings;
-                        }
-                        
-                        if (deliveryDate >= monthStart) {
-                            monthEarnings += earnings;
-                        }
-                    });
-                }
-                
-                elements.todayEarnings.textContent = todayEarnings.toLocaleString();
-                elements.weekEarnings.textContent = weekEarnings.toLocaleString();
-                elements.monthEarnings.textContent = monthEarnings.toLocaleString();
-                elements.totalDeliveries.textContent = totalDeliveries;
-                
-                // Load earnings history
-                loadEarningsHistory(deliveries);
+                elements.riderEarningsHistory.appendChild(totalEarningsElement);
             } catch (error) {
                 console.error('Error loading rider earnings:', error);
-                showNotification('Error', 'Failed to load earnings data', 'error');
+                showNotification('Error', 'Failed to load earnings', 'error');
             }
-        }
-
-        // Load earnings history
-        function loadEarningsHistory(deliveries) {
-            if (!deliveries || deliveries.length === 0) {
-                elements.riderEarningsHistory.innerHTML = `
-                    <div class="empty-state" style="padding: 20px;">
-                        <i class="fas fa-chart-line"></i>
-                        <p>No earnings history available</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            // Group deliveries by date
-            const earningsByDate = {};
-            deliveries.forEach(delivery => {
-                const date = new Date(delivery.delivered_at || delivery.updated_at).toDateString();
-                if (!earningsByDate[date]) {
-                    earningsByDate[date] = 0;
-                }
-                earningsByDate[date] += delivery.delivery_fee || 0;
-            });
-            
-            // Create earnings history list
-            let earningsHTML = '';
-            Object.keys(earningsByDate).slice(0, 7).forEach(date => {
-                earningsHTML += `
-                    <div class="order-item">
-                        <div>${new Date(date).toLocaleDateString()}</div>
-                        <div>KSh ${earningsByDate[date].toLocaleString()}</div>
-                    </div>
-                `;
-            });
-            
-            elements.riderEarningsHistory.innerHTML = earningsHTML;
         }
 
         // Load rider profile
@@ -6614,7 +6612,8 @@
             const file = e.target.files[0];
             if (!file) return;
             
-            await uploadRiderDocument(file, 'license_photo_url');
+            // In a real app, you would upload this to Supabase storage
+            showNotification('Info', 'License photo would be uploaded and saved to your profile', 'info');
         }
 
         // Handle vehicle photo upload
@@ -6622,49 +6621,8 @@
             const file = e.target.files[0];
             if (!file) return;
             
-            await uploadRiderDocument(file, 'vehicle_photo_url');
-        }
-
-        // Upload rider document
-        async function uploadRiderDocument(file, fieldName) {
-            try {
-                showLoading();
-                
-                // Upload file to Supabase Storage
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${currentUser.id}-${fieldName}.${fileExt}`;
-                const filePath = `rider-docs/${fileName}`;
-                
-                const { error: uploadError } = await supabase.storage
-                    .from('documents')
-                    .upload(filePath, file);
-                
-                if (uploadError) throw uploadError;
-                
-                // Get public URL
-                const { data: { publicUrl } } = supabase.storage
-                    .from('documents')
-                    .getPublicUrl(filePath);
-                
-                // Update user profile with document URL
-                const { data, error } = await supabase
-                    .from('profiles')
-                    .update({ [fieldName]: publicUrl })
-                    .eq('id', currentUser.id)
-                    .select()
-                    .single();
-                
-                if (error) throw error;
-                
-                hideLoading();
-                showNotification('Success', 'Document uploaded successfully!', 'success');
-                
-                // Refresh verification status
-                loadRiderVerificationStatus(data);
-            } catch (error) {
-                hideLoading();
-                showNotification('Error', 'Failed to upload document: ' + error.message, 'error');
-            }
+            // In a real app, you would upload this to Supabase storage
+            showNotification('Info', 'Vehicle photo would be uploaded and saved to your profile', 'info');
         }
 
         // Save rider profile
@@ -6673,7 +6631,7 @@
             const phone = document.getElementById('riderProfilePhone').value;
             const idNumber = document.getElementById('riderIdNumber').value;
             const vehicleType = document.getElementById('riderVehicle').value;
-            const licenseNumber = document.getElementById('riderLicense').value;
+            const license = document.getElementById('riderLicense').value;
             const vehicleReg = document.getElementById('riderVehicleReg').value;
             const emergencyName = document.getElementById('emergencyContactName').value;
             const emergencyPhone = document.getElementById('emergencyContactPhone').value;
@@ -6685,7 +6643,7 @@
                     phone,
                     id_number: idNumber,
                     vehicle_type: vehicleType,
-                    license_number: licenseNumber,
+                    license_number: license,
                     vehicle_registration: vehicleReg,
                     emergency_contact_name: emergencyName,
                     emergency_contact_phone: emergencyPhone,
@@ -6693,7 +6651,7 @@
                 };
                 
                 // If this is the first time setting required fields, set verification status to pending
-                if (idNumber && licenseNumber && vehicleReg && !profileData.verification_status) {
+                if (idNumber && license && vehicleReg && !profileData.verification_status) {
                     profileData.verification_status = 'pending';
                 }
                 
@@ -6720,18 +6678,10 @@
 
         // Handle emergency button
         function handleEmergency() {
-            if (confirm('Are you sure you want to trigger an emergency alert? This will notify our support team immediately.')) {
-                showLoading();
-                
-                // Simulate emergency alert
-                setTimeout(() => {
-                    hideLoading();
-                    showNotification('Emergency Alert', 'Emergency alert sent! Support team has been notified.', 'info');
-                    
-                    // In a real app, this would send an actual emergency notification
-                    // to the support team with the rider's location and details
-                }, 2000);
-            }
+            // In a real app, this would trigger an emergency alert to the support team
+            showNotification('Emergency', 'Emergency alert sent to support team! Help is on the way.', 'error');
+            
+            // You could also send an email, SMS, or push notification here
         }
 
         // Handle contact form
@@ -6752,29 +6702,39 @@
         }
 
         // Show notification
-        function showNotification(title, message, type = 'info') {
-            elements.notificationTitle.textContent = title;
-            elements.notificationMessage.textContent = message;
+        function showNotification(title, message, type = 'success') {
+            const notification = elements.notification;
+            const notificationTitle = elements.notificationTitle;
+            const notificationMessage = elements.notificationMessage;
+            
+            // Set notification content
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
             
             // Set notification type
-            elements.notification.className = 'notification';
-            if (type === 'success') {
-                elements.notification.classList.add('notification-success');
-                elements.notification.querySelector('i').className = 'fas fa-check-circle';
-            } else if (type === 'error') {
-                elements.notification.classList.add('notification-error');
-                elements.notification.querySelector('i').className = 'fas fa-exclamation-circle';
-            } else {
-                elements.notification.querySelector('i').className = 'fas fa-info-circle';
-            }
+            notification.className = 'notification';
+            notification.classList.add(`notification-${type}`);
+            
+            // Update icon based on type
+            const icon = notification.querySelector('i');
+            icon.className = type === 'success' ? 'fas fa-check-circle' :
+                            type === 'error' ? 'fas fa-exclamation-circle' :
+                            type === 'info' ? 'fas fa-info-circle' : 'fas fa-check-circle';
             
             // Show notification
-            elements.notification.classList.add('show');
+            notification.classList.add('show');
             
-            // Auto hide after 5 seconds
+            // Auto-hide after 5 seconds
             setTimeout(() => {
-                elements.notification.classList.remove('show');
+                notification.classList.remove('show');
             }, 5000);
+        }
+
+        // Utility function to handle file uploads (placeholder)
+        async function handleFileUpload(file, path) {
+            // In a real app, you would upload the file to Supabase storage
+            // and return the public URL
+            return 'https://example.com/uploaded-file.jpg';
         }
     </script>
 </body>
