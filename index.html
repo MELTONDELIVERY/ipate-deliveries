@@ -2782,62 +2782,85 @@
             }
         }
         
-        // Handle registration
-        async function handleRegister(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const phone = document.getElementById('registerPhone').value;
-            const userType = document.getElementById('registerType').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('registerConfirmPassword').value;
-            
-            // Validate passwords match
-            if (password !== confirmPassword) {
-                showNotification('Passwords do not match', 'error');
-                return;
-            }
-            
-            try {
-                showLoading(true);
-                
-                const { data, error } = await supabase.auth.signUp({
-                    email: email,
-                    password: password,
-                    options: {
-                        data: {
-                            full_name: name,
-                            phone: phone,
-                            role: userType
-                        }
-                    }
-                });
-                
-                if (error) {
-                    throw error;
-                }
-                
-                // Registration successful
-                showNotification('Registration successful! Please check your email for verification.');
-                closeAuthModal();
-                
-                // Switch to login tab
-                document.querySelectorAll('.auth-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-                document.querySelector('.auth-tab').classList.add('active');
-                
-                document.querySelectorAll('.auth-form').forEach(form => {
-                    form.classList.remove('active');
-                });
-                document.getElementById('loginForm').classList.add('active');
-                
-            } catch (error) {
-                console.error('Registration error:', error);
-                showNotification(error.message, 'error');
-            } finally {
-                showLoading(false);
+      // Handle registration
+async function handleRegister(e) {
+  e.preventDefault();
+  
+  const name = document.getElementById('registerName').value;
+  const email = document.getElementById('registerEmail').value;
+  const phone = document.getElementById('registerPhone').value;
+  const userType = document.getElementById('registerType').value;
+  const password = document.getElementById('registerPassword').value;
+  const confirmPassword = document.getElementById('registerConfirmPassword').value;
+  
+  // Validate passwords match
+  if (password !== confirmPassword) {
+    showNotification('Passwords do not match', 'error');
+    return;
+  }
+  
+  // Validate password strength
+  if (password.length < 6) {
+    showNotification('Password must be at least 6 characters long', 'error');
+    return;
+  }
+  
+  try {
+    showLoading(true);
+    
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          full_name: name,
+          phone: phone,
+          role: userType
+        }
+      }
+    });
+    
+    if (error) {
+      // More specific error handling
+      if (error.message.includes('Password should be at least 6 characters')) {
+        throw new Error('Password must be at least 6 characters long');
+      } else if (error.message.includes('User already registered')) {
+        throw new Error('An account with this email already exists');
+      } else {
+        throw error;
+      }
+    }
+    
+    // Registration successful
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      showNotification('An account with this email already exists. Please try logging in.', 'error');
+    } else {
+      showNotification('Registration successful! Please check your email for verification.');
+      closeAuthModal();
+      
+      // Switch to login tab
+      switchToLoginTab();
+    }
+    
+  } catch (error) {
+    console.error('Registration error:', error);
+    showNotification(error.message, 'error');
+  } finally {
+    showLoading(false);
+  }
+}
+
+// Helper function to switch to login tab
+function switchToLoginTab() {
+  document.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  document.querySelector('.auth-tab').classList.add('active');
+  
+  document.querySelectorAll('.auth-form').forEach(form => {
+    form.classList.remove('active');
+  });
+  document.getElementById('loginForm').classList.add('active');
             }
         }
         
@@ -3631,6 +3654,7 @@
     </script>
 </body>
 </html>
+
 
 
 
