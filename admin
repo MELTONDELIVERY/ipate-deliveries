@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPATE Deliveries - Admin Portal</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #00B894;
+            --warning: #FBC531;
+            --danger: #E84118;
+            --info: #0984e3;
+            --dark: #1A1A1A;
+            --light: #F5F5F5;
+            --glass: rgba(255, 255, 255, 0.15);
+            --glass-dark: rgba(0, 0, 0, 0.2);
+            --blur: blur(15px);
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--gradient);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Glass Effect */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 20px;
+        }
+
+        /* Header Styles */
+        .admin-header {
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: white;
+            font-size: 28px;
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: white;
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* GitHub Optimized Dropdowns */
+        select.form-control {
+            appearance: menulist !important;
+            -webkit-appearance: menulist !important;
+            -moz-appearance: menulist !important;
+            background-image: none !important;
+            padding-right: 15px !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        select.form-control option {
+            background: #2d3748;
+            color: white;
+            padding: 10px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        /* Dashboard */
+        .admin-dashboard {
+            padding: 40px 0;
+            display: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: white;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+        }
+
+        /* Sections */
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
+            gap: 15px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .table-row {
+            padding: 15px 20px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 2fr 2fr 1fr;
+            gap: 15px;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pending { background: rgba(251, 197, 49, 0.2); color: var(--warning); }
+        .status-approved { background: rgba(0, 184, 148, 0.2); color: var(--success); }
+        .status-rejected { background: rgba(232, 65, 24, 0.2); color: var(--danger); }
+        .status-processing { background: rgba(9, 132, 227, 0.2); color: var(--info); }
+        .status-delivered { background: rgba(0, 184, 148, 0.2); color: var(--success); }
+        .status-active { background: rgba(0, 184, 148, 0.2); color: var(--success); }
+        .status-suspended { background: rgba(232, 65, 24, 0.2); color: var(--danger); }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-warning { background: var(--warning); color: black; }
+        .btn-info { background: var(--info); color: white; }
+
+        /* Charts Placeholder */
+        .chart-container {
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: white;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            flex-direction: column;
+        }
+
+        /* Search and Filters */
+        .admin-toolbar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .filter-select {
+            min-width: 200px;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .action-card {
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        /* GitHub Footer */
+        .github-footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 40px;
+        }
+
+        .github-link {
+            color: var(--primary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .github-link:hover {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .table-header, .table-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            .admin-toolbar {
+                flex-direction: column;
+            }
+            
+            .search-box, .filter-select {
+                min-width: 100%;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 20px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .chart-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h1 class="login-title">
+                <i class="fas fa-crown"></i><br>
+                IPATE Admin
+            </h1>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="adminUsername" placeholder="Admin Username" value="admin" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="adminPassword" placeholder="Password" value="admin123" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Access Admin Panel
+                </button>
+            </form>
+            <div style="text-align: center; margin-top: 20px; color: rgba(255,255,255,0.7);">
+                <small>IPATE Deliveries - GitHub Hosted Admin</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-crown logo-icon"></i>
+                        <span class="logo-text">IPATE Admin</span>
+                    </div>
+                    <div class="admin-nav">
+                        <button class="nav-btn active" onclick="showAdminSection('overview')">
+                            <i class="fas fa-chart-bar"></i> Overview
+                        </button>
+                        <button class="nav-btn" onclick="showAdminSection('users')">
+                            <i class="fas fa-users"></i> Users
+                        </button>
+                        <button class="nav-btn" onclick="showAdminSection('orders')">
+                            <i class="fas fa-shopping-cart"></i> Orders
+                        </button>
+                        <button class="nav-btn" onclick="showAdminSection('verification')">
+                            <i class="fas fa-shield-alt"></i> Verification
+                        </button>
+                    </div>
+                    <div style="color: white; display: flex; align-items: center; gap: 15px;">
+                        <span id="adminGreeting">Welcome, Admin</span>
+                        <button class="nav-btn" onclick="adminLogout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="container">
+            <!-- Overview Section -->
+            <div id="overviewSection" class="dashboard-section active">
+                <h2 style="color: white; margin-bottom: 30px;">Platform Overview</h2>
+                
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="action-card" onclick="showAdminSection('users')">
+                        <div class="action-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h3>Manage Users</h3>
+                        <p>View and manage all platform users</p>
+                    </div>
+                    <div class="action-card" onclick="showAdminSection('verification')">
+                        <div class="action-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>Verify Accounts</h3>
+                        <p>Approve seller and rider verifications</p>
+                    </div>
+                    <div class="action-card" onclick="showAdminSection('orders')">
+                        <div class="action-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3>Order Management</h3>
+                        <p>Monitor and manage all orders</p>
+                    </div>
+                    <div class="action-card" onclick="refreshAllData()">
+                        <div class="action-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3>Refresh Data</h3>
+                        <p>Reload all platform data</p>
+                    </div>
+                </div>
+                
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalOrders">0</div>
+                        <div class="stat-label">Total Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="pendingVerifications">0</div>
+                        <div class="stat-label">Pending Verifications</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">KSh <span id="totalRevenue">0</span></div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                </div>
+
+                <!-- Platform Analytics -->
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <span>Platform Analytics</span>
+                        <select class="form-control filter-select" style="width: auto; min-width: 150px;" onchange="loadAnalytics(this.value)">
+                            <option value="7days">Last 7 Days</option>
+                            <option value="30days">Last 30 Days</option>
+                            <option value="90days">Last 90 Days</option>
+                        </select>
+                    </h3>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-line" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p>Real-time analytics dashboard</p>
+                        <small>Connected to Supabase Database</small>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 20px;">Recent Platform Activity</h3>
+                    <div class="data-table">
+                        <div class="table-header">
+                            <div>User</div>
+                            <div>Action</div>
+                            <div>Role</div>
+                            <div>Time</div>
+                            <div>Status</div>
+                        </div>
+                        <div id="recentActivity">
+                            <div class="loading-spinner">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Management Section -->
+            <div id="usersSection" class="dashboard-section">
+                <h2 style="color: white; margin-bottom: 20px;">User Management</h2>
+                
+                <div class="admin-toolbar">
+                    <div class="search-box">
+                        <input type="text" class="form-control" id="userSearch" placeholder="Search users by name, email, or ID...">
+                    </div>
+                    <select class="form-control filter-select" id="userTypeFilter">
+                        <option value="">All User Types</option>
+                        <option value="customer">Customers</option>
+                        <option value="seller">Sellers</option>
+                        <option value="rider">Riders</option>
+                    </select>
+                    <select class="form-control filter-select" id="userStatusFilter">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="pending">Pending Verification</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="loadUsers()" style="width: auto;">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-header">
+                        <div>ID</div>
+                        <div>Name</div>
+                        <div>Email</div>
+                        <div>Role</div>
+                        <div>Actions</div>
+                    </div>
+                    <div id="usersTableBody">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Management Section -->
+            <div id="ordersSection" class="dashboard-section">
+                <h2 style="color: white; margin-bottom: 20px;">Order Management</h2>
+                
+                <div class="admin-toolbar">
+                    <div class="search-box">
+                        <input type="text" class="form-control" id="orderSearch" placeholder="Search orders by ID, customer, or product...">
+                    </div>
+                    <select class="form-control filter-select" id="orderStatusFilter">
+                        <option value="">All Order Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="processing">Processing</option>
+                        <option value="ready">Ready for Pickup</option>
+                        <option value="picked_up">Picked Up</option>
+                        <option value="in_transit">In Transit</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="loadOrders()" style="width: auto;">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-header">
+                        <div>Order ID</div>
+                        <div>Customer</div>
+                        <div>Amount</div>
+                        <div>Status</div>
+                        <div>Actions</div>
+                    </div>
+                    <div id="ordersTableBody">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verification Center Section -->
+            <div id="verificationSection" class="dashboard-section">
+                <h2 style="color: white; margin-bottom: 20px;">Verification Center</h2>
+                
+                <div class="admin-toolbar">
+                    <select class="form-control filter-select" id="verificationTypeFilter">
+                        <option value="">All Verification Types</option>
+                        <option value="seller">Seller Verifications</option>
+                        <option value="rider">Rider Verifications</option>
+                    </select>
+                    <select class="form-control filter-select" id="verificationStatusFilter">
+                        <option value="pending">Pending Review</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="loadVerifications()" style="width: auto;">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-header">
+                        <div>User ID</div>
+                        <div>Name</div>
+                        <div>Type</div>
+                        <div>Status</div>
+                        <div>Actions</div>
+                    </div>
+                    <div id="verificationTableBody">
+                        <div class="loading-spinner">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GitHub Footer -->
+        <footer class="github-footer">
+            <p>
+                <a href="https://github.com/yourusername/ipate-deliveries" class="github-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                    View on GitHub
+                </a>
+            </p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                IPATE Deliveries Admin Panel - Hosted on GitHub Pages
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://xbwvsswycdskxkorharu.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid3Zzc3d5Y2Rza3hrb3JoYXJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNDI4MjcsImV4cCI6MjA3NzgxODgyN30.8PWNCjErZ4194dBT48ph4PyMWTO0EqLsZIDK8j2O1yc';
+
+        // Initialize Supabase
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // GitHub Optimized Admin Configuration
+        const ADMIN_CREDENTIALS = {
+            username: "admin",
+            password: "admin123",
+            name: "GitHub Admin"
+        };
+
+        // Admin State
+        let isAdminLoggedIn = false;
+
+        // Initialize Admin System
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 IPATE GitHub Admin Panel Initializing...');
+            initializeAdminSystem();
+        });
+
+        function initializeAdminSystem() {
+            // Check if admin is already logged in
+            const adminSession = localStorage.getItem('ipateAdminSession');
+            if (adminSession) {
+                const session = JSON.parse(adminSession);
+                if (session.expires > Date.now()) {
+                    isAdminLoggedIn = true;
+                    showAdminDashboard();
+                } else {
+                    localStorage.removeItem('ipateAdminSession');
+                }
+            }
+
+            // Setup event listeners
+            document.getElementById('adminLoginForm').addEventListener('submit', handleAdminLogin);
+            document.getElementById('userSearch').addEventListener('input', filterUsers);
+            document.getElementById('userTypeFilter').addEventListener('change', filterUsers);
+            document.getElementById('userStatusFilter').addEventListener('change', filterUsers);
+            document.getElementById('orderSearch').addEventListener('input', filterOrders);
+            document.getElementById('orderStatusFilter').addEventListener('change', filterOrders);
+            document.getElementById('verificationTypeFilter').addEventListener('change', loadVerifications);
+            document.getElementById('verificationStatusFilter').addEventListener('change', loadVerifications);
+
+            // GitHub specific optimizations
+            optimizeForGitHub();
+        }
+
+        function optimizeForGitHub() {
+            // Ensure all dropdowns work perfectly on GitHub Pages
+            const selects = document.querySelectorAll('select');
+            selects.forEach(select => {
+                select.style.opacity = '1';
+                select.style.visibility = 'visible';
+                select.style.display = 'block';
+            });
+            
+            console.log('✅ GitHub Optimizations Applied');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+
+            // GitHub compatible authentication
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                // Create admin session
+                const session = {
+                    username: username,
+                    loginTime: Date.now(),
+                    expires: Date.now() + (8 * 60 * 60 * 1000) // 8 hours
+                };
+                localStorage.setItem('ipateAdminSession', JSON.stringify(session));
+                
+                isAdminLoggedIn = true;
+                showAdminDashboard();
+                showNotification('Success', 'Welcome to IPATE Admin!', 'success');
+            } else {
+                showNotification('Error', 'Invalid admin credentials!', 'error');
+            }
+        }
+
+        function showAdminDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            document.getElementById('adminGreeting').textContent = `Welcome, ${ADMIN_CREDENTIALS.name}`;
+            
+            // Load initial data from Supabase
+            loadAdminOverview();
+            loadUsers();
+            loadOrders();
+            loadVerifications();
+            
+            // GitHub optimizations
+            setTimeout(optimizeForGitHub, 100);
+        }
+
+        function adminLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('ipateAdminSession');
+                isAdminLoggedIn = false;
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('adminLoginForm').reset();
+                showNotification('Success', 'Logged out successfully', 'success');
+            }
+        }
+
+        function showAdminSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show target section
+            document.getElementById(section + 'Section').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Data Loading Functions
+        async function loadAdminOverview() {
+            showLoading('recentActivity');
+            
+            try {
+                // Get users count
+                const { data: users, error: usersError } = await supabase
+                    .from('users')
+                    .select('*');
+
+                // Get orders count
+                const { data: orders, error: ordersError } = await supabase
+                    .from('orders')
+                    .select('*');
+
+                if (usersError) console.error('Users error:', usersError);
+                if (ordersError) console.error('Orders error:', ordersError);
+
+                // Update stats
+                document.getElementById('totalUsers').textContent = users?.length || 0;
+                document.getElementById('totalOrders').textContent = orders?.length || 0;
+                
+                // Calculate pending verifications
+                const pendingSellers = users?.filter(u => u.role === 'seller' && u.verification_status === 'pending').length || 0;
+                const pendingRiders = users?.filter(u => u.role === 'rider' && u.verification_status === 'pending').length || 0;
+                document.getElementById('pendingVerifications').textContent = pendingSellers + pendingRiders;
+
+                // Calculate revenue
+                const revenue = orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
+                document.getElementById('totalRevenue').textContent = revenue.toFixed(2);
+
+                // Load recent activity
+                loadRecentActivity();
+
+            } catch (error) {
+                console.error('Error loading overview:', error);
+                showNotification('Error', 'Failed to load overview data', 'error');
+            }
+        }
+
+        async function loadRecentActivity() {
+            try {
+                const { data: activities, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(8);
+
+                if (error) throw error;
+
+                const activityContainer = document.getElementById('recentActivity');
+                
+                if (!activities || activities.length === 0) {
+                    activityContainer.innerHTML = '<div class="table-row"><div style="text-align: center; grid-column: 1 / -1;">No recent activity</div></div>';
+                    return;
+                }
+
+                activityContainer.innerHTML = activities.map(user => {
+                    const status = user.verification_status === 'approved' ? 'status-active' : 
+                                  user.verification_status === 'rejected' ? 'status-suspended' : 'status-pending';
+                    
+                    return `
+                        <div class="table-row">
+                            <div>${user.full_name || 'N/A'}</div>
+                            <div>${user.role} ${user.verification_status === 'pending' ? 'Registration' : 'Activity'}</div>
+                            <div>${user.role}</div>
+                            <div>${new Date(user.created_at).toLocaleDateString()}</div>
+                            <div><span class="status-badge ${status}">${user.verification_status || 'active'}</span></div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading recent activity:', error);
+                document.getElementById('recentActivity').innerHTML = '<div class="table-row"><div style="text-align: center; grid-column: 1 / -1;">Error loading activity</div></div>';
+            }
+        }
+
+        async function loadUsers() {
+            showLoading('usersTableBody');
+            
+            try {
+                const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+                const typeFilter = document.getElementById('userTypeFilter').value;
+                const statusFilter = document.getElementById('userStatusFilter').value;
+                
+                let query = supabase
+                    .from('users')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (typeFilter) {
+                    query = query.eq('role', typeFilter);
+                }
+
+                if (statusFilter) {
+                    if (statusFilter === 'pending') {
+                        query = query.eq('verification_status', 'pending');
+                    } else {
+                        query = query.eq('status', statusFilter);
+                    }
+                }
+
+                const { data: users, error } = await query;
+
+                if (error) throw error;
+
+                // Apply search filter
+                let filteredUsers = users;
+                if (searchTerm) {
+                    filteredUsers = users.filter(user => 
+                        user.full_name?.toLowerCase().includes(searchTerm) ||
+                        user.email?.toLowerCase().includes(searchTerm) ||
+                        user.id.toString().includes(searchTerm)
+                    );
+                }
+
+                const tableBody = document.getElementById('usersTableBody');
+                
+                if (!filteredUsers || filteredUsers.length === 0) {
+                    tableBody.innerHTML = '<div class="table-row"><div style="text-align: center; grid-column: 1 / -1;">No users found</div></div>';
+                    return;
+                }
+
+                tableBody.innerHTML = filteredUsers.map(user => {
+                    const statusClass = user.status === 'suspended' ? 'status-suspended' : 
+                                      user.verification_status === 'pending' ? 'status-pending' : 'status-active';
+                    
+                    return `
+                        <div class="table-row">
+                            <div>${user.id}</div>
+                            <div>${user.full_name || 'N/A'}</div>
+                            <div>${user.email || 'N/A'}</div>
+                            <div>
+                                <span class="status-badge ${user.role === 'seller' ? 'status-pending' : user.role === 'rider' ? 'status-approved' : 'status-processing'}">
+                                    ${user.role}
+                                </span>
+                            </div>
+                            <div>
+                                <button class="action-btn btn-info" onclick="viewUserDetails(${user.id})" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                ${user.status === 'active' ? 
+                                    `<button class="action-btn btn-danger" onclick="suspendUser(${user.id})" title="Suspend User">
+                                        <i class="fas fa-ban"></i>
+                                    </button>` :
+                                    `<button class="action-btn btn-success" onclick="activateUser(${user.id})" title="Activate User">
+                                        <i class="fas fa-check"></i>
+                                    </button>`
+                                }
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+                document.getElementById('usersTableBody').innerHTML = '<div class="table-row"><div style="text-align: center; grid-column: 1 / -1;">Error loading users</div></div>';
+                showNotification('Error', 'Failed to load users', 'error');
+            }
+        }
+
+        async function loadOrders() {
+            showLoading('ordersTableBody');
+            
+            try {
+                const searchTerm = document.getElementById('orderSearch').value.toLowerCase();
+                const statusFilter = document.getElementById('orderStatusFilter').value;
+                
+                let query = supabase
+                    .from('orders')
+                    .select(`
+                        *,
+                        users!orders_customer_id_fkey(full_name, email)
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (statusFilter) {
+                    query = query.eq('status', statusFilter);
+                }
+
+                const { data: orders, error } = await query;
+
+                if (error) throw error;
+
+                // Apply search filter
+                let filteredOrders = orders;
+                if (searchTerm) {
+                    filteredOrders = orders.filter(order => 
+                        order.id.toString().includes(searchTerm) ||
+                        order.users?.full_name?.toLowerCase().includes(searchTerm) ||
+                        order.total_amount?.toString().includes(searchTerm)
+                    );
+                }
+
+                const tableBody = document.getElementById('ordersTableBody');
+                
+                if (!filteredOrders || filteredOrders.length === 0) {
+                    tableBody.innerHTML = '<div class="table-row"><div style="text-align: center; grid-column: 1 / -1;">No orders found</div></div>';
+                    return;
+                }
+
+                tableBody.innerHTML = filteredOrders.map(order => {
+                    const customerName = order.users?.full_name || 'Unknown Customer';
+                    return `
+                        <div class="table-row">
+                            <div>#${order.id}</div>
+                            <div>${customerName}</div>
+                            <div>KSh ${order.total_amount ? order.total_amount.toFixed(2) : '0.00'}</div>
+                            <div>
+                                <span class="status-badge status-${order.status || 'pending'}">
+                                    ${order.status || 'pending'}
+                                </span>
+                            </div>
+                            <div>
+                                <button class="action-btn btn-info" onclick="viewOrderDetails(${order.id})" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn btn-success" onclick="updateOrderStatus(${order.id}, 'processing')" title="Process Order">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('ordersTableBody').innerHTML = '<div class="table-row"><div style="text-align: center; grid-column: 1 / -1;">Error loading orders</div></div>';
+                showNotification('Error', 'Failed to load orders', 'error');
+            }
+        }
+
+        async function loadVerifications() {
+            showLoading('verificationTableBody');
+            
+            try {
+                const typeFilter = document.getElementById('verificationTypeFilter').value;
+                const statusFilter = document.getElementById('verificationStatusFilter').value;
+                
+                let query = supabase
+                    .from('users')
+                    .select('*')
+                    .in('role', ['seller', 'rider'])
+                    .order('created_at', { ascending: false });
+
+                if (typeFilter) {
+                    query = query.eq('role', typeFilter);
+                }
+
+                if (statusFilter) {
+                    query = query.eq('verification_status', statusFilter);
+                }
+
+                const { data: users, error } = await query;
+
+                if (error) throw error;
+
+                const tableBody = document.getElementById('verificationTableBody');
+                
+                if (!users || users.length === 0) {
+                    tableBody.innerHTML = '<div class="table-row"><div style="text-align: center; grid-column: 1 / -1;">No verifications found</div></div>';
+                    return;
+                }
+
+                tableBody.innerHTML = users.map(user => `
+                    <div class="table-row">
+                        <div>${user.id}</div>
+                        <div>${user.full_name || 'N/A'}</div>
+                        <div>${user.role}</div>
+                        <div>
+                            <span class="status-badge status-${user.verification_status || 'pending'}">
+                                ${user.verification_status || 'pending'}
+                            </span>
+                        </div>
+                        <div>
+                            <button class="action-btn btn-info" onclick="viewVerificationDetails(${user.id})" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn btn-success" onclick="approveVerification(${user.id})" title="Approve">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="action-btn btn-danger" onclick="rejectVerification(${user.id})" title="Reject">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading verifications:', error);
+                document.getElementById('verificationTableBody').innerHTML = '<div class="table-row"><div style="text-align: center; grid-column: 1 / -1;">Error loading verifications</div></div>';
+                showNotification('Error', 'Failed to load verifications', 'error');
+            }
+        }
+
+        // Filter Functions
+        function filterUsers() {
+            loadUsers();
+        }
+
+        function filterOrders() {
+            loadOrders();
+        }
+
+        // Action Functions
+        function viewUserDetails(userId) {
+            showNotification('Info', `Loading user details for ID: ${userId}`, 'info');
+        }
+
+        async function suspendUser(userId) {
+            if (confirm('Are you sure you want to suspend this user?')) {
+                try {
+                    const { error } = await supabase
+                        .from('users')
+                        .update({ status: 'suspended' })
+                        .eq('id', userId);
+
+                    if (error) throw error;
+
+                    showNotification('Success', `User ${userId} suspended`, 'success');
+                    loadUsers();
+                } catch (error) {
+                    console.error('Error suspending user:', error);
+                    showNotification('Error', 'Failed to suspend user', 'error');
+                }
+            }
+        }
+
+        async function activateUser(userId) {
+            try {
+                const { error } = await supabase
+                    .from('users')
+                    .update({ status: 'active' })
+                    .eq('id', userId);
+
+                if (error) throw error;
+
+                showNotification('Success', `User ${userId} activated`, 'success');
+                loadUsers();
+            } catch (error) {
+                console.error('Error activating user:', error);
+                showNotification('Error', 'Failed to activate user', 'error');
+            }
+        }
+
+        function viewOrderDetails(orderId) {
+            showNotification('Info', `Loading order details for ID: ${orderId}`, 'info');
+        }
+
+        async function updateOrderStatus(orderId, status) {
+            try {
+                const { error } = await supabase
+                    .from('orders')
+                    .update({ status: status })
+                    .eq('id', orderId);
+
+                if (error) throw error;
+
+                showNotification('Success', `Order ${orderId} status updated to ${status}`, 'success');
+                loadOrders();
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                showNotification('Error', 'Failed to update order status', 'error');
+            }
+        }
+
+        function viewVerificationDetails(userId) {
+            showNotification('Info', `Loading verification details for user ID: ${userId}`, 'info');
+        }
+
+        async function approveVerification(userId) {
+            if (confirm('Approve this verification?')) {
+                try {
+                    const { error } = await supabase
+                        .from('users')
+                        .update({ 
+                            verification_status: 'approved',
+                            status: 'active'
+                        })
+                        .eq('id', userId);
+
+                    if (error) throw error;
+
+                    showNotification('Success', 'Verification approved! User is now active.', 'success');
+                    loadVerifications();
+                    loadAdminOverview();
+                } catch (error) {
+                    console.error('Error approving verification:', error);
+                    showNotification('Error', 'Failed to approve verification', 'error');
+                }
+            }
+        }
+
+        async function rejectVerification(userId) {
+            const reason = prompt('Please enter rejection reason:');
+            if (reason) {
+                try {
+                    const { error } = await supabase
+                        .from('users')
+                        .update({ 
+                            verification_status: 'rejected',
+                            rejection_reason: reason
+                        })
+                        .eq('id', userId);
+
+                    if (error) throw error;
+
+                    showNotification('Success', 'Verification rejected!', 'success');
+                    loadVerifications();
+                    loadAdminOverview();
+                } catch (error) {
+                    console.error('Error rejecting verification:', error);
+                    showNotification('Error', 'Failed to reject verification', 'error');
+                }
+            }
+        }
+
+        // Utility Functions
+        function refreshAllData() {
+            showNotification('Info', 'Refreshing all data...', 'info');
+            loadAdminOverview();
+            loadUsers();
+            loadOrders();
+            loadVerifications();
+        }
+
+        function loadAnalytics(period) {
+            showNotification('Info', `Loading analytics for ${period}...`, 'info');
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.innerHTML = '<div class="loading-spinner"><div class="spinner"></div></div>';
+            }
+        }
+
+        // Notification System
+        function showNotification(title, message, type = 'success') {
+            Swal.fire({
+                title: title,
+                text: message,
+                icon: type,
+                position: 'top-end',
+                toast: true,
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true
+            });
+        }
+
+        // GitHub Pages ready
+        console.log('✅ IPATE Admin Panel Ready for GitHub Pages');
+    </script>
+</body>
+</html>
