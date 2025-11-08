@@ -1743,7 +1743,7 @@
                                 category: 'Food',
                                 stock: 25,
                                 status: 'published',
-                                seller_id: 'demo-seller-1'
+                                seller_id: null
                             },
                             {
                                 title: 'Restaurant Meal Deal',
@@ -1919,7 +1919,7 @@
                                     id: user.id,
                                     email: user.email,
                                     name: user.user_metadata?.name || user.email.split('@')[0],
-                                    role: 'customer',
+                                    role: user.user_metadata?.role || 'customer',
                                     created_at: new Date().toISOString()
                                 }
                             ])
@@ -2021,15 +2021,14 @@
             static async signup(email, password, name, role) {
                 try {
                     UIHelper.showLoading();
-                    const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password,
-                        options: {
-                            data: {
-                                name: name
-                            }
-                        }
-                    });
+                 const { data, error } = await supabase.auth.signUp({
+  email,
+  password,
+  options: {
+    data: { name: name, role: role }
+  }
+});
+
 
                     if (error) throw error;
 
@@ -3910,3 +3909,4 @@
     </script>
 </body>
 </html>
+
