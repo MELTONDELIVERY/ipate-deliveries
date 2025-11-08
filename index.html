@@ -1330,10 +1330,10 @@
             <!-- Login Form -->
             <form id="loginForm">
                 <div class="form-group">
-                    <input type="email" class="form-control" id="loginEmail" placeholder="Email" required>
+                    <input type="email" class="form-control" id="loginEmail" placeholder="Email" required autocomplete="email">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" id="loginPassword" placeholder="Password" required>
+                    <input type="password" class="form-control" id="loginPassword" placeholder="Password" required autocomplete="current-password">
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Login</button>
             </form>
@@ -1341,13 +1341,13 @@
             <!-- Register Form -->
             <form id="registerForm" style="display: none;">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="registerName" placeholder="Full Name" required>
+                    <input type="text" class="form-control" id="registerName" placeholder="Full Name" required autocomplete="name">
                 </div>
                 <div class="form-group">
-                    <input type="email" class="form-control" id="registerEmail" placeholder="Email" required>
+                    <input type="email" class="form-control" id="registerEmail" placeholder="Email" required autocomplete="email">
                 </div>
                 <div class="form-group">
-                    <input type="tel" class="form-control" id="registerPhone" placeholder="Phone Number" required>
+                    <input type="tel" class="form-control" id="registerPhone" placeholder="Phone Number" required autocomplete="tel">
                 </div>
                 <div class="form-group">
                     <select class="form-control" id="registerType" required>
@@ -1358,10 +1358,10 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" id="registerPassword" placeholder="Password" required>
+                    <input type="password" class="form-control" id="registerPassword" placeholder="Password" required autocomplete="new-password">
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" id="registerConfirmPassword" placeholder="Confirm Password" required>
+                    <input type="password" class="form-control" id="registerConfirmPassword" placeholder="Confirm Password" required autocomplete="new-password">
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Create Account</button>
             </form>
@@ -1374,8 +1374,8 @@
         // ===============================
         
         // Supabase Configuration
-        const SUPABASE_URL = 'https://xbwvsswycdskxkorharu.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhid3Zzc3d5Y2Rza3hrb3JoYXJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNDI4MjcsImV4cCI6MjA3NzgxODgyN30.8PWNCjErZ4194dBT48ph4PyMWTO0EqLsZIDK8j2O1yc';
+        const SUPABASE_URL = 'https://mmityaeexkzfugpwqklo.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1taXR5YWVleGt6ZnVncHdxa2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0NDg4NzMsImV4cCI6MjA3ODAyNDg3M30.qVIuN142_IxI51DP1ishXKOT5R215n48ZG1rhLbt4i0';
         
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
