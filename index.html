@@ -35,6 +35,8 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+</style>
+
 <script>
 function openAuthModal(mode = 'login') {
   const modal = document.getElementById('auth-modal');
@@ -1762,7 +1764,7 @@ function openAuthModal(mode = 'login') {
                                 category: 'Food',
                                 stock: 15,
                                 status: 'published',
-                                seller_id: null,'
+                                seller_id: null
                             },
                             {
                                 title: 'Electronics Package',
@@ -3777,30 +3779,49 @@ function openAuthModal(mode = 'login') {
         }
 
         async function login() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (!email || !password) {
-                UIHelper.showNotification('Please fill in all fields', 'error');
-                return;
-            }
-            
-            await AuthManager.login(email, password);
+        <script>
+window.login = async function() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  await AuthManager.login(email, password);
+};
+
+window.signup = async function() {
+  const name = document.getElementById('signup-name').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  const role = document.getElementById('signup-role').value;
+  await AuthManager.signup(email, password, name, role);
+};
+
+window.openAuthModal = openAuthModal;
+window.showPage = showPage;
+window.logout = AuthManager.logout;
+</script>
+
         }
 
         async function signup() {
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const role = document.getElementById('signup-role').value;
-            
-            if (!name || !email || !password) {
-                UIHelper.showNotification('Please fill in all fields', 'error');
-                return;
-            }
-            
-            await AuthManager.signup(email, password, name, role);
-        }
+          <script>
+window.login = async function() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  await AuthManager.login(email, password);
+};
+
+window.signup = async function() {
+  const name = document.getElementById('signup-name').value;
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  const role = document.getElementById('signup-role').value;
+  await AuthManager.signup(email, password, name, role);
+};
+
+window.openAuthModal = openAuthModal;
+window.showPage = showPage;
+window.logout = AuthManager.logout;
+</script>
+
 
         function logout() {
             AuthManager.logout();
@@ -3917,9 +3938,19 @@ function openAuthModal(mode = 'login') {
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
     window.openAuthModal = AuthManager.openModal.bind(AuthManager);
+    <script>
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  const pageEl = document.getElementById(pageId);
+  if (pageEl) pageEl.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+
 
 </body>
 </html>
+
 
 
 
