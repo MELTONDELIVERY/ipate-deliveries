@@ -11,23 +11,19 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
         :root {
-            --primary: #FF6B00;
-            --secondary: #00A859;
-            --accent: #FFD700;
-            --dark: #1A1A1A;
-            --light: #F5F5F5;
-            --gray: #E0E0E0;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --primary: #00B14F;
+            --primary-dark: #009640;
+            --secondary: #FF6B00;
             --success: #00B894;
-            --warning: #FBC531;
             --danger: #E84118;
-            --info: #0984e3;
-            --glass: rgba(255, 255, 255, 0.15);
-            --glass-dark: rgba(0, 0, 0, 0.2);
-            --blur: blur(15px);
-            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-primary: linear-gradient(135deg, var(--primary), #FF8C00);
-            --gradient-secondary: linear-gradient(135deg, var(--secondary), #00C853);
+            --warning: #FBC531;
+            --dark: #2D3436;
+            --light: #F8F9FA;
+            --gray: #6C757D;
+            --light-gray: #E9ECEF;
+            --white: #FFFFFF;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
 
         * {
@@ -38,47 +34,30 @@
         }
 
         body {
-            background: var(--gradient);
+            background-color: var(--light);
             color: var(--dark);
             line-height: 1.6;
-            min-height: 100vh;
             overflow-x: hidden;
         }
 
         .container {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
 
-        /* Glass Effect */
-        .glass {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 20px;
-        }
-
-        .glass-dark {
-            background: var(--glass-dark);
-            backdrop-filter: var(--blur);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-        }
-
         /* Header Styles */
         header {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            background-color: var(--white);
+            box-shadow: var(--shadow);
             position: sticky;
             top: 0;
             z-index: 1000;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .header-scrolled {
-            background: rgba(26, 26, 26, 0.9);
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
 
@@ -98,16 +77,12 @@
         .logo-icon {
             color: var(--primary);
             font-size: 28px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
         .logo-text {
             font-size: 28px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            color: var(--primary);
         }
 
         .nav-links {
@@ -117,17 +92,16 @@
 
         .nav-links a {
             text-decoration: none;
-            color: white;
+            color: var(--dark);
             font-weight: 600;
             padding: 8px 16px;
             border-radius: 12px;
-            transition: all 0.3s ease;
-            position: relative;
+            transition: var(--transition);
         }
 
         .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+            background: rgba(0, 177, 79, 0.1);
+            color: var(--primary);
         }
 
         .auth-buttons {
@@ -137,77 +111,45 @@
 
         .btn {
             padding: 12px 24px;
-            border-radius: 12px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition);
             border: none;
             font-size: 14px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
         }
 
         .btn-primary {
-            background: var(--gradient-primary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+            background-color: var(--primary);
+            color: var(--white);
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4);
+            background-color: var(--primary-dark);
         }
 
         .btn-outline {
-            background: transparent;
+            background-color: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
         }
 
         .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-3px);
+            background-color: var(--primary);
+            color: var(--white);
         }
 
         .btn-secondary {
-            background: var(--gradient-secondary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 168, 89, 0.3);
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 168, 89, 0.4);
+            background-color: var(--secondary);
+            color: var(--white);
         }
 
         .btn-danger {
-            background: var(--danger);
-            color: white;
-            box-shadow: 0 4px 15px rgba(232, 65, 24, 0.3);
-        }
-
-        .btn-danger:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(232, 65, 24, 0.4);
+            background-color: var(--danger);
+            color: var(--white);
         }
 
         .btn-sm {
@@ -230,12 +172,12 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
-            color: white;
+            color: var(--dark);
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             padding: 150px 0 120px;
             text-align: center;
@@ -264,7 +206,6 @@
             font-size: 4rem;
             margin-bottom: 20px;
             font-weight: 800;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
             line-height: 1.1;
         }
 
@@ -285,20 +226,20 @@
         /* Features Section */
         .features {
             padding: 100px 0;
-            background: transparent;
+            background: var(--white);
         }
 
         .section-title {
             text-align: center;
             margin-bottom: 60px;
             font-size: 2.5rem;
-            color: white;
+            color: var(--dark);
             font-weight: 700;
         }
 
         .section-subtitle {
             text-align: center;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--gray);
             max-width: 600px;
             margin: 0 auto 60px;
             font-size: 1.1rem;
@@ -311,45 +252,23 @@
         }
 
         .feature-card {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-radius: 20px;
+            background: var(--white);
+            border-radius: 12px;
             padding: 40px 30px;
             text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--gradient);
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: -1;
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+            box-shadow: var(--shadow);
         }
 
         .feature-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .feature-card:hover::before {
-            opacity: 0.1;
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
         .feature-icon {
             font-size: 48px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--primary);
             margin-bottom: 20px;
         }
 
@@ -357,12 +276,12 @@
         .dashboard {
             min-height: 100vh;
             padding-top: 80px;
+            background: var(--light);
         }
 
         .dashboard-header {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            background: var(--white);
+            box-shadow: var(--shadow);
             padding: 20px 0;
             position: fixed;
             width: 100%;
@@ -380,21 +299,21 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            color: white;
+            color: var(--dark);
         }
 
         .user-avatar {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--primary);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             font-size: 18px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow);
             background-size: cover;
             background-position: center;
         }
@@ -411,31 +330,30 @@
         }
 
         .stat-card {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-radius: 20px;
+            background: var(--white);
+            border-radius: 12px;
             padding: 30px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: white;
-            transition: transform 0.3s;
+            border: 1px solid var(--light-gray);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-left: 4px solid var(--primary);
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
         .stat-value {
             font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--dark);
             margin-bottom: 10px;
         }
 
         .stat-label {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--gray);
             font-weight: 600;
         }
 
@@ -447,40 +365,28 @@
         }
 
         .product-card {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-radius: 20px;
+            background: var(--white);
+            border-radius: 12px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            color: white;
+            border: 1px solid var(--light-gray);
+            transition: var(--transition);
+            box-shadow: var(--shadow);
         }
 
         .product-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
 
         .product-image {
             height: 200px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--light-gray);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--gray);
             background-size: cover;
             background-position: center;
-            position: relative;
-        }
-
-        .product-image::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
         }
 
         .product-info {
@@ -490,9 +396,7 @@
         .product-price {
             font-size: 1.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--primary);
             margin: 15px 0;
         }
 
@@ -502,19 +406,17 @@
             top: 100px;
             right: 20px;
             padding: 20px 25px;
-            border-radius: 15px;
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            background: var(--white);
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
             gap: 15px;
             z-index: 3000;
             transform: translateX(150%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition);
             max-width: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: white;
+            border-left: 4px solid var(--success);
         }
 
         .notification.show {
@@ -522,11 +424,11 @@
         }
 
         .notification-success {
-            border-left: 5px solid var(--success);
+            border-left-color: var(--success);
         }
 
         .notification-error {
-            border-left: 5px solid var(--danger);
+            border-left-color: var(--danger);
         }
 
         /* Page Styles */
@@ -554,31 +456,30 @@
 
         .dashboard-nav-link {
             padding: 12px 24px;
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-radius: 12px;
+            background: var(--white);
+            border-radius: 8px;
             text-decoration: none;
-            color: white;
+            color: var(--dark);
             font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            transition: all 0.3s;
+            border: 1px solid var(--light-gray);
+            transition: var(--transition);
+            box-shadow: var(--shadow);
         }
 
         .dashboard-nav-link:hover, .dashboard-nav-link.active {
             background: var(--primary);
+            color: var(--white);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 107, 0, 0.3);
         }
 
         /* Order Tracking */
         .order-tracking {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-radius: 20px;
+            background: var(--white);
+            border-radius: 12px;
             padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border: 1px solid var(--light-gray);
             margin-bottom: 30px;
-            color: white;
+            box-shadow: var(--shadow);
         }
 
         .tracking-steps {
@@ -595,7 +496,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--light-gray);
             z-index: 1;
         }
 
@@ -610,48 +511,49 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--light-gray);
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 10px;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
 
         .step-active .step-indicator {
             background: var(--primary);
-            box-shadow: 0 0 0 5px rgba(255, 107, 0, 0.2);
+            color: var(--white);
+            box-shadow: 0 0 0 5px rgba(0, 177, 79, 0.2);
         }
 
         .step-completed .step-indicator {
             background: var(--success);
+            color: var(--white);
         }
 
         .step-label {
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--gray);
         }
 
         .step-active .step-label {
-            color: white;
+            color: var(--primary);
             font-weight: 600;
         }
 
         /* Delivery Card Styles */
         .delivery-card {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-radius: 15px;
+            background: var(--white);
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: white;
-            transition: all 0.3s;
+            border: 1px solid var(--light-gray);
+            transition: var(--transition);
+            box-shadow: var(--shadow);
         }
 
         .delivery-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
         }
 
         .delivery-header {
@@ -680,7 +582,7 @@
 
         .status-picked_up {
             background: rgba(116, 185, 255, 0.2);
-            color: var(--info);
+            color: #2196F3;
         }
 
         .status-delivered {
@@ -701,8 +603,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -710,17 +611,15 @@
         }
 
         .modal-content {
-            background: var(--glass);
-            backdrop-filter: var(--blur);
-            border-radius: 20px;
+            background: var(--white);
+            border-radius: 12px;
             width: 90%;
             max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
             padding: 40px;
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            color: white;
+            box-shadow: var(--shadow);
             animation: modalSlideIn 0.3s ease-out;
         }
 
@@ -741,7 +640,7 @@
             right: 20px;
             font-size: 24px;
             cursor: pointer;
-            color: white;
+            color: var(--gray);
         }
 
         .form-group {
@@ -751,23 +650,22 @@
         .form-control {
             width: 100%;
             padding: 15px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
             font-size: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            transition: all 0.3s;
+            background: var(--white);
+            color: var(--dark);
+            transition: var(--transition);
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
-            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(0, 177, 79, 0.2);
         }
 
         .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--gray);
         }
 
         /* Loading Spinner */
@@ -778,19 +676,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
             z-index: 9999;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            color: white;
+            color: var(--dark);
         }
 
         .spinner {
             width: 60px;
             height: 60px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
+            border: 5px solid rgba(0, 0, 0, 0.1);
             border-top: 5px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -808,12 +705,12 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--light-gray);
         }
 
         .cart-total {
             padding: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--light-gray);
             font-size: 1.2rem;
             font-weight: bold;
         }
@@ -821,13 +718,13 @@
         /* Real-time Map */
         .live-map {
             height: 300px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            background: var(--light-gray);
+            border-radius: 12px;
             margin: 20px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--gray);
             position: relative;
             overflow: hidden;
         }
@@ -843,9 +740,9 @@
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 107, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(0, 177, 79, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 177, 79, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 177, 79, 0); }
         }
 
         /* Mobile Responsive */
@@ -1023,7 +920,7 @@
             
             <div class="dashboard-content">
                 <div class="container">
-                    <h2 style="color: white; margin-bottom: 20px;">Customer Dashboard</h2>
+                    <h2 style="margin-bottom: 20px;">🛍️ Customer Dashboard</h2>
                     
                     <div class="dashboard-nav-links">
                         <a href="#" class="dashboard-nav-link active" onclick="showCustomerTab('products')">Products</a>
@@ -1053,7 +950,7 @@
                             </div>
                         </div>
                         
-                        <h3 style="color: white; margin: 30px 0 20px;">Available Products</h3>
+                        <h3 style="margin: 30px 0 20px;">Available Products</h3>
                         
                         <div class="products-grid" id="productsGrid">
                             <!-- Products will be loaded here -->
@@ -1062,8 +959,8 @@
                     
                     <!-- Cart Tab -->
                     <div class="dashboard-tab" id="cartTab">
-                        <h3 style="color: white; margin-bottom: 20px;">Shopping Cart</h3>
-                        <div class="glass" style="padding: 20px;">
+                        <h3 style="margin-bottom: 20px;">🛒 Your Shopping Cart</h3>
+                        <div class="order-tracking">
                             <div id="cartItems">
                                 <!-- Cart items will be loaded here -->
                             </div>
@@ -1078,7 +975,7 @@
                     
                     <!-- Orders Tab -->
                     <div class="dashboard-tab" id="ordersTab">
-                        <h3 style="color: white; margin-bottom: 20px;">My Orders</h3>
+                        <h3 style="margin-bottom: 20px;">📦 Your Orders</h3>
                         <div id="ordersList">
                             <!-- Orders will be loaded here -->
                         </div>
@@ -1086,7 +983,7 @@
                     
                     <!-- Tracking Tab -->
                     <div class="dashboard-tab" id="trackingTab">
-                        <h3 style="color: white; margin-bottom: 20px;">Live Order Tracking</h3>
+                        <h3 style="margin-bottom: 20px;">Live Order Tracking</h3>
                         <div class="order-tracking">
                             <h4>Track Your Delivery in Real-Time</h4>
                             <div class="live-map" id="liveMap">
@@ -1134,7 +1031,7 @@
             
             <div class="dashboard-content">
                 <div class="container">
-                    <h2 style="color: white; margin-bottom: 20px;">Seller Dashboard</h2>
+                    <h2 style="margin-bottom: 20px;">Seller Dashboard</h2>
                     
                     <div class="dashboard-nav-links">
                         <a href="#" class="dashboard-nav-link active" onclick="showSellerTab('overview')">Overview</a>
@@ -1164,7 +1061,7 @@
                             </div>
                         </div>
                         
-                        <h3 style="color: white; margin: 30px 0 20px;">Recent Orders</h3>
+                        <h3 style="margin: 30px 0 20px;">Recent Orders</h3>
                         <div id="sellerRecentOrders">
                             <!-- Recent orders will be loaded here -->
                         </div>
@@ -1178,7 +1075,7 @@
                             </button>
                         </div>
                         
-                        <div class="glass" style="padding: 30px; display: none;" id="productForm">
+                        <div class="order-tracking" style="display: none;" id="productForm">
                             <h3 style="margin-bottom: 20px;">Add New Product</h3>
                             <div class="form-group">
                                 <input type="text" class="form-control" id="productName" placeholder="Product Name">
@@ -1201,7 +1098,7 @@
                             </div>
                         </div>
                         
-                        <h3 style="color: white; margin: 30px 0 20px;">My Products</h3>
+                        <h3 style="margin: 30px 0 20px;">My Products</h3>
                         <div class="products-grid" id="sellerProductsGrid">
                             <!-- Seller products will be loaded here -->
                         </div>
@@ -1209,7 +1106,7 @@
                     
                     <!-- Orders Tab -->
                     <div class="dashboard-tab" id="ordersTabSeller">
-                        <h3 style="color: white; margin-bottom: 20px;">Order Management</h3>
+                        <h3 style="margin-bottom: 20px;">Order Management</h3>
                         <div id="sellerOrdersList">
                             <!-- Seller orders will be loaded here -->
                         </div>
@@ -1246,7 +1143,7 @@
             
             <div class="dashboard-content">
                 <div class="container">
-                    <h2 style="color: white; margin-bottom: 20px;">Rider Dashboard</h2>
+                    <h2 style="margin-bottom: 20px;">🚴‍♂️ Rider Dashboard</h2>
                     
                     <div class="dashboard-nav-links">
                         <a href="#" class="dashboard-nav-link active" onclick="showRiderTab('deliveries')">Available Deliveries</a>
@@ -1275,7 +1172,7 @@
                             </div>
                         </div>
                         
-                        <h3 style="color: white; margin: 30px 0 20px;">Available Deliveries</h3>
+                        <h3 style="margin: 30px 0 20px;">Available Deliveries</h3>
                         <div id="availableDeliveriesList">
                             <!-- Available deliveries will be loaded here -->
                         </div>
@@ -1283,7 +1180,7 @@
                     
                     <!-- Active Deliveries Tab -->
                     <div class="dashboard-tab" id="activeTab">
-                        <h3 style="color: white; margin-bottom: 20px;">Active Deliveries</h3>
+                        <h3 style="margin-bottom: 20px;">Active Deliveries</h3>
                         <div id="activeDeliveriesList">
                             <!-- Active deliveries will be loaded here -->
                         </div>
@@ -1291,7 +1188,7 @@
                     
                     <!-- Earnings Tab -->
                     <div class="dashboard-tab" id="earningsTab">
-                        <h3 style="color: white; margin-bottom: 20px;">Earnings Overview</h3>
+                        <h3 style="margin-bottom: 20px;">Earnings Overview</h3>
                         <div class="stats-grid">
                             <div class="stat-card">
                                 <div class="stat-value" id="weeklyEarnings">KSh 0</div>
@@ -1320,11 +1217,11 @@
     <div class="modal" id="authModal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeAuthModal()">&times;</span>
-            <h2 style="color: white; margin-bottom: 30px; text-align: center;">Welcome to IPATE</h2>
+            <h2 style="margin-bottom: 30px; text-align: center;">Welcome to IPATE</h2>
             
-            <div style="display: flex; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.2);">
+            <div style="display: flex; margin-bottom: 30px; border-bottom: 1px solid var(--light-gray);">
                 <div style="padding: 15px 30px; cursor: pointer; border-bottom: 3px solid var(--primary); color: var(--primary); font-weight: 600;" id="loginTab">Login</div>
-                <div style="padding: 15px 30px; cursor: pointer; border-bottom: 3px solid transparent; color: white; font-weight: 600;" id="registerTab">Register</div>
+                <div style="padding: 15px 30px; cursor: pointer; border-bottom: 3px solid transparent; color: var(--dark); font-weight: 600;" id="registerTab">Register</div>
             </div>
             
             <!-- Login Form -->
@@ -1574,14 +1471,14 @@
                 document.getElementById('loginTab').style.borderBottomColor = 'var(--primary)';
                 document.getElementById('loginTab').style.color = 'var(--primary)';
                 document.getElementById('registerTab').style.borderBottomColor = 'transparent';
-                document.getElementById('registerTab').style.color = 'white';
+                document.getElementById('registerTab').style.color = 'var(--dark)';
             } else {
                 document.getElementById('loginForm').style.display = 'none';
                 document.getElementById('registerForm').style.display = 'block';
                 document.getElementById('registerTab').style.borderBottomColor = 'var(--primary)';
                 document.getElementById('registerTab').style.color = 'var(--primary)';
                 document.getElementById('loginTab').style.borderBottomColor = 'transparent';
-                document.getElementById('loginTab').style.color = 'white';
+                document.getElementById('loginTab').style.color = 'var(--dark)';
             }
         }
 
@@ -1973,7 +1870,7 @@
             
             if (cart.length === 0) {
                 cartItems.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">
+                    <div style="text-align: center; padding: 40px; color: var(--gray);">
                         <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 20px;"></i>
                         <h3>Your cart is empty</h3>
                         <p>Add some products to get started!</p>
@@ -2094,7 +1991,7 @@
             
             if (customerOrders.length === 0) {
                 ordersList.innerHTML = `
-                    <div class="glass" style="padding: 40px; text-align: center; color: rgba(255,255,255,0.7);">
+                    <div class="order-tracking" style="text-align: center; color: var(--gray);">
                         <i class="fas fa-shopping-bag" style="font-size: 48px; margin-bottom: 20px;"></i>
                         <h3>No Orders Yet</h3>
                         <p>You haven't placed any orders yet. Start shopping now!</p>
@@ -2219,7 +2116,7 @@
             // Update live map
             if (order.tracking.riderLocation) {
                 liveMap.innerHTML = '';
-                liveMap.style.background = 'rgba(255,255,255,0.1)';
+                liveMap.style.background = 'var(--light-gray)';
                 
                 // Create a simple map visualization
                 const riderMarker = document.createElement('div');
@@ -2281,7 +2178,7 @@
             
             if (sellerProducts.length === 0) {
                 productsGrid.innerHTML = `
-                    <div class="glass" style="padding: 40px; text-align: center; color: rgba(255,255,255,0.7);">
+                    <div class="order-tracking" style="text-align: center; color: var(--gray);">
                         <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 20px;"></i>
                         <h3>No Products Yet</h3>
                         <p>Add your first product to start selling!</p>
@@ -2294,6 +2191,7 @@
             sellerProducts.forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
+                
                 productCard.innerHTML = `
                     <div class="product-image" style="background-image: url('${product.image}')">
                         <i class="fas fa-box-open" style="font-size: 48px; z-index: 2; position: relative;"></i>
@@ -2388,7 +2286,7 @@
             
             if (sellerOrders.length === 0) {
                 ordersList.innerHTML = `
-                    <div class="glass" style="padding: 40px; text-align: center; color: rgba(255,255,255,0.7);">
+                    <div class="order-tracking" style="text-align: center; color: var(--gray);">
                         <i class="fas fa-shopping-bag" style="font-size: 48px; margin-bottom: 20px;"></i>
                         <h3>No Orders Yet</h3>
                         <p>You haven't received any orders yet.</p>
@@ -2456,7 +2354,7 @@
             
             if (recentOrders.length === 0) {
                 recentOrdersContainer.innerHTML = `
-                    <div class="glass" style="padding: 20px; text-align: center; color: rgba(255,255,255,0.7);">
+                    <div class="order-tracking" style="text-align: center; color: var(--gray);">
                         <p>No recent orders</p>
                     </div>
                 `;
@@ -2545,7 +2443,7 @@
             
             if (availableDeliveries.length === 0) {
                 deliveriesList.innerHTML = `
-                    <div class="glass" style="padding: 40px; text-align: center; color: rgba(255,255,255,0.7);">
+                    <div class="order-tracking" style="text-align: center; color: var(--gray);">
                         <i class="fas fa-shipping-fast" style="font-size: 48px; margin-bottom: 20px;"></i>
                         <h3>No Available Deliveries</h3>
                         <p>Check back later for new delivery opportunities.</p>
@@ -2593,7 +2491,7 @@
             
             if (activeDeliveries.length === 0) {
                 deliveriesList.innerHTML = `
-                    <div class="glass" style="padding: 40px; text-align: center; color: rgba(255,255,255,0.7);">
+                    <div class="order-tracking" style="text-align: center; color: var(--gray);">
                         <i class="fas fa-shipping-fast" style="font-size: 48px; margin-bottom: 20px;"></i>
                         <h3>No Active Deliveries</h3>
                         <p>You don't have any active deliveries at the moment.</p>
