@@ -1763,7 +1763,7 @@
                                 category: 'Electronics',
                                 stock: 10,
                                 status: 'published',
-                                seller_id: 'demo-seller-3'
+                                seller_id: null
                             },
                             {
                                 title: 'Personal Care Essentials',
@@ -1901,55 +1901,63 @@
                 }
             }
 
-            static async handleUserSession(user) {
-                try {
-                    // Get or create user profile
-                    let { data: profile, error } = await supabase
-                        .from('profiles')
-                        .select('*')
-                        .eq('id', user.id)
-                        .single();
+           static async handleUserSession(user) {
+    try {
+        // Get or create user profile
+        let { data: profile, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
 
-                    if (error && error.code === 'PGRST116') {
-                        // Profile doesn't exist, create one
-                        const { data: newProfile, error: createError } = await supabase
-                            .from('profiles')
-                            .insert([
-                                {
-                                    id: user.id,
-                                    email: user.email,
-                                    name: user.user_metadata?.name || user.email.split('@')[0],
-                                    role: user.user_metadata?.role || 'customer',
-                                    created_at: new Date().toISOString()
-                                }
-                            ])
-                            .select()
-                            .single();
+        if (error && error.code === 'PGRST116') {
+            // Profile doesn't exist, create one
+            const profileData = {
+                id: user.id,
+                email: user.email,
+                name: user.user_metadata?.name || user.email.split('@')[0],
+                role: user.user_metadata?.role || 'customer'
+            };
 
-                        if (createError) {
-                            console.error('Profile creation error:', createError);
-                            throw createError;
-                        }
-                        profile = newProfile;
-                    } else if (error) {
-                        console.error('Profile fetch error:', error);
-                        throw error;
-                    }
+            const { data: newProfile, error: createError } = await supabase
+                .from('profiles')
+                .insert([profileData])
+                .select()
+                .single();
 
-                    // Store user data
-                    window.currentUser = { ...user, profile };
-                    DataStore.saveUserData(window.currentUser);
-                    
-                    // Update UI
-                    await this.renderHeader();
-                    
-                    // Redirect based on role
-                    this.redirectToDashboard(profile.role);
-                    
-                } catch (error) {
-                    console.error('Error handling user session:', error);
-                    UIHelper.showNotification('Error loading user data', 'error');
-                }
+            if (createError) {
+                console.error('Profile creation error:', createError);
+                // Create a local profile if database insert fails
+                profile = profileData;
+            } else {
+                profile = newProfile;
+            }
+        } else if (error) {
+            console.error('Profile fetch error:', error);
+            // Create a local profile if fetch fails
+            profile = {
+                id: user.id,
+                email: user.email,
+                name: user.user_metadata?.name || user.email.split('@')[0],
+                role: user.user_metadata?.role || 'customer'
+            };
+        }
+
+        // Store user data
+        window.currentUser = { ...user, profile };
+        DataStore.saveUserData(window.currentUser);
+        
+        // Update UI
+        await this.renderHeader();
+        
+        // Redirect based on role
+        this.redirectToDashboard(profile.role);
+        
+    } catch (error) {
+        console.error('Error handling user session:', error);
+        UIHelper.showNotification('Error loading user data', 'error');
+    }
+}
             }
 
             static async renderHeader() {
@@ -2018,18 +2026,52 @@
                 }
             }
 
-            static async signup(email, password, name, role) {
-                try {
-                    UIHelper.showLoading();
-                    const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password,
-                        options: {
-                            data: { name: name, role: role }
-                        }
-                    });
+         static async signup(email, password, name, role) {
+    try {
+        UIHelper.showLoading();
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: { name: name, role: role }
+            }
+        });
 
-                    if (error) throw error;
+        if (error) throw error;
+
+        if (data.user) {
+            // Try to create profile, but don't fail if it errors
+            try {
+                const { error: profileError } = await supabase
+                    .from('profiles')
+                    .insert([{
+                        id: data.user.id,
+                        email: email,
+                        name: name,
+                        role: role
+                    }]);
+
+                if (profileError) {
+                    console.warn('Profile creation warning:', profileError);
+                    // Continue anyway - profile might be created later
+                }
+            } catch (profileError) {
+                console.warn('Profile creation failed:', profileError);
+                // Continue with signup even if profile creation fails
+            }
+        }
+
+        UIHelper.hideLoading();
+        UIHelper.showNotification('Account created successfully! Please check your email for verification.', 'success');
+        closeAuthModal();
+        return data;
+    } catch (error) {
+        UIHelper.hideLoading();
+        console.error('Signup error:', error);
+        UIHelper.showNotification(error.message, 'error');
+        throw error;
+    }
+}
 
                     if (data.user) {
                         // Update profile with role
@@ -3908,3 +3950,4 @@
     </script>
 </body>
 </html>
+
