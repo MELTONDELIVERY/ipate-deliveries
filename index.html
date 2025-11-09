@@ -961,6 +961,322 @@
             display: block;
         }
 
+        /* NEW: Notification Center */
+        .notification-center {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 350px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            display: none;
+            max-height: 500px;
+            overflow: hidden;
+        }
+
+        .notification-center.active {
+            display: block;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .notification-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .notification-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .notification-item:hover {
+            background: var(--light);
+        }
+
+        .notification-item.unread {
+            background: rgba(255, 122, 0, 0.05);
+        }
+
+        .notification-icon {
+            color: var(--primary);
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .notification-message {
+            color: var(--gray);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .notification-time {
+            color: var(--gray);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin-top: 5px;
+        }
+
+        /* NEW: Toast notifications */
+        .notification-toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            width: 300px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid var(--success);
+        }
+
+        .notification-toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .notification-toast.warning {
+            border-left-color: var(--warning);
+        }
+
+        .notification-toast.info {
+            border-left-color: var(--info);
+        }
+
+        .toast-header {
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .toast-body {
+            padding: 15px;
+        }
+
+        .toast-time {
+            padding: 0 15px 15px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .toast-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        /* NEW: Chat widget */
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            overflow: hidden;
+            display: none;
+        }
+
+        .chat-widget.active {
+            display: block;
+        }
+
+        .chat-header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-body {
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-message {
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .chat-message.sent {
+            background: var(--primary);
+            color: var(--white);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.received {
+            background: var(--light-gray);
+            color: var(--dark);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .chat-input button {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* NEW: Notification bell in header */
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .notification-bell:hover {
+            background: rgba(255, 122, 0, 0.1);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* NEW: MPesa Modal */
+        .mpesa-modal .modal-content {
+            max-width: 400px;
+        }
+
+        .phone-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .phone-prefix {
+            background: var(--light-gray);
+            padding: 15px;
+            border-radius: 8px 0 0 8px;
+            border: 1px solid var(--light-gray);
+            font-weight: 600;
+        }
+
+        .phone-input input {
+            border-radius: 0 8px 8px 0;
+            flex: 1;
+        }
+
+        /* NEW: Status badges */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-created { background: rgba(251, 197, 49, 0.2); color: var(--warning); }
+        .status-paid { background: rgba(0, 184, 148, 0.2); color: var(--success); }
+        .status-accepted { background: rgba(9, 132, 227, 0.2); color: var(--info); }
+        .status-ready { background: rgba(255, 122, 0, 0.2); color: var(--primary); }
+        .status-assigned { background: rgba(156, 39, 176, 0.2); color: #9C27B0; }
+        .status-picked_up { background: rgba(41, 128, 185, 0.2); color: #2980b9; }
+        .status-in_transit { background: rgba(52, 152, 219, 0.2); color: #3498db; }
+        .status-delivered { background: rgba(0, 184, 148, 0.2); color: var(--success); }
+        .status-cancelled { background: rgba(232, 65, 24, 0.2); color: var(--danger); }
+
+        /* NEW: Real-time pulse animation */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-links, .auth-buttons {
@@ -1000,6 +1316,24 @@
             .tracking-steps::before {
                 display: none;
             }
+
+            .notification-center {
+                width: calc(100vw - 40px);
+                right: 20px;
+                left: 20px;
+            }
+            
+            .chat-widget {
+                width: calc(100vw - 40px);
+                right: 20px;
+                left: 20px;
+            }
+            
+            .notification-toast {
+                width: calc(100vw - 40px);
+                right: 20px;
+                left: 20px;
+            }
         }
     </style>
 </head>
@@ -1012,6 +1346,47 @@
 
     <!-- Notification Area -->
     <div id="notificationArea"></div>
+
+    <!-- Notification Center -->
+    <div id="notificationCenter" class="notification-center">
+        <div class="notification-header">
+            <h3>Notifications</h3>
+            <button onclick="NotificationManager.toggleNotificationCenter()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="notificationList" class="notification-list">
+            <div class="notification-item">
+                <div class="notification-content">
+                    <div class="notification-title">Welcome to IPATE Deliveries!</div>
+                    <div class="notification-message">Your notifications will appear here</div>
+                    <div class="notification-time">Just now</div>
+                </div>
+            </div>
+        </div>
+        <div class="notification-footer" style="padding: 15px; border-top: 1px solid var(--light-gray);">
+            <button class="btn btn-outline btn-sm" onclick="NotificationManager.markAllAsRead()" style="width: 100%;">Mark all as read</button>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div id="chatWidget" class="chat-widget">
+        <div class="chat-header" onclick="ChatManager.toggleChat()">
+            <span>Chat Support</span>
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chat-body">
+            <div id="chatMessages" class="chat-messages">
+                <div class="chat-message received">
+                    Hello! How can we help you today?
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type a message...">
+                <button onclick="ChatManager.sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
 
     <!-- Header -->
     <header id="header">
@@ -1041,6 +1416,10 @@
                     <button class="btn btn-primary" onclick="openAuthModal()">Sign Up</button>
                 </div>
                 <div class="user-info" id="userInfo" style="display: none;">
+                    <div class="notification-bell" onclick="NotificationManager.toggleNotificationCenter()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationBadge" style="display: none;">!</span>
+                    </div>
                     <div class="user-avatar" id="userAvatar"></div>
                     <div>
                         <div id="userName"></div>
@@ -1675,6 +2054,45 @@
         </div>
     </div>
 
+    <!-- NEW: MPesa Payment Modal -->
+    <div class="modal mpesa-modal" id="mpesa-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeMpesaModal()">&times;</span>
+            <h2 style="margin-bottom: 20px;">Pay with MPesa</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <div class="phone-input">
+                    <span class="phone-prefix">+254</span>
+                    <input type="tel" id="mpesa-phone" class="form-control" placeholder="7XXXXXXXX" maxlength="9" required>
+                </div>
+                <small style="color: var(--gray); margin-top: 5px; display: block;">
+                    Enter your MPesa registered phone number
+                </small>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Amount</label>
+                <input type="text" id="mpesa-amount" class="form-control" readonly style="background: var(--light-gray);">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Order Reference</label>
+                <input type="text" id="mpesa-order-ref" class="form-control" readonly style="background: var(--light-gray);">
+            </div>
+            
+            <button class="btn btn-primary btn-block" onclick="MpesaManager.initiatePayment()" id="mpesa-pay-btn">
+                <i class="fas fa-mobile-alt"></i> Initiate MPesa Payment
+            </button>
+            
+            <div style="margin-top: 20px; padding: 15px; background: var(--light); border-radius: 8px;">
+                <p style="font-size: 12px; color: var(--gray); margin: 0;">
+                    <i class="fas fa-info-circle"></i> You will receive an MPesa prompt on your phone. Enter your MPesa PIN to complete the payment.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
             <div class="features-grid">
@@ -1734,697 +2152,27 @@
 
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: { persistSession: true }
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true
+            }
         });
 
-        // ========== ENHANCEMENTS ==========
-        
-        // 1. Security Enhancements
-        class ValidationHelper {
-            static validateEmail(email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(email);
-            }
-            
-            static sanitizeInput(input) {
-                if (typeof input !== 'string') return input;
-                return input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-                           .replace(/javascript:/gi, '')
-                           .replace(/on\w+=/gi, '');
-            }
-            
-            static validatePassword(password) {
-                return password.length >= 6;
-            }
-            
-            static validatePrice(price) {
-                return !isNaN(price) && price > 0;
-            }
-        }
-
-        // 2. Performance Optimizations
-        class PerformanceHelper {
-            static lazyLoadImages() {
-                const imageObserver = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const img = entry.target;
-                            if (img.dataset.src) {
-                                img.src = img.dataset.src;
-                                img.classList.remove('lazy');
-                                img.classList.add('loaded');
-                                imageObserver.unobserve(img);
-                            }
-                        }
-                    });
-                });
-
-                document.querySelectorAll('img.lazy').forEach(img => {
-                    imageObserver.observe(img);
-                });
-            }
-            
-            static debounce(func, wait) {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => {
-                        clearTimeout(timeout);
-                        func(...args);
-                    };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
-            }
-        }
-
-        // 3. Enhanced Error Handling
-        class ErrorHandler {
-            static init() {
-                window.addEventListener('error', (event) => {
-                    console.error('Global error:', event.error);
-                    UIHelper.showNotification('An unexpected error occurred', 'error');
-                });
-                
-                window.addEventListener('unhandledrejection', (event) => {
-                    console.error('Unhandled promise rejection:', event.reason);
-                    UIHelper.showNotification('An unexpected error occurred', 'error');
-                });
-            }
-            
-            static async withRetry(apiCall, maxRetries = 3) {
-                for (let i = 0; i < maxRetries; i++) {
-                    try {
-                        return await apiCall();
-                    } catch (error) {
-                        if (i === maxRetries - 1) throw error;
-                        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-                    }
-                }
-            }
-        }
-
-        // 4. Multi-language Support
-        class LanguageManager {
-            static currentLanguage = 'en';
-            static translations = {
-                en: {
-                    // Landing page
-                    'hero-title': 'Fast Delivery Across Nairobi',
-                    'hero-subtitle': 'Get your products delivered quickly and reliably with our network of trusted riders. From Westlands to Eastleigh, we\'ve got you covered!',
-                    'get-started-btn': 'Get Started',
-                    'become-rider-btn': 'Become a Rider',
-                    'how-it-works-title': 'How IPATE Deliveries Works',
-                    'shop-local-title': 'Shop Local',
-                    'shop-local-desc': 'Browse products from sellers across Nairobi and place your order with ease.',
-                    'fast-delivery-title': 'Fast Delivery',
-                    'fast-delivery-desc': 'Our riders will pick up and deliver your order in record time across the city.',
-                    'live-tracking-title': 'Live Tracking',
-                    'live-tracking-desc': 'Track your delivery in real-time from pickup to your doorstep.',
-                    'contact-title': 'Contact Us',
-                    'call-us-title': 'Call Us',
-                    'available-24-7': 'Available 24/7',
-                    'email-us-title': 'Email Us',
-                    'quick-response': 'Quick response guaranteed',
-                    'visit-us-title': 'Visit Us',
-                    'multiple-locations': 'Multiple locations across the city',
-                    
-                    // Customer dashboard
-                    'customer-dashboard-title': 'Customer Dashboard',
-                    'dashboard-nav': 'Dashboard',
-                    'shop-products-nav': 'Shop Products',
-                    'my-orders-nav': 'My Orders',
-                    'cart-nav': 'Cart',
-                    'total-orders-label': 'Total Orders',
-                    'pending-orders-label': 'Pending Orders',
-                    'delivered-orders-label': 'Delivered Orders',
-                    'your-rating-label': 'Your Rating',
-                    'recent-orders-title': 'Recent Orders',
-                    'shop-products-title': 'Shop Products',
-                    'all-categories-option': 'All Categories',
-                    'food-category': 'Food',
-                    'beverages-category': 'Beverages',
-                    'personal-care-category': 'Personal Care',
-                    'electronics-category': 'Electronics',
-                    'your-orders-title': 'Your Orders',
-                    'all-orders-option': 'All Orders',
-                    'created-status': 'Created',
-                    'paid-status': 'Paid',
-                    'accepted-status': 'Accepted',
-                    'ready-status': 'Ready',
-                    'assigned-status': 'Assigned',
-                    'picked-up-status': 'Picked Up',
-                    'in-transit-status': 'In Transit',
-                    'delivered-status': 'Delivered',
-                    'cancelled-status': 'Cancelled',
-                    'shopping-cart-title': 'Your Shopping Cart',
-                    'order-summary-title': 'Order Summary',
-                    'subtotal-label': 'Subtotal',
-                    'delivery-fee-label': 'Delivery Fee',
-                    'total-label': 'Total',
-                    'clear-cart-btn': 'Clear Cart',
-                    'proceed-checkout-btn': 'Proceed to Checkout',
-                    'home-btn': 'Home',
-                    
-                    // Seller dashboard
-                    'seller-dashboard-title': 'Seller Dashboard',
-                    'products-nav': 'Products',
-                    'orders-nav': 'Orders',
-                    'analytics-nav': 'Analytics',
-                    'total-revenue-label': 'Total Revenue',
-                    'this-week-label': 'This Week',
-                    'today-label': 'Today',
-                    'total-orders-label-2': 'Total Orders',
-                    'recent-orders-title-2': 'Recent Orders',
-                    'manage-products-title': 'Manage Products',
-                    'add-product-btn': 'Add New Product',
-                    'manage-orders-title': 'Manage Orders',
-                    'analytics-title': 'Analytics',
-                    'total-products-label': 'Total Products',
-                    'low-stock-label': 'Low Stock Items',
-                    'avg-rating-label': 'Average Rating',
-                    'completion-rate-label': 'Order Completion',
-                    'home-btn-2': 'Home',
-                    
-                    // Rider dashboard
-                    'rider-dashboard-title': 'Rider Dashboard',
-                    'available-deliveries-nav': 'Available Deliveries',
-                    'my-deliveries-nav': 'My Deliveries',
-                    'earnings-nav': 'Earnings',
-                    'available-for-deliveries-title': 'Available for Deliveries',
-                    'receive-requests-text': 'You will receive new delivery requests',
-                    'your-rating-label-2': 'Your Rating',
-                    'deliveries-today-label': 'Deliveries Today',
-                    'earnings-today-label': 'Earnings Today',
-                    'deliveries-week-label': 'Deliveries This Week',
-                    'on-time-rate-label': 'On-Time Rate',
-                    'current-delivery-title': 'Current Delivery',
-                    'no-active-delivery-text': 'No active delivery',
-                    'available-deliveries-title': 'Available Deliveries',
-                    'available-deliveries-title-2': 'Available Deliveries',
-                    'active-deliveries-title': 'My Active Deliveries',
-                    'earnings-title': 'Earnings',
-                    'total-earnings-label': 'Total Earnings',
-                    'this-week-label-2': 'This Week',
-                    'today-label-2': 'Today',
-                    'total-deliveries-label': 'Total Deliveries',
-                    'home-btn-3': 'Home',
-                    
-                    // Auth modal
-                    'welcome-title': 'Welcome to IPATE Deliveries',
-                    'email-label': 'Email',
-                    'password-label': 'Password',
-                    'login-btn': 'Login',
-                    'forgot-password-link': 'Forgot your password?',
-                    'full-name-label': 'Full Name',
-                    'email-label-2': 'Email',
-                    'password-label-2': 'Password',
-                    'i-want-to-label': 'I want to:',
-                    'shop-order-option': 'Shop & Order',
-                    'sell-products-option': 'Sell Products',
-                    'deliver-orders-option': 'Deliver Orders',
-                    'create-account-btn': 'Create Account',
-                    'terms-text': 'By creating an account, you agree to our',
-                    'terms-link': 'Terms of Service',
-                    'and-text': 'and',
-                    'privacy-link': 'Privacy Policy',
-                    
-                    // Checkout modal
-                    'checkout-title': 'Checkout',
-                    'delivery-address-label': 'Delivery Address',
-                    'delivery-instructions-label': 'Delivery Instructions (Optional)',
-                    'order-summary-title-2': 'Order Summary',
-                    'total-label-2': 'Total',
-                    'place-order-btn': 'Place Order',
-                    
-                    // Add product modal
-                    'add-product-title': 'Add New Product',
-                    'product-name-label': 'Product Name',
-                    'description-label': 'Description',
-                    'price-label': 'Price (KSh)',
-                    'category-label': 'Category',
-                    'stock-label': 'Stock Quantity',
-                    'product-images-label': 'Product Images',
-                    'click-to-upload-text': 'Click to upload product images',
-                    'file-types-text': 'PNG, JPG, JPEG up to 5MB each',
-                    'upload-limit-text': 'You can upload 1-12 images',
-                    'food-option': 'Food',
-                    'beverages-option': 'Beverages',
-                    'personal-care-option': 'Personal Care',
-                    'electronics-option': 'Electronics',
-                    'other-option': 'Other',
-                    'save-draft-btn': 'Save as Draft',
-                    'publish-product-btn': 'Publish Product',
-                    
-                    // Footer
-                    'footer-description': 'Fast and reliable delivery services across Nairobi. Connecting customers, sellers, and riders for seamless deliveries.',
-                    'quick-links-title': 'Quick Links',
-                    'home-link': 'Home',
-                    'services-link': 'Services',
-                    'about-link': 'About',
-                    'contact-link': 'Contact',
-                    'services-title': 'Services',
-                    'food-delivery-link': 'Food Delivery',
-                    'grocery-delivery-link': 'Grocery Delivery',
-                    'package-delivery-link': 'Package Delivery',
-                    'express-delivery-link': 'Express Delivery',
-                    'contact-info-title': 'Contact Info',
-                    'nairobi-text': 'Nairobi, Kenya',
-                    'rights-text': 'All rights reserved.'
-                },
-                sw: {
-                    // Landing page
-                    'hero-title': 'Ufikiaji wa Haraka Nchini Nairobi',
-                    'hero-subtitle': 'Pata bidhaa zako zikifika haraka na kwa uhakika kwa mtandao wetu wa wapanda baiskeli wa kuaminika. Kutoka Westlands hadi Eastleigh, tumekujalia!',
-                    'get-started-btn': 'Anza Sasa',
-                    'become-rider-btn': 'Kuwa Mpakuzi',
-                    'how-it-works-title': 'Jinsi IPATE Deliveries Inavyofanya Kazi',
-                    'shop-local-title': 'Nunua Ndani ya Nchi',
-                    'shop-local-desc': 'Vinjari bidhaa kutoka kwa wauzaji Nairobi nzima na weka oda yako kwa urahisi.',
-                    'fast-delivery-title': 'Ufikiaji wa Haraka',
-                    'fast-delivery-desc': 'Wapanda baiskeli wetu watachukua na kufikisha oda yako kwa rekodi ya muda mfupi jijini.',
-                    'live-tracking-title': 'Ufuatiliaji wa Moja kwa Moja',
-                    'live-tracking-desc': 'Fuatilia ufikiaji wako kwa wakati halisi kutoka kuchukuliwa hadi mlangoni kwako.',
-                    'contact-title': 'Wasiliana Nasi',
-                    'call-us-title': 'Tupigie Simu',
-                    'available-24-7': 'Inapatikana masaa 24',
-                    'email-us-title': 'Tutumie Barua Pepe',
-                    'quick-response': 'Jibu la haraka linalohakikishiwa',
-                    'visit-us-title': 'Tutembelee',
-                    'multiple-locations': 'Maeneo mengi jijini',
-                    
-                    // Customer dashboard
-                    'customer-dashboard-title': 'Dashibodi ya Mteja',
-                    'dashboard-nav': 'Dashibodi',
-                    'shop-products-nav': 'Nunua Bidhaa',
-                    'my-orders-nav': 'Oda Zangu',
-                    'cart-nav': 'Mkokoteni',
-                    'total-orders-label': 'Jumla ya Oda',
-                    'pending-orders-label': 'Oda Zinazosubiri',
-                    'delivered-orders-label': 'Oda Zilizofika',
-                    'your-rating-label': 'Ukadiriaji Wako',
-                    'recent-orders-title': 'Oda za Hivi Karibuni',
-                    'shop-products-title': 'Nunua Bidhaa',
-                    'all-categories-option': 'Kategoria Zote',
-                    'food-category': 'Chakula',
-                    'beverages-category': 'Vinywaji',
-                    'personal-care-category': 'Huduma ya Kibinafsi',
-                    'electronics-category': 'Vya Umeme',
-                    'your-orders-title': 'Oda Zako',
-                    'all-orders-option': 'Oda Zote',
-                    'created-status': 'Imeundwa',
-                    'paid-status': 'Imelipwa',
-                    'accepted-status': 'Imekubaliwa',
-                    'ready-status': 'Tayari',
-                    'assigned-status': 'Imepewa',
-                    'picked-up-status': 'Imechukuliwa',
-                    'in-transit-status': 'Inasafirishwa',
-                    'delivered-status': 'Imefika',
-                    'cancelled-status': 'Imebatilishwa',
-                    'shopping-cart-title': 'Mkokoteni Wako wa Ununuzi',
-                    'order-summary-title': 'Muhtasari wa Oda',
-                    'subtotal-label': 'Jumla Ndogo',
-                    'delivery-fee-label': 'Ada ya Ufikiaji',
-                    'total-label': 'Jumla',
-                    'clear-cart-btn': 'Futa Mkokoteni',
-                    'proceed-checkout-btn': 'Endelea Kwenye Malipo',
-                    'home-btn': 'Nyumbani',
-                    
-                    // Seller dashboard
-                    'seller-dashboard-title': 'Dashibodi ya Mwuza',
-                    'products-nav': 'Bidhaa',
-                    'orders-nav': 'Oda',
-                    'analytics-nav': 'Takwimu',
-                    'total-revenue-label': 'Mapato Yote',
-                    'this-week-label': 'Wiki Hii',
-                    'today-label': 'Leo',
-                    'total-orders-label-2': 'Jumla ya Oda',
-                    'recent-orders-title-2': 'Oda za Hivi Karibuni',
-                    'manage-products-title': 'Dhibiti Bidhaa',
-                    'add-product-btn': 'Ongeza Bidhaa Mpya',
-                    'manage-orders-title': 'Dhibiti Oda',
-                    'analytics-title': 'Takwimu',
-                    'total-products-label': 'Jumla ya Bidhaa',
-                    'low-stock-label': 'Bidhaa Zenye Hifadhi Ndogo',
-                    'avg-rating-label': 'Wastani wa Ukadiriaji',
-                    'completion-rate-label': 'Kiwango cha Kukamilika kwa Oda',
-                    'home-btn-2': 'Nyumbani',
-                    
-                    // Rider dashboard
-                    'rider-dashboard-title': 'Dashibodi ya Mpakuzi',
-                    'available-deliveries-nav': 'Ufikiaji Unaopatikana',
-                    'my-deliveries-nav': 'Ufikiaji Wangu',
-                    'earnings-nav': 'Mapato',
-                    'available-for-deliveries-title': 'Inapatikana kwa Ufikiaji',
-                    'receive-requests-text': 'Utapokea maombi mapya ya ufikiaji',
-                    'your-rating-label-2': 'Ukadiriaji Wako',
-                    'deliveries-today-label': 'Ufikiaji Leo',
-                    'earnings-today-label': 'Mapato Leo',
-                    'deliveries-week-label': 'Ufikiaji Wiki Hii',
-                    'on-time-rate-label': 'Kiwango cha Wakati',
-                    'current-delivery-title': 'Ufikiaji wa Sasa',
-                    'no-active-delivery-text': 'Hakuna ufikiaji unaoendelea',
-                    'available-deliveries-title': 'Ufikiaji Unaopatikana',
-                    'available-deliveries-title-2': 'Ufikiaji Unaopatikana',
-                    'active-deliveries-title': 'Ufikiaji Wangu Unaendelea',
-                    'earnings-title': 'Mapato',
-                    'total-earnings-label': 'Mapato Yote',
-                    'this-week-label-2': 'Wiki Hii',
-                    'today-label-2': 'Leo',
-                    'total-deliveries-label': 'Jumla ya Ufikiaji',
-                    'home-btn-3': 'Nyumbani',
-                    
-                    // Auth modal
-                    'welcome-title': 'Karibu kwenye IPATE Deliveries',
-                    'email-label': 'Barua Pepe',
-                    'password-label': 'Nenosiri',
-                    'login-btn': 'Ingia',
-                    'forgot-password-link': 'Umesahau nenosiri lako?',
-                    'full-name-label': 'Jina Kamili',
-                    'email-label-2': 'Barua Pepe',
-                    'password-label-2': 'Nenosiri',
-                    'i-want-to-label': 'Nataka:',
-                    'shop-order-option': 'Nunua na Kuagiza',
-                    'sell-products-option': 'Kuza Bidhaa',
-                    'deliver-orders-option': 'Fikisha Oda',
-                    'create-account-btn': 'Undi Akaunti',
-                    'terms-text': 'Kwa kuunda akaunti, unakubaliana na',
-                    'terms-link': 'Masharti ya Huduma',
-                    'and-text': 'na',
-                    'privacy-link': 'Sera ya Faragha',
-                    
-                    // Checkout modal
-                    'checkout-title': 'Malipo',
-                    'delivery-address-label': 'Anwani ya Ufikiaji',
-                    'delivery-instructions-label': 'Maagizo ya Ufikiaji (Hiari)',
-                    'order-summary-title-2': 'Muhtasari wa Oda',
-                    'total-label-2': 'Jumla',
-                    'place-order-btn': 'Weka Oda',
-                    
-                    // Add product modal
-                    'add-product-title': 'Ongeza Bidhaa Mpya',
-                    'product-name-label': 'Jina la Bidhaa',
-                    'description-label': 'Maelezo',
-                    'price-label': 'Bei (KSh)',
-                    'category-label': 'Kategoria',
-                    'stock-label': 'Kiasi cha Hifadhi',
-                    'product-images-label': 'Picha za Bidhaa',
-                    'click-to-upload-text': 'Bonyeza kupakia picha za bidhaa',
-                    'file-types-text': 'PNG, JPG, JPEG hadi 5MB kila moja',
-                    'upload-limit-text': 'Unaweza kupakia picha 1-12',
-                    'food-option': 'Chakula',
-                    'beverages-option': 'Vinywaji',
-                    'personal-care-option': 'Huduma ya Kibinafsi',
-                    'electronics-option': 'Vya Umeme',
-                    'other-option': 'Nyingine',
-                    'save-draft-btn': 'Hifadhi kwa Rasimu',
-                    'publish-product-btn': 'Chapisha Bidhaa',
-                    
-                    // Footer
-                    'footer-description': 'Huduma za ufikiaji wa haraka na wa kuaminika Nairobi nzima. Kuunganisha wateja, wauzaji, na wapakuzi kwa ufikiaji mwepesi.',
-                    'quick-links-title': 'Viungo vya Haraka',
-                    'home-link': 'Nyumbani',
-                    'services-link': 'Huduma',
-                    'about-link': 'Kuhusu',
-                    'contact-link': 'Wasiliana',
-                    'services-title': 'Huduma',
-                    'food-delivery-link': 'Ufikiaji wa Chakula',
-                    'grocery-delivery-link': 'Ufikiaji wa Mboga',
-                    'package-delivery-link': 'Ufikiaji wa Vifurushi',
-                    'express-delivery-link': 'Ufikiaji wa Haraka',
-                    'contact-info-title': 'Maelezo ya Mawasiliano',
-                    'nairobi-text': 'Nairobi, Kenya',
-                    'rights-text': 'Haki zote zimehifadhiwa.'
-                }
-            };
-            
-            static setLanguage(lang) {
-                this.currentLanguage = lang;
-                this.applyTranslations();
-                // Save language preference
-                localStorage.setItem('preferredLanguage', lang);
-                UIHelper.showNotification(`Language changed to ${lang === 'en' ? 'English' : 'Kiswahili'}`, 'success');
-            }
-            
-            static applyTranslations() {
-                const elements = document.querySelectorAll('[id]');
-                elements.forEach(element => {
-                    const key = element.id;
-                    if (this.translations[this.currentLanguage] && this.translations[this.currentLanguage][key]) {
-                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                            element.placeholder = this.translations[this.currentLanguage][key];
-                        } else {
-                            element.textContent = this.translations[this.currentLanguage][key];
-                        }
-                    }
-                });
-            }
-            
-            static init() {
-                // Load saved language preference
-                const savedLanguage = localStorage.getItem('preferredLanguage');
-                if (savedLanguage) {
-                    this.setLanguage(savedLanguage);
-                }
-            }
-        }
-
-        // 5. Push Notifications (Browser notifications)
-        class NotificationManager {
-            static permission = null;
-            
-            static async requestPermission() {
-                if (!('Notification' in window)) {
-                    console.log('This browser does not support notifications');
-                    return false;
-                }
-                
-                if (Notification.permission === 'granted') {
-                    this.permission = 'granted';
-                    return true;
-                }
-                
-                if (Notification.permission !== 'denied') {
-                    const permission = await Notification.requestPermission();
-                    this.permission = permission;
-                    return permission === 'granted';
-                }
-                
-                return false;
-            }
-            
-            static showNotification(title, options = {}) {
-                if (this.permission !== 'granted') return;
-                
-                const notification = new Notification(title, {
-                    icon: '/favicon.ico',
-                    badge: '/favicon.ico',
-                    ...options
-                });
-                
-                notification.onclick = () => {
-                    window.focus();
-                    notification.close();
-                };
-                
-                return notification;
-            }
-            
-            static init() {
-                this.requestPermission();
-            }
-        }
-
-        // ========== DATABASE SCHEMA SETUP ==========
-        class DatabaseSetup {
-            static async initializeDatabase() {
-                try {
-                    console.log('🔄 Initializing database schema...');
-                    
-                    // Check if tables exist, if not create them
-                    await this.createTables();
-                    await this.setupStorage();
-                    await this.createSampleData();
-                    
-                    console.log('✅ Database setup completed');
-                } catch (error) {
-                    console.error('❌ Database setup failed:', error);
-                }
-            }
-
-            static async createTables() {
-                // Profiles table
-                const { error: profilesError } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .limit(1);
-
-                if (profilesError && profilesError.code === 'PGRST116') {
-                    console.log('Creating profiles table...');
-                    // Table will be created automatically when we insert data
-                }
-
-                // Products table
-                const { error: productsError } = await supabase
-                    .from('products')
-                    .select('*')
-                    .limit(1);
-
-                if (productsError && productsError.code === 'PGRST116') {
-                    console.log('Creating products table...');
-                }
-
-                // Orders table
-                const { error: ordersError } = await supabase
-                    .from('orders')
-                    .select('*')
-                    .limit(1);
-
-                if (ordersError && ordersError.code === 'PGRST116') {
-                    console.log('Creating orders table...');
-                }
-
-                // Order Items table (CRITICAL FIX)
-                const { error: orderItemsError } = await supabase
-                    .from('order_items')
-                    .select('*')
-                    .limit(1);
-
-                if (orderItemsError && orderItemsError.code === 'PGRST116') {
-                    console.log('Creating order_items table...');
-                    // This table is essential for the order flow
-                }
-            }
-
-            static async setupStorage() {
-                try {
-                    // Create storage bucket for product images
-                    const { data: buckets, error } = await supabase.storage.listBuckets();
-                    if (error) throw error;
-
-                    const productImagesBucket = buckets.find(bucket => bucket.name === 'product-images');
-                    if (!productImagesBucket) {
-                        console.log('Creating product-images storage bucket...');
-                        // Bucket will be created when we first upload
-                    }
-                } catch (error) {
-                    console.log('Storage setup:', error.message);
-                }
-            }
-
-            static async createSampleData() {
-                try {
-                    // Check if sample data already exists
-                    const { data: existingProducts } = await supabase
-                        .from('products')
-                        .select('id')
-                        .limit(1);
-
-                    if (!existingProducts || existingProducts.length === 0) {
-                        console.log('Creating sample products...');
-                        
-                        const sampleProducts = [
-                            {
-                                title: 'Fresh Groceries Package',
-                                short_description: 'A package of fresh vegetables, fruits, and essentials from local markets',
-                                full_description: 'Get the freshest produce delivered to your doorstep. Our grocery package includes seasonal vegetables, ripe fruits, and essential pantry items sourced directly from local farmers and markets in Nairobi.',
-                                price: 1500,
-                                category: 'Food',
-                                stock: 25,
-                                status: 'published',
-                                seller_id: 'demo-seller-1',
-                                seller_name: 'FreshMart Supermarket'
-                            },
-                            {
-                                title: 'Restaurant Meal Deal',
-                                short_description: 'Delicious meal from a top Nairobi restaurant with free delivery',
-                                full_description: 'Enjoy restaurant-quality meals at home. Choose from a variety of cuisines from top Nairobi restaurants. Each meal is freshly prepared and delivered hot to your location.',
-                                price: 1200,
-                                category: 'Food',
-                                stock: 15,
-                                status: 'published',
-                                seller_id: 'demo-seller-2',
-                                seller_name: 'Nairobi Bistro'
-                            },
-                            {
-                                title: 'Electronics Package',
-                                short_description: 'Carefully packaged electronics delivery with insurance',
-                                full_description: 'Safe and secure delivery of your electronics. We provide specialized packaging and insurance coverage for all electronic items. Perfect for phones, laptops, and other gadgets.',
-                                price: 5000,
-                                category: 'Electronics',
-                                stock: 10,
-                                status: 'published',
-                                seller_id: 'demo-seller-3',
-                                seller_name: 'TechHub Kenya'
-                            },
-                            {
-                                title: 'Personal Care Essentials',
-                                short_description: 'Toiletries and personal care products delivered fast',
-                                full_description: 'Never run out of essential personal care items. We deliver toiletries, skincare products, and hygiene essentials from trusted brands directly to your home.',
-                                price: 800,
-                                category: 'Personal Care',
-                                stock: 30,
-                                status: 'published',
-                                seller_id: 'demo-seller-4',
-                                seller_name: 'CarePlus Store'
-                            }
-                        ];
-
-                        const { error } = await supabase
-                            .from('products')
-                            .insert(sampleProducts);
-
-                        if (error) throw error;
-                        console.log('✅ Sample products created');
-                    }
-                } catch (error) {
-                    console.log('Sample data creation:', error.message);
-                }
-            }
-        }
-
-        // ========== DATA STORAGE MANAGEMENT ==========
-        class DataStore {
-            static saveUserData(userData) {
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-            }
-            
-            static getUserData() {
-                return JSON.parse(localStorage.getItem('currentUser') || '{}');
-            }
-            
-            static saveCart(cart) {
-                localStorage.setItem('customerCart', JSON.stringify(cart));
-            }
-            
-            static getCart() {
-                return JSON.parse(localStorage.getItem('customerCart') || '[]');
-            }
-            
-            static clearUserData() {
-                localStorage.removeItem('currentUser');
-                localStorage.removeItem('customerCart');
-            }
-        }
-
-        // Global state
+        // ========== GLOBAL STATE ==========
         window.currentUser = null;
-        window.customerCart = DataStore.getCart();
-        window.currentEditingProduct = null;
+        window.customerCart = JSON.parse(localStorage.getItem('customerCart') || '[]');
+        window.realtimeSubscriptions = [];
 
-        // ========== UI HELPER ==========
+        // ========== CORE MANAGERS ==========
+
+        // UI Helper (Enhanced)
         class UIHelper {
             static showLoading() {
-                const spinner = document.getElementById('loadingSpinner');
-                if (spinner) {
-                    spinner.style.display = 'flex';
-                }
+                document.getElementById('loadingSpinner').style.display = 'flex';
             }
             
             static hideLoading() {
-                const spinner = document.getElementById('loadingSpinner');
-                if (spinner) {
-                    spinner.style.display = 'none';
-                }
+                document.getElementById('loadingSpinner').style.display = 'none';
             }
             
             static showNotification(message, type = 'success') {
@@ -2454,14 +2202,6 @@
                         notification.remove();
                     }, 300);
                 }, 5000);
-                
-                // Also show browser notification if available
-                if (NotificationManager.permission === 'granted') {
-                    NotificationManager.showNotification('IPATE Deliveries', {
-                        body: message,
-                        icon: '/favicon.ico'
-                    });
-                }
             }
 
             static formatPrice(price) {
@@ -2477,13 +2217,49 @@
                     minute: '2-digit'
                 });
             }
+
+            static showToast(title, message, type = 'info') {
+                const toast = document.createElement('div');
+                toast.className = `notification-toast notification-${type}`;
+                toast.innerHTML = `
+                    <div class="toast-header">
+                        <i class="fas ${this.getNotificationIcon(type)}"></i>
+                        <strong>${title}</strong>
+                        <button class="toast-close" onclick="this.parentElement.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="toast-body">${message}</div>
+                    <div class="toast-time">${new Date().toLocaleTimeString()}</div>
+                `;
+
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 5000);
+            }
+
+            static getNotificationIcon(type) {
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-circle',
+                    warning: 'fa-exclamation-triangle',
+                    info: 'fa-info-circle'
+                };
+                return icons[type] || 'fa-bell';
+            }
         }
 
-        // ========== AUTHENTICATION MANAGEMENT ==========
+        // Auth Manager (Working)
         class AuthManager {
             static async initAuth() {
                 try {
                     const { data: { session } } = await supabase.auth.getSession();
+                    console.log('Initial session:', session);
+                    
                     if (session) {
                         await this.handleUserSession(session.user);
                     }
@@ -2495,6 +2271,8 @@
                             await this.handleUserSession(session.user);
                         } else if (event === 'SIGNED_OUT') {
                             this.handleSignOut();
+                        } else if (event === 'USER_UPDATED') {
+                            await this.handleUserSession(session.user);
                         }
                     });
                 } catch (error) {
@@ -2506,7 +2284,7 @@
                 try {
                     // Get or create user profile
                     let { data: profile, error } = await supabase
-                        .from('profiles')
+                        .from('users')
                         .select('*')
                         .eq('id', user.id)
                         .single();
@@ -2514,16 +2292,14 @@
                     if (error && error.code === 'PGRST116') {
                         // Profile doesn't exist, create one
                         const { data: newProfile, error: createError } = await supabase
-                            .from('profiles')
-                            .insert([
-                                {
-                                    id: user.id,
-                                    email: user.email,
-                                    name: user.user_metadata?.name || user.email.split('@')[0],
-                                    role: user.user_metadata?.role || 'customer',
-                                    created_at: new Date().toISOString()
-                                }
-                            ])
+                            .from('users')
+                            .insert([{
+                                id: user.id,
+                                email: user.email,
+                                full_name: user.user_metadata?.name || user.email.split('@')[0],
+                                role: user.user_metadata?.role || 'customer',
+                                phone: user.user_metadata?.phone
+                            }])
                             .select()
                             .single();
 
@@ -2538,11 +2314,19 @@
                     }
 
                     // Store user data
-                    window.currentUser = { ...user, profile };
-                    DataStore.saveUserData(window.currentUser);
+                    window.currentUser = { 
+                        ...user, 
+                        profile,
+                        access_token: (await supabase.auth.getSession()).data.session?.access_token
+                    };
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
                     
                     // Update UI
                     await this.renderHeader();
+                    
+                    // Initialize real-time subscriptions
+                    RealtimeManager.initialize();
                     
                     // Redirect based on role
                     this.redirectToDashboard(profile.role);
@@ -2565,9 +2349,12 @@
                 document.getElementById('userInfo').style.display = 'flex';
                 
                 const avatarEl = document.getElementById('userAvatar');
-                avatarEl.textContent = (user.profile.name || user.email).split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
+                if (avatarEl) {
+                    avatarEl.textContent = (user.profile.full_name || user.email)
+                        .split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
+                }
                 
-                document.getElementById('userName').textContent = user.profile.name || user.email;
+                document.getElementById('userName').textContent = user.profile.full_name || user.email;
                 document.getElementById('userRole').textContent = user.profile.role.charAt(0).toUpperCase() + user.profile.role.slice(1);
             }
 
@@ -2575,48 +2362,44 @@
                 switch (role) {
                     case 'seller':
                         showPage('seller-dashboard');
-                        SellerDashboard.initialize();
+                        if (typeof SellerDashboard !== 'undefined') SellerDashboard.initialize();
                         break;
                     case 'rider':
                         showPage('rider-dashboard');
-                        RiderDashboard.initialize();
+                        if (typeof RiderDashboard !== 'undefined') RiderDashboard.initialize();
+                        break;
+                    case 'admin':
+                        showPage('admin-dashboard');
+                        if (typeof AdminDashboard !== 'undefined') AdminDashboard.initialize();
                         break;
                     case 'customer':
                     default:
                         showPage('customer-dashboard');
-                        CustomerDashboard.initialize();
+                        if (typeof CustomerDashboard !== 'undefined') CustomerDashboard.initialize();
                         break;
                 }
             }
 
             static handleSignOut() {
                 window.currentUser = null;
-                DataStore.clearUserData();
+                localStorage.removeItem('currentUser');
                 document.getElementById('authButtons').style.display = 'flex';
                 document.getElementById('userInfo').style.display = 'none';
+                
+                // Unsubscribe from real-time updates
+                RealtimeManager.unsubscribeAll();
+                
                 showPage('landing-page');
+                UIHelper.showNotification('Logged out successfully', 'success');
             }
 
             static async login(email, password) {
                 try {
-                    // Input validation
-                    if (!ValidationHelper.validateEmail(email)) {
-                        UIHelper.showNotification('Please enter a valid email address', 'error');
-                        return;
-                    }
-                    
-                    if (!ValidationHelper.validatePassword(password)) {
-                        UIHelper.showNotification('Password must be at least 6 characters long', 'error');
-                        return;
-                    }
-                    
                     UIHelper.showLoading();
-                    const { data, error } = await ErrorHandler.withRetry(() => 
-                        supabase.auth.signInWithPassword({
-                            email: ValidationHelper.sanitizeInput(email),
-                            password: ValidationHelper.sanitizeInput(password)
-                        })
-                    );
+                    const { data, error } = await supabase.auth.signInWithPassword({
+                        email: email.trim().toLowerCase(),
+                        password: password
+                    });
 
                     if (error) throw error;
                     
@@ -2632,52 +2415,22 @@
                 }
             }
 
-            static async signup(email, password, name, role) {
+            static async signup(email, password, name, role, phone) {
                 try {
-                    // Input validation
-                    if (!ValidationHelper.validateEmail(email)) {
-                        UIHelper.showNotification('Please enter a valid email address', 'error');
-                        return;
-                    }
-                    
-                    if (!ValidationHelper.validatePassword(password)) {
-                        UIHelper.showNotification('Password must be at least 6 characters long', 'error');
-                        return;
-                    }
-                    
-                    if (!name || name.trim().length < 2) {
-                        UIHelper.showNotification('Please enter your full name', 'error');
-                        return;
-                    }
-                    
                     UIHelper.showLoading();
-                    const { data, error } = await ErrorHandler.withRetry(() =>
-                        supabase.auth.signUp({
-                            email: ValidationHelper.sanitizeInput(email),
-                            password: ValidationHelper.sanitizeInput(password),
-                            options: {
-                                data: { 
-                                    name: ValidationHelper.sanitizeInput(name), 
-                                    role: ValidationHelper.sanitizeInput(role) 
-                                }
+                    const { data, error } = await supabase.auth.signUp({
+                        email: email.trim().toLowerCase(),
+                        password: password,
+                        options: {
+                            data: { 
+                                name: name.trim(),
+                                role: role,
+                                phone: phone
                             }
-                        })
-                    );
+                        }
+                    });
 
                     if (error) throw error;
-
-                    if (data.user) {
-                        // Update profile with role
-                        const { error: profileError } = await supabase
-                            .from('profiles')
-                            .update({ 
-                                role: ValidationHelper.sanitizeInput(role), 
-                                name: ValidationHelper.sanitizeInput(name) 
-                            })
-                            .eq('id', data.user.id);
-
-                        if (profileError) throw profileError;
-                    }
 
                     UIHelper.hideLoading();
                     UIHelper.showNotification('Account created successfully! Please check your email for verification.', 'success');
@@ -2699,1911 +2452,579 @@
                     
                     UIHelper.hideLoading();
                     this.handleSignOut();
-                    UIHelper.showNotification('Logged out successfully', 'success');
                 } catch (error) {
                     UIHelper.hideLoading();
                     console.error('Logout error:', error);
                     UIHelper.showNotification('Error logging out', 'error');
                 }
             }
+        }
 
-            static requireAuth() {
-                if (!window.currentUser) {
-                    openAuthModal();
-                    return false;
+        // Realtime Manager (NEW)
+        class RealtimeManager {
+            static channels = new Map();
+
+            static initialize() {
+                if (!window.currentUser) return;
+
+                this.subscribeToOrders();
+                this.subscribeToDeliveries();
+                this.subscribeToNotifications();
+            }
+
+            static subscribeToOrders() {
+                const channel = supabase
+                    .channel('orders')
+                    .on(
+                        'postgres_changes',
+                        {
+                            event: '*',
+                            schema: 'public',
+                            table: 'orders',
+                            filter: this.getOrderFilter()
+                        },
+                        (payload) => {
+                            console.log('Order update received:', payload);
+                            this.handleOrderUpdate(payload);
+                        }
+                    )
+                    .subscribe();
+
+                this.channels.set('orders', channel);
+            }
+
+            static subscribeToDeliveries() {
+                const channel = supabase
+                    .channel('deliveries')
+                    .on(
+                        'postgres_changes',
+                        {
+                            event: '*',
+                            schema: 'public',
+                            table: 'deliveries',
+                            filter: this.getDeliveryFilter()
+                        },
+                        (payload) => {
+                            console.log('Delivery update received:', payload);
+                            this.handleDeliveryUpdate(payload);
+                        }
+                    )
+                    .subscribe();
+
+                this.channels.set('deliveries', channel);
+            }
+
+            static subscribeToNotifications() {
+                const channel = supabase
+                    .channel('notifications')
+                    .on(
+                        'postgres_changes',
+                        {
+                            event: 'INSERT',
+                            schema: 'public',
+                            table: 'notifications',
+                            filter: `user_id=eq.${window.currentUser.id}`
+                        },
+                        (payload) => {
+                            console.log('New notification:', payload);
+                            NotificationManager.handleNewNotification(payload.new);
+                        }
+                    )
+                    .subscribe();
+
+                this.channels.set('notifications', channel);
+            }
+
+            static getOrderFilter() {
+                const user = window.currentUser.profile;
+                switch (user.role) {
+                    case 'customer':
+                        return `customer_id=eq.${user.id}`;
+                    case 'seller':
+                        return `seller_id=eq.${user.id}`;
+                    case 'rider':
+                        return `rider_id=eq.${user.id}`;
+                    case 'admin':
+                        return undefined; // Admin sees all orders
+                    default:
+                        return `customer_id=eq.${user.id}`;
                 }
-                return true;
+            }
+
+            static getDeliveryFilter() {
+                const user = window.currentUser.profile;
+                if (user.role === 'rider') {
+                    return `rider_id=eq.${user.id}`;
+                }
+                return undefined;
+            }
+
+            static handleOrderUpdate(payload) {
+                const order = payload.new;
+                const eventType = payload.eventType;
+
+                // Update relevant dashboard
+                if (window.currentUser) {
+                    const userRole = window.currentUser.profile.role;
+                    
+                    if (userRole === 'customer' && typeof CustomerDashboard !== 'undefined') {
+                        CustomerDashboard.handleOrderUpdate(order, eventType);
+                    } else if (userRole === 'seller' && typeof SellerDashboard !== 'undefined') {
+                        SellerDashboard.handleOrderUpdate(order, eventType);
+                    } else if (userRole === 'rider' && typeof RiderDashboard !== 'undefined') {
+                        RiderDashboard.handleOrderUpdate(order, eventType);
+                    }
+                }
+
+                // Show notification for important updates
+                if (eventType === 'INSERT' || (eventType === 'UPDATE' && this.isStatusChange(payload))) {
+                    this.showOrderNotification(order, eventType);
+                }
+            }
+
+            static handleDeliveryUpdate(payload) {
+                const delivery = payload.new;
+                
+                if (window.currentUser) {
+                    const userRole = window.currentUser.profile.role;
+                    
+                    if (userRole === 'customer' && typeof CustomerDashboard !== 'undefined') {
+                        CustomerDashboard.handleDeliveryUpdate(delivery);
+                    } else if (userRole === 'rider' && typeof RiderDashboard !== 'undefined') {
+                        RiderDashboard.handleDeliveryUpdate(delivery);
+                    }
+                }
+            }
+
+            static isStatusChange(payload) {
+                return payload.old?.status !== payload.new?.status;
+            }
+
+            static showOrderNotification(order, eventType) {
+                let message = '';
+                let type = 'info';
+
+                switch (eventType) {
+                    case 'INSERT':
+                        message = `New order #${order.order_number} received`;
+                        type = 'success';
+                        break;
+                    case 'UPDATE':
+                        message = `Order #${order.order_number} is now ${order.status.replace('_', ' ')}`;
+                        type = 'info';
+                        break;
+                }
+
+                if (message) {
+                    UIHelper.showToast('Order Update', message, type);
+                }
+            }
+
+            static unsubscribeAll() {
+                this.channels.forEach((channel, key) => {
+                    supabase.removeChannel(channel);
+                });
+                this.channels.clear();
             }
         }
 
-        // ========== API CLIENT ==========
-        class ApiClient {
-            static async getProducts(filters = {}) {
+        // Notification Manager (NEW)
+        class NotificationManager {
+            static init() {
+                // Load initial notifications if user is logged in
+                if (window.currentUser) {
+                    this.loadNotifications();
+                }
+            }
+
+            static toggleNotificationCenter() {
+                const center = document.getElementById('notificationCenter');
+                center.classList.toggle('active');
+                
+                if (center.classList.contains('active')) {
+                    this.loadNotifications();
+                    this.updateBadge();
+                }
+            }
+
+            static async loadNotifications() {
+                if (!window.currentUser) return;
+
                 try {
-                    let query = supabase
-                        .from('products')
+                    const { data: notifications, error } = await supabase
+                        .from('notifications')
                         .select('*')
-                        .eq('status', 'published');
-
-                    // Apply filters
-                    if (filters.category && filters.category !== 'all') {
-                        query = query.eq('category', filters.category);
-                    }
-
-                    if (filters.search) {
-                        query = query.ilike('title', `%${ValidationHelper.sanitizeInput(filters.search)}%`);
-                    }
-
-                    if (filters.sellerId) {
-                        query = query.eq('seller_id', filters.sellerId);
-                    }
-
-                    const { data, error } = await query.order('created_at', { ascending: false });
+                        .or(`user_id.eq.${window.currentUser.id},user_id.is.null`)
+                        .order('created_at', { ascending: false })
+                        .limit(20);
 
                     if (error) throw error;
-                    return data || [];
+                    this.renderNotifications(notifications || []);
                 } catch (error) {
-                    console.error('Error fetching products:', error);
-                    throw error;
+                    console.error('Error loading notifications:', error);
                 }
             }
 
-            static async createProduct(productData) {
+            static renderNotifications(notifications) {
+                const container = document.getElementById('notificationList');
+                if (!container) return;
+
+                if (notifications.length === 0) {
+                    container.innerHTML = `
+                        <div class="notification-item">
+                            <div class="notification-content">
+                                <div class="notification-title">No notifications</div>
+                                <div class="notification-message">You're all caught up!</div>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = notifications.map(notification => `
+                    <div class="notification-item ${notification.read ? '' : 'unread'}" 
+                         onclick="NotificationManager.markAsRead('${notification.id}')">
+                        <div class="notification-icon">
+                            <i class="fas ${this.getNotificationIcon(notification.type)}"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">${notification.title}</div>
+                            <div class="notification-message">${notification.message}</div>
+                            <div class="notification-time">${UIHelper.formatDate(notification.created_at)}</div>
+                        </div>
+                        ${!notification.read ? '<div class="notification-dot"></div>' : ''}
+                    </div>
+                `).join('');
+            }
+
+            static async markAsRead(notificationId) {
                 try {
-                    // Validate product data
-                    if (!ValidationHelper.validatePrice(productData.price)) {
-                        throw new Error('Invalid product price');
-                    }
+                    await supabase
+                        .from('notifications')
+                        .update({ read: true })
+                        .eq('id', notificationId);
                     
-                    const { data: product, error } = await supabase
-                        .from('products')
-                        .insert([productData])
-                        .select()
-                        .single();
-
-                    if (error) throw error;
-                    return product;
+                    this.loadNotifications();
+                    this.updateBadge();
                 } catch (error) {
-                    console.error('Error creating product:', error);
-                    throw error;
+                    console.error('Error marking notification as read:', error);
                 }
             }
 
-            static async updateProduct(productId, updates) {
+            static async markAllAsRead() {
                 try {
-                    const { data: product, error } = await supabase
-                        .from('products')
-                        .update(updates)
-                        .eq('id', productId)
-                        .select()
-                        .single();
-
-                    if (error) throw error;
-                    return product;
+                    await supabase
+                        .from('notifications')
+                        .update({ read: true })
+                        .eq('user_id', window.currentUser.id)
+                        .eq('read', false);
+                    
+                    this.loadNotifications();
+                    this.updateBadge();
+                    UIHelper.showNotification('All notifications marked as read', 'success');
                 } catch (error) {
-                    console.error('Error updating product:', error);
-                    throw error;
+                    console.error('Error marking all as read:', error);
                 }
             }
 
-            static async deleteProduct(productId) {
+            static handleNewNotification(notification) {
+                // Show toast
+                UIHelper.showToast(notification.title, notification.message, notification.type || 'info');
+                
+                // Update badge
+                this.updateBadge();
+                
+                // Reload notifications if center is open
+                if (document.getElementById('notificationCenter').classList.contains('active')) {
+                    this.loadNotifications();
+                }
+            }
+
+            static updateBadge() {
+                const badge = document.getElementById('notificationBadge');
+                if (badge) {
+                    // For now, just show/hide badge. In production, you'd count unread notifications
+                    badge.style.display = 'block';
+                }
+            }
+
+            static getNotificationIcon(type) {
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-circle',
+                    warning: 'fa-exclamation-triangle',
+                    info: 'fa-info-circle',
+                    order: 'fa-shopping-bag',
+                    delivery: 'fa-motorcycle',
+                    payment: 'fa-credit-card'
+                };
+                return icons[type] || 'fa-bell';
+            }
+        }
+
+        // MPesa Manager (NEW)
+        class MpesaManager {
+            static currentOrder = null;
+
+            static openModal(order) {
+                this.currentOrder = order;
+                document.getElementById('mpesa-amount').value = UIHelper.formatPrice(order.total_amount || order.total);
+                document.getElementById('mpesa-order-ref').value = order.order_number;
+                document.getElementById('mpesa-modal').style.display = 'flex';
+            }
+
+            static closeModal() {
+                document.getElementById('mpesa-modal').style.display = 'none';
+                this.currentOrder = null;
+            }
+
+            static async initiatePayment() {
+                const phoneInput = document.getElementById('mpesa-phone');
+                const phone = phoneInput.value.trim();
+                
+                if (!phone || phone.length !== 9) {
+                    UIHelper.showNotification('Please enter a valid 9-digit phone number (without 254)', 'error');
+                    return;
+                }
+
+                if (!this.currentOrder) {
+                    UIHelper.showNotification('No order selected for payment', 'error');
+                    return;
+                }
+
+                const formattedPhone = '254' + phone;
+                const amount = this.currentOrder.total_amount || this.currentOrder.total;
+
                 try {
+                    UIHelper.showLoading();
+                    
+                    // In production, this would call your backend API
+                    // For now, we'll simulate the payment flow
+                    const response = await this.mockMpesaPayment(this.currentOrder.id, formattedPhone, amount);
+                    
+                    UIHelper.hideLoading();
+                    
+                    if (response.status === 'pending') {
+                        UIHelper.showNotification('MPesa prompt sent to your phone. Please enter your PIN.', 'info');
+                        this.closeModal();
+                        
+                        // Start polling for payment status
+                        this.pollPaymentStatus(this.currentOrder.id, response.checkout_id);
+                    } else {
+                        throw new Error(response.message || 'Payment initiation failed');
+                    }
+                } catch (error) {
+                    UIHelper.hideLoading();
+                    UIHelper.showNotification(error.message, 'error');
+                }
+            }
+
+            static async mockMpesaPayment(orderId, phone, amount) {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                // Mock successful initiation
+                return {
+                    status: 'pending',
+                    checkout_id: 'mock_' + Date.now(),
+                    message: 'STK Push initiated successfully'
+                };
+            }
+
+            static async pollPaymentStatus(orderId, checkoutId, attempts = 0) {
+                if (attempts >= 10) {
+                    UIHelper.showNotification('Payment timeout. Please try again.', 'warning');
+                    return;
+                }
+
+                // Simulate payment confirmation after 3 attempts
+                if (attempts === 3) {
+                    this.mockPaymentSuccess(orderId);
+                    return;
+                }
+
+                setTimeout(() => {
+                    this.pollPaymentStatus(orderId, checkoutId, attempts + 1);
+                }, 3000);
+            }
+
+            static async mockPaymentSuccess(orderId) {
+                try {
+                    // Update order status to paid
                     const { error } = await supabase
-                        .from('products')
-                        .delete()
-                        .eq('id', productId);
-
-                    if (error) throw error;
-                    return true;
-                } catch (error) {
-                    console.error('Error deleting product:', error);
-                    throw error;
-                }
-            }
-
-            static async createOrder(orderData) {
-                try {
-                    // Ensure order number is generated
-                    if (!orderData.order_number) {
-                        orderData.order_number = 'ORD' + Date.now() + Math.random().toString(36).substr(2, 5);
-                    }
-                    
-                    console.log('Creating order with data:', orderData);
-                    
-                    const { data: order, error } = await supabase
-                        .from('orders')
-                        .insert([orderData])
-                        .select()
-                        .single();
-
-                    if (error) {
-                        console.error('Order creation error:', error);
-                        // Return a mock order for demo purposes
-                        return {
-                            id: 'demo-order-' + Date.now(),
-                            ...orderData,
-                            created_at: new Date().toISOString(),
-                            updated_at: new Date().toISOString()
-                        };
-                    }
-                    
-                    return order;
-                } catch (error) {
-                    console.error('Error creating order:', error);
-                    // Return mock order as fallback
-                    return {
-                        id: 'demo-order-' + Date.now(),
-                        ...orderData,
-                        order_number: orderData.order_number || 'ORD' + Date.now(),
-                        created_at: new Date().toISOString(),
-                        updated_at: new Date().toISOString()
-                    };
-                }
-            }
-
-            static async getOrders(filters = {}) {
-                try {
-                    let query = supabase
-                        .from('orders')
-                        .select('*');
-
-                    if (filters.customerId) {
-                        query = query.eq('customer_id', filters.customerId);
-                    }
-
-                    if (filters.sellerId) {
-                        query = query.eq('seller_id', filters.sellerId);
-                    }
-
-                    if (filters.riderId) {
-                        query = query.eq('rider_id', filters.riderId);
-                    }
-
-                    if (filters.status && filters.status !== 'all') {
-                        query = query.eq('status', filters.status);
-                    }
-
-                    const { data, error } = await query.order('created_at', { ascending: false });
-
-                    if (error) throw error;
-                    return data || [];
-                } catch (error) {
-                    console.error('Error fetching orders:', error);
-                    throw error;
-                }
-            }
-
-            static async updateOrderStatus(orderId, status, updates = {}) {
-                try {
-                    const { data, error } = await supabase
                         .from('orders')
                         .update({ 
-                            status, 
-                            updated_at: new Date().toISOString(),
-                            ...updates 
-                        })
-                        .eq('id', orderId)
-                        .select()
-                        .single();
-
-                    if (error) throw error;
-                    return data;
-                } catch (error) {
-                    console.error('Error updating order:', error);
-                    throw error;
-                }
-            }
-
-            // CRITICAL FIX: Save order items
-            static async saveOrderItems(orderId, items) {
-                try {
-                    const orderItems = items.map(item => ({
-                        order_id: orderId,
-                        product_id: item.productId,
-                        product_name: item.name,
-                        quantity: item.quantity,
-                        price: item.price,
-                        seller_id: item.sellerId
-                    }));
-
-                    const { data, error } = await supabase
-                        .from('order_items')
-                        .insert(orderItems)
-                        .select();
-
-                    if (error) throw error;
-                    return data || [];
-                } catch (error) {
-                    console.error('Error saving order items:', error);
-                    // For demo purposes, return the items anyway
-                    return items;
-                }
-            }
-
-            // CRITICAL FIX: Get order items
-            static async getOrderItems(orderId) {
-                try {
-                    const { data, error } = await supabase
-                        .from('order_items')
-                        .select('*')
-                        .eq('order_id', orderId);
-
-                    if (error) throw error;
-                    return data || [];
-                } catch (error) {
-                    console.error('Error fetching order items:', error);
-                    // Return mock data for demo
-                    return [
-                        {
-                            id: 'item-1',
-                            product_name: 'Sample Product',
-                            quantity: 1,
-                            price: 1000
-                        }
-                    ];
-                }
-            }
-
-            static async uploadProductImage(file, productId) {
-                try {
-                    const fileExt = file.name.split('.').pop();
-                    const fileName = `${productId}/${Math.random()}.${fileExt}`;
-                    
-                    const { data, error } = await supabase.storage
-                        .from('product-images')
-                        .upload(fileName, file);
-
-                    if (error) throw error;
-
-                    // Get public URL
-                    const { data: { publicUrl } } = supabase.storage
-                        .from('product-images')
-                        .getPublicUrl(fileName);
-
-                    return publicUrl;
-                } catch (error) {
-                    console.error('Error uploading image:', error);
-                    throw error;
-                }
-            }
-        }
-
-        // ========== CUSTOMER DASHBOARD ==========
-        class CustomerDashboard {
-            static cart = window.customerCart;
-
-            static initialize() {
-                if (!AuthManager.requireAuth()) return;
-                
-                const user = window.currentUser;
-                
-                // Update UI with user data
-                document.getElementById('customer-name').textContent = user.profile.name;
-                document.getElementById('customer-avatar').textContent = user.profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                
-                // Initialize data
-                this.loadDashboardData();
-                this.loadProducts();
-                this.loadOrders();
-                this.updateCartDisplay();
-            }
-
-            static async loadDashboardData() {
-                if (!window.currentUser) return;
-                
-                try {
-                    const orders = await ApiClient.getOrders({ customerId: window.currentUser.id });
-                    
-                    // Update stats
-                    const stats = document.querySelectorAll('#customer-stats .stat-value');
-                    if (stats[0]) stats[0].textContent = orders.length;
-                    if (stats[1]) stats[1].textContent = orders.filter(order => 
-                        ['created', 'paid', 'accepted', 'ready', 'assigned', 'picked_up', 'in_transit'].includes(order.status)
-                    ).length;
-                    if (stats[2]) stats[2].textContent = orders.filter(order => 
-                        order.status === 'delivered'
-                    ).length;
-                    if (stats[3]) stats[3].textContent = '4.5 ★';
-
-                    // Load recent orders
-                    this.loadRecentOrders(orders.slice(0, 5));
-                } catch (error) {
-                    console.error('Error loading dashboard data:', error);
-                }
-            }
-
-            static loadRecentOrders(orders) {
-                const container = document.getElementById('customer-recent-orders');
-                if (!container) return;
-                
-                container.innerHTML = '';
-                
-                if (orders.length === 0) {
-                    container.innerHTML = `
-                        <div class="delivery-card">
-                            <p style="text-align: center; color: var(--gray);">No recent orders</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                orders.forEach(order => {
-                    const orderElement = document.createElement('div');
-                    orderElement.className = 'delivery-card';
-                    orderElement.style.marginBottom = '10px';
-                    
-                    const statusClass = `status-${order.status}`;
-                    const statusText = order.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                    
-                    orderElement.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <strong>Order #${order.order_number}</strong>
-                                <div style="color: var(--gray); font-size: 12px;">${UIHelper.formatDate(order.created_at)}</div>
-                            </div>
-                            <span class="delivery-status ${statusClass}">${statusText}</span>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 14px;">
-                            Total: ${UIHelper.formatPrice(order.total)}
-                        </div>
-                    `;
-                    container.appendChild(orderElement);
-                });
-            }
-
-            static async loadProducts() {
-                try {
-                    const products = await ApiClient.getProducts();
-                    const container = document.getElementById('products-list');
-                    
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (products.length === 0) {
-                        container.innerHTML = `
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                                <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 20px;"></i>
-                                <h3 style="color: var(--gray);">No products available</h3>
-                                <p style="color: var(--gray);">Check back later for new products</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    products.forEach(product => {
-                        const productCard = document.createElement('div');
-                        productCard.className = 'product-card';
-                        
-                        let badge = '';
-                        if (product.stock === 0) {
-                            badge = '<div style="background: var(--danger); color: white; padding: 5px 10px; border-radius: 4px; position: absolute; top: 10px; right: 10px; font-size: 12px;">Out of Stock</div>';
-                        } else if (product.stock < 5) {
-                            badge = '<div style="background: var(--warning); color: white; padding: 5px 10px; border-radius: 4px; position: absolute; top: 10px; right: 10px; font-size: 12px;">Low Stock</div>';
-                        }
-                        
-                        const mainImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60';
-                        
-                        productCard.innerHTML = `
-                            ${badge}
-                            <div class="product-image" style="background-image: url('${mainImage}')">
-                                ${product.stock === 0 ? '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1;"></div>' : ''}
-                            </div>
-                            <div class="product-info">
-                                <h4>${product.title}</h4>
-                                <p style="color: var(--gray); font-size: 14px; margin: 10px 0;">${product.short_description}</p>
-                                <div class="seller-info">
-                                    <div class="seller-avatar">${product.seller_name ? product.seller_name.split(' ').map(n => n[0]).join('').toUpperCase() : 'S'}</div>
-                                    <span>${product.seller_name || 'Seller'}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div class="product-price">${UIHelper.formatPrice(product.price)}</div>
-                                    <div style="color: ${product.stock > 0 ? 'var(--success)' : 'var(--danger)'}; font-size: 14px;">
-                                        ${product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-                                    </div>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                    <div style="color: var(--warning);">
-                                        <i class="fas fa-star"></i> 4.5
-                                    </div>
-                                    <div style="color: var(--gray); font-size: 12px;">
-                                        ${product.category}
-                                    </div>
-                                </div>
-                                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                    <button class="btn btn-primary" onclick="CustomerDashboard.addToCart('${product.id}')" ${product.stock === 0 ? 'disabled' : ''}>
-                                        <i class="fas fa-cart-plus"></i> Add to Cart
-                                    </button>
-                                    <button class="btn btn-outline" onclick="CustomerDashboard.viewProduct('${product.id}')">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        
-                        container.appendChild(productCard);
-                    });
-                } catch (error) {
-                    console.error('Error loading products:', error);
-                    UIHelper.showNotification('Error loading products', 'error');
-                }
-            }
-
-            static async loadOrders() {
-                if (!window.currentUser) return;
-                
-                try {
-                    const statusFilter = document.getElementById('orderStatusFilter').value;
-                    const orders = await ApiClient.getOrders({ 
-                        customerId: window.currentUser.id,
-                        status: statusFilter !== 'all' ? statusFilter : undefined
-                    });
-                    
-                    const container = document.getElementById('customer-orders-list');
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (orders.length === 0) {
-                        container.innerHTML = `
-                            <div style="text-align: center; padding: 40px; color: var(--gray);">
-                                <i class="fas fa-clipboard-list" style="font-size: 48px; margin-bottom: 20px;"></i>
-                                <h3>No orders found</h3>
-                                <p>${statusFilter === 'all' ? 'Start shopping to see your orders here' : 'No orders with this status'}</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    for (const order of orders) {
-                        // Get order items for each order
-                        const orderItems = await ApiClient.getOrderItems(order.id);
-                        
-                        const orderCard = document.createElement('div');
-                        orderCard.className = 'delivery-card';
-                        
-                        const statusClass = `status-${order.status}`;
-                        const statusText = order.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                        
-                        let itemsHTML = '';
-                        if (orderItems && orderItems.length > 0) {
-                            itemsHTML = `
-                                <div style="margin: 10px 0; padding: 10px; background: var(--light); border-radius: 8px;">
-                                    <strong>Items:</strong>
-                                    ${orderItems.map(item => `
-                                        <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                                            <span>${item.product_name} × ${item.quantity}</span>
-                                            <span>${UIHelper.formatPrice(item.price * item.quantity)}</span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            `;
-                        }
-                        
-                        orderCard.innerHTML = `
-                            <div class="delivery-header">
-                                <div>
-                                    <h4>Order #${order.order_number}</h4>
-                                    <div style="color: var(--gray); font-size: 14px; margin-top: 5px;">
-                                        ${UIHelper.formatDate(order.created_at)}
-                                    </div>
-                                </div>
-                                <span class="delivery-status ${statusClass}">${statusText}</span>
-                            </div>
-                            
-                            ${itemsHTML}
-                            
-                            <div style="margin: 15px 0;">
-                                <p><strong>Delivery Address:</strong> ${order.shipping_address}</p>
-                                ${order.delivery_instructions ? `<p><strong>Instructions:</strong> ${order.delivery_instructions}</p>` : ''}
-                            </div>
-                            
-                            <div style="font-weight: bold; font-size: 18px; text-align: right; margin-top: 15px;">
-                                Total: ${UIHelper.formatPrice(order.total)}
-                            </div>
-                            
-                            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                <button class="btn btn-outline btn-sm" onclick="CustomerDashboard.viewOrderDetails('${order.id}')">
-                                    <i class="fas fa-eye"></i> Details
-                                </button>
-                                ${order.status === 'created' ? `
-                                    <button class="btn btn-danger btn-sm" onclick="CustomerDashboard.cancelOrder('${order.id}')">
-                                        <i class="fas fa-times"></i> Cancel
-                                    </button>
-                                ` : ''}
-                                ${['assigned', 'picked_up', 'in_transit'].includes(order.status) ? `
-                                    <button class="btn btn-primary btn-sm" onclick="CustomerDashboard.trackOrder('${order.id}')">
-                                        <i class="fas fa-map-marker-alt"></i> Track
-                                    </button>
-                                ` : ''}
-                            </div>
-                        `;
-                        
-                        container.appendChild(orderCard);
-                    }
-                } catch (error) {
-                    console.error('Error loading orders:', error);
-                    UIHelper.showNotification('Error loading orders', 'error');
-                }
-            }
-
-            static addToCart(productId) {
-                // For demo purposes - in real implementation, fetch product details from API
-                const mockProducts = {
-                    '1': {
-                        id: '1',
-                        title: 'Fresh Groceries Package',
-                        price: 1500,
-                        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
-                        sellerName: 'FreshMart Supermarket',
-                        sellerId: 'demo-seller-1',
-                        stock: 25
-                    },
-                    '2': {
-                        id: '2',
-                        title: 'Restaurant Meal Deal',
-                        price: 1200,
-                        image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
-                        sellerName: 'Nairobi Bistro',
-                        sellerId: 'demo-seller-2',
-                        stock: 15
-                    },
-                    '3': {
-                        id: '3',
-                        title: 'Electronics Package',
-                        price: 5000,
-                        image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
-                        sellerName: 'TechHub Kenya',
-                        sellerId: 'demo-seller-3',
-                        stock: 10
-                    }
-                };
-
-                const product = mockProducts[productId] || {
-                    id: productId,
-                    title: `Product ${productId}`,
-                    price: 1000,
-                    image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
-                    sellerName: 'Demo Seller',
-                    sellerId: 'demo-seller',
-                    stock: 10
-                };
-                
-                const existingItem = this.cart.find(item => item.productId === productId);
-                
-                if (existingItem) {
-                    if (existingItem.quantity >= product.stock) {
-                        UIHelper.showNotification(`Only ${product.stock} items available in stock`, 'warning');
-                        return;
-                    }
-                    existingItem.quantity += 1;
-                } else {
-                    this.cart.push({
-                        productId: product.id,
-                        name: product.title,
-                        price: product.price,
-                        quantity: 1,
-                        image: product.image,
-                        sellerId: product.sellerId,
-                        sellerName: product.sellerName
-                    });
-                }
-                
-                this.saveCart();
-                this.updateCartDisplay();
-                UIHelper.showNotification(`${product.title} added to cart!`, 'success');
-            }
-
-            static removeFromCart(productId) {
-                this.cart = this.cart.filter(item => item.productId !== productId);
-                this.saveCart();
-                this.updateCartDisplay();
-                UIHelper.showNotification('Item removed from cart', 'success');
-            }
-
-            static updateCartDisplay() {
-                const cartCount = document.getElementById('cart-count');
-                const cartItemCount = document.getElementById('cart-item-count');
-                const cartTotalAmount = document.getElementById('cart-total');
-                
-                if (cartCount) cartCount.textContent = this.cart.reduce((sum, item) => sum + item.quantity, 0);
-                if (cartItemCount) cartItemCount.textContent = `${this.cart.reduce((sum, item) => sum + item.quantity, 0)} items`;
-                
-                const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                const deliveryFee = 150;
-                const total = subtotal + deliveryFee;
-                
-                if (document.getElementById('cart-subtotal')) {
-                    document.getElementById('cart-subtotal').textContent = UIHelper.formatPrice(subtotal);
-                }
-                if (cartTotalAmount) cartTotalAmount.textContent = UIHelper.formatPrice(total);
-                
-                // Update cart items display
-                const cartItemsContainer = document.getElementById('cart-items');
-                if (cartItemsContainer) {
-                    cartItemsContainer.innerHTML = '';
-                    
-                    if (this.cart.length === 0) {
-                        cartItemsContainer.innerHTML = `
-                            <div style="text-align: center; padding: 40px; color: var(--gray);">
-                                <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 20px;"></i>
-                                <h3>Your cart is empty</h3>
-                                <p>Add some products to get started</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    this.cart.forEach(item => {
-                        const cartItem = document.createElement('div');
-                        cartItem.className = 'cart-item';
-                        cartItem.innerHTML = `
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <div style="width: 60px; height: 60px; background-image: url('${item.image}'); background-size: cover; background-position: center; border-radius: 8px;"></div>
-                                <div>
-                                    <h4>${item.name}</h4>
-                                    <div style="color: var(--gray); font-size: 14px;">${UIHelper.formatPrice(item.price)} × ${item.quantity}</div>
-                                    <div style="color: var(--gray); font-size: 12px;">Seller: ${item.sellerName}</div>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <button class="btn btn-sm btn-outline" onclick="CustomerDashboard.updateQuantity('${item.productId}', ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
-                                    <span style="font-weight: bold;">${item.quantity}</span>
-                                    <button class="btn btn-sm btn-outline" onclick="CustomerDashboard.updateQuantity('${item.productId}', ${item.quantity + 1})">+</button>
-                                </div>
-                                <div style="font-weight: bold;">${UIHelper.formatPrice(item.price * item.quantity)}</div>
-                                <button class="btn btn-sm btn-danger" onclick="CustomerDashboard.removeFromCart('${item.productId}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        `;
-                        cartItemsContainer.appendChild(cartItem);
-                    });
-                }
-            }
-
-            static updateQuantity(productId, newQuantity) {
-                if (newQuantity <= 0) {
-                    this.removeFromCart(productId);
-                    return;
-                }
-                
-                const cartItem = this.cart.find(item => item.productId === productId);
-                if (cartItem) {
-                    // Check stock (in real app, would verify with server)
-                    if (newQuantity > 10) { // Mock stock limit
-                        UIHelper.showNotification('Maximum quantity reached', 'warning');
-                        return;
-                    }
-                    cartItem.quantity = newQuantity;
-                    this.saveCart();
-                    this.updateCartDisplay();
-                }
-            }
-
-            static saveCart() {
-                window.customerCart = this.cart;
-                DataStore.saveCart(this.cart);
-            }
-
-            static clearCart() {
-                if (this.cart.length === 0) {
-                    UIHelper.showNotification('Cart is already empty', 'warning');
-                    return;
-                }
-                
-                if (confirm('Are you sure you want to clear your cart?')) {
-                    this.cart = [];
-                    this.saveCart();
-                    this.updateCartDisplay();
-                    UIHelper.showNotification('Cart cleared successfully', 'success');
-                }
-            }
-
-            static openCheckoutModal() {
-                console.log('Opening checkout modal, cart items:', this.cart);
-                
-                if (this.cart.length === 0) {
-                    UIHelper.showNotification('Your cart is empty', 'warning');
-                    return;
-                }
-                
-                const checkoutItems = document.getElementById('checkout-items');
-                const checkoutTotal = document.getElementById('checkout-total');
-                
-                let itemsHTML = '';
-                let total = 0;
-                
-                this.cart.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    total += itemTotal;
-                    itemsHTML += `
-                        <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--light-gray);">
-                            <span>${item.name} × ${item.quantity}</span>
-                            <span>${UIHelper.formatPrice(itemTotal)}</span>
-                        </div>
-                    `;
-                });
-                
-                // Add delivery fee
-                const deliveryFee = 150;
-                total += deliveryFee;
-                itemsHTML += `
-                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--light-gray);">
-                        <span>Delivery Fee</span>
-                        <span>${UIHelper.formatPrice(deliveryFee)}</span>
-                    </div>
-                `;
-                
-                checkoutItems.innerHTML = itemsHTML;
-                checkoutTotal.textContent = UIHelper.formatPrice(total);
-                
-                document.getElementById('checkout-modal').style.display = 'flex';
-            }
-
-            static closeCheckoutModal() {
-                document.getElementById('checkout-modal').style.display = 'none';
-            }
-
-            static async placeOrder() {
-                const deliveryAddress = document.getElementById('delivery-address').value;
-                const deliveryInstructions = document.getElementById('delivery-instructions').value;
-                
-                if (!deliveryAddress) {
-                    UIHelper.showNotification('Please enter a delivery address', 'error');
-                    return;
-                }
-                
-                if (this.cart.length === 0) {
-                    UIHelper.showNotification('Your cart is empty', 'error');
-                    return;
-                }
-                
-                if (!window.currentUser) {
-                    UIHelper.showNotification('Please log in to place an order', 'error');
-                    return;
-                }
-                
-                UIHelper.showLoading();
-                
-                try {
-                    // Calculate total
-                    const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                    const deliveryFee = 150;
-                    const total = subtotal + deliveryFee;
-                    
-                    console.log('Creating order with data:', {
-                        customer_id: window.currentUser.id,
-                        subtotal: subtotal,
-                        total: total,
-                        delivery_fee: deliveryFee,
-                        shipping_address: deliveryAddress
-                    });
-                    
-                    // Create order data
-                    const orderData = {
-                        customer_id: window.currentUser.id,
-                        seller_id: this.cart[0]?.sellerId || 'demo-seller', // Use first seller as primary
-                        total: total,
-                        subtotal: subtotal,
-                        delivery_fee: deliveryFee,
-                        status: 'created',
-                        payment_method: 'cash',
-                        payment_status: 'pending',
-                        shipping_address: ValidationHelper.sanitizeInput(deliveryAddress),
-                        delivery_instructions: ValidationHelper.sanitizeInput(deliveryInstructions),
-                        order_number: 'ORD' + Date.now() + Math.random().toString(36).substr(2, 5)
-                    };
-                    
-                    console.log('Attempting to create order...');
-                    
-                    // Try to create order in database
-                    let order;
-                    try {
-                        const { data, error } = await supabase
-                            .from('orders')
-                            .insert([orderData])
-                            .select()
-                            .single();
-
-                        if (error) {
-                            console.error('Database error:', error);
-                            // Fallback: Use mock order for demo
-                            order = {
-                                id: 'demo-order-' + Date.now(),
-                                ...orderData,
-                                created_at: new Date().toISOString()
-                            };
-                            console.log('Using demo order due to database error');
-                        } else {
-                            order = data;
-                            console.log('Order created successfully:', order);
-                        }
-                    } catch (dbError) {
-                        console.error('Order creation failed, using demo order:', dbError);
-                        // Fallback to demo order
-                        order = {
-                            id: 'demo-order-' + Date.now(),
-                            ...orderData,
-                            created_at: new Date().toISOString()
-                        };
-                    }
-                    
-                    // CRITICAL FIX: Save order items
-                    console.log('Saving order items...');
-                    try {
-                        await ApiClient.saveOrderItems(order.id, this.cart);
-                        console.log('Order items saved successfully');
-                    } catch (itemsError) {
-                        console.error('Error saving order items:', itemsError);
-                        // Continue anyway for demo
-                    }
-                    
-                    // Clear cart
-                    this.cart = [];
-                    this.saveCart();
-                    this.updateCartDisplay();
-                    
-                    this.closeCheckoutModal();
-                    UIHelper.hideLoading();
-                    
-                    UIHelper.showNotification('Order placed successfully! The seller will review your order.', 'success');
-                    
-                    // Reload data
-                    setTimeout(() => {
-                        this.loadDashboardData();
-                        this.loadOrders();
-                    }, 1000);
-                    
-                } catch (error) {
-                    console.error('Error in placeOrder:', error);
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Error placing order. Please try again.', 'error');
-                }
-            }
-
-            static async viewOrderDetails(orderId) {
-                try {
-                    const order = await ApiClient.getOrders({ customerId: window.currentUser.id })
-                        .then(orders => orders.find(o => o.id === orderId));
-                    
-                    const orderItems = await ApiClient.getOrderItems(orderId);
-                    
-                    let itemsHTML = '';
-                    if (orderItems && orderItems.length > 0) {
-                        itemsHTML = `
-                            <h4>Order Items:</h4>
-                            ${orderItems.map(item => `
-                                <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--light-gray);">
-                                    <div>
-                                        <strong>${item.product_name}</strong>
-                                        <div>Quantity: ${item.quantity}</div>
-                                    </div>
-                                    <div>${UIHelper.formatPrice(item.price * item.quantity)}</div>
-                                </div>
-                            `).join('')}
-                        `;
-                    }
-                    
-                    alert(`Order Details for #${order.order_number}\n\nStatus: ${order.status}\nTotal: ${UIHelper.formatPrice(order.total)}\n\n${itemsHTML}`);
-                } catch (error) {
-                    console.error('Error fetching order details:', error);
-                    alert(`Order Details for #${orderId}\n\nFull order details would be shown here with items list and timeline.`);
-                }
-            }
-
-            static trackOrder(orderId) {
-                alert(`Tracking Order #${orderId}\n\nLive tracking would be displayed here with a map showing rider location and estimated delivery time.`);
-            }
-
-            static async cancelOrder(orderId) {
-                if (!confirm('Are you sure you want to cancel this order?')) return;
-                
-                try {
-                    await ApiClient.updateOrderStatus(orderId, 'cancelled');
-                    UIHelper.showNotification('Order cancelled successfully', 'success');
-                    this.loadOrders();
-                    this.loadDashboardData();
-                } catch (error) {
-                    console.error('Error cancelling order:', error);
-                    UIHelper.showNotification('Error cancelling order', 'error');
-                }
-            }
-
-            static viewProduct(productId) {
-                alert(`Product Details\n\nFull product information would be shown here with multiple images, reviews, and detailed description.`);
-            }
-
-            static filterOrders() {
-                this.loadOrders();
-            }
-        }
-
-        // ========== SELLER DASHBOARD ==========
-        class SellerDashboard {
-            static uploadedImages = [];
-
-            static initialize() {
-                if (!AuthManager.requireAuth()) return;
-                
-                const user = window.currentUser;
-                
-                // Update UI with user data
-                document.getElementById('seller-name').textContent = user.profile.name;
-                document.getElementById('seller-avatar').textContent = user.profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                
-                // Load seller data
-                this.loadSellerOverview();
-                this.loadProducts();
-                this.loadOrders();
-            }
-
-            static async loadSellerOverview() {
-                if (!window.currentUser) return;
-                
-                try {
-                    const orders = await ApiClient.getOrders({ sellerId: window.currentUser.id });
-                    const products = await ApiClient.getProducts({ sellerId: window.currentUser.id });
-                    
-                    // Calculate earnings from delivered orders
-                    const totalEarnings = orders
-                        .filter(order => order.status === 'delivered')
-                        .reduce((sum, order) => sum + order.total, 0);
-
-                    // Update stats
-                    document.getElementById('seller-total-revenue').textContent = UIHelper.formatPrice(totalEarnings);
-                    document.getElementById('seller-weekly-revenue').textContent = UIHelper.formatPrice(Math.floor(totalEarnings * 0.3));
-                    document.getElementById('seller-today-revenue').textContent = UIHelper.formatPrice(Math.floor(totalEarnings * 0.1));
-                    document.getElementById('seller-total-orders').textContent = orders.length;
-                    
-                    // Update analytics
-                    document.getElementById('total-products').textContent = products.length;
-                    document.getElementById('low-stock').textContent = products.filter(p => p.stock < 5).length;
-                    document.getElementById('avg-rating').textContent = '4.5 ★';
-                    document.getElementById('completion-rate').textContent = '92%';
-                    
-                    // Load recent orders
-                    this.loadRecentOrders(orders.slice(0, 5));
-                } catch (error) {
-                    console.error('Error loading seller overview:', error);
-                }
-            }
-
-            static loadRecentOrders(orders) {
-                const container = document.getElementById('seller-recent-orders');
-                if (!container) return;
-                
-                container.innerHTML = '';
-                
-                if (orders.length === 0) {
-                    container.innerHTML = '<p style="color: var(--gray); text-align: center;">No recent orders</p>';
-                    return;
-                }
-                
-                orders.forEach(order => {
-                    const orderElement = document.createElement('div');
-                    orderElement.className = 'delivery-card';
-                    orderElement.style.marginBottom = '10px';
-                    
-                    const statusClass = `status-${order.status}`;
-                    const statusText = order.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                    
-                    orderElement.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <strong>Order #${order.order_number}</strong>
-                                <div style="color: var(--gray); font-size: 12px;">${UIHelper.formatDate(order.created_at)}</div>
-                            </div>
-                            <span class="delivery-status ${statusClass}">${statusText}</span>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 14px;">
-                            Total: ${UIHelper.formatPrice(order.total)}
-                        </div>
-                    `;
-                    container.appendChild(orderElement);
-                });
-            }
-
-            static async loadProducts() {
-                if (!window.currentUser) return;
-                
-                try {
-                    const products = await ApiClient.getProducts({ sellerId: window.currentUser.id });
-                    const container = document.getElementById('seller-products-list');
-                    
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (products.length === 0) {
-                        container.innerHTML = `
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                                <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 20px;"></i>
-                                <h3 style="color: var(--gray);">No products yet</h3>
-                                <p style="color: var(--gray);">Add your first product to get started!</p>
-                                <button class="btn btn-primary" onclick="openAddProductModal()" style="margin-top: 15px;">
-                                    <i class="fas fa-plus"></i> Add Product
-                                </button>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    products.forEach(product => {
-                        const productCard = document.createElement('div');
-                        productCard.className = 'product-card';
-                        
-                        let badge = '';
-                        if (product.status === 'draft') {
-                            badge = '<div style="background: var(--gray); color: white; padding: 5px 10px; border-radius: 4px; position: absolute; top: 10px; right: 10px; font-size: 12px;">Draft</div>';
-                        } else if (product.stock === 0) {
-                            badge = '<div style="background: var(--danger); color: white; padding: 5px 10px; border-radius: 4px; position: absolute; top: 10px; right: 10px; font-size: 12px;">Out of Stock</div>';
-                        }
-                        
-                        const mainImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60';
-                        
-                        productCard.innerHTML = `
-                            ${badge}
-                            <div class="product-image" style="background-image: url('${mainImage}')">
-                                ${product.status === 'draft' ? '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 1;"></div>' : ''}
-                            </div>
-                            <div class="product-info">
-                                <h4>${product.title}</h4>
-                                <p style="color: var(--gray); font-size: 14px; margin: 10px 0;">${product.short_description}</p>
-                                <div class="seller-info">
-                                    <div class="seller-avatar">${window.currentUser.profile.name.split(' ').map(n => n[0]).join('').toUpperCase()}</div>
-                                    <span>${window.currentUser.profile.name}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div class="product-price">${UIHelper.formatPrice(product.price)}</div>
-                                    <div style="color: ${product.stock > 0 ? 'var(--success)' : 'var(--danger)'}; font-size: 14px;">
-                                        ${product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-                                    </div>
-                                </div>
-                                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                    <button class="btn btn-outline btn-sm" onclick="SellerDashboard.editProduct('${product.id}')">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="btn btn-danger btn-sm" onclick="SellerDashboard.deleteProduct('${product.id}')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        
-                        container.appendChild(productCard);
-                    });
-                } catch (error) {
-                    console.error('Error loading seller products:', error);
-                    UIHelper.showNotification('Error loading products', 'error');
-                }
-            }
-
-            static async loadOrders() {
-                if (!window.currentUser) return;
-                
-                try {
-                    // For demo purposes, also show orders from the cart items
-                    const demoOrders = [];
-                    
-                    // Create demo orders from the customer's cart items for testing
-                    if (window.customerCart && window.customerCart.length > 0) {
-                        const cartItems = window.customerCart;
-                        const orderNumber = 'ORD' + Date.now();
-                        
-                        demoOrders.push({
-                            id: 'demo-order-' + Date.now(),
-                            order_number: orderNumber,
-                            customer_id: 'demo-customer',
-                            seller_id: window.currentUser.id,
-                            total: cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 150,
-                            subtotal: cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-                            delivery_fee: 150,
-                            status: 'created',
-                            payment_method: 'cash',
-                            payment_status: 'pending',
-                            shipping_address: 'Demo Customer Address, Nairobi',
-                            delivery_instructions: 'Demo instructions',
-                            created_at: new Date().toISOString(),
+                            status: 'paid',
+                            payment_method: 'mpesa',
                             updated_at: new Date().toISOString()
-                        });
-                    }
-                    
-                    // Try to get real orders from database
-                    let dbOrders = [];
-                    try {
-                        dbOrders = await ApiClient.getOrders({ sellerId: window.currentUser.id });
-                    } catch (dbError) {
-                        console.log('Using demo orders due to database error:', dbError);
-                    }
-                    
-                    const allOrders = [...dbOrders, ...demoOrders];
-                    const container = document.getElementById('seller-orders-list');
-                    
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (allOrders.length === 0) {
-                        container.innerHTML = `
-                            <div style="text-align: center; padding: 40px; color: var(--gray);">
-                                <i class="fas fa-clipboard-list" style="font-size: 48px; margin-bottom: 20px;"></i>
-                                <h3>No orders yet</h3>
-                                <p>Orders will appear here when customers purchase your products</p>
-                                <div style="margin-top: 20px; padding: 20px; background: var(--light); border-radius: 8px;">
-                                    <h4>Demo Order</h4>
-                                    <p>Add items to cart as a customer and place an order to see it here.</p>
-                                    <button class="btn btn-primary" onclick="showPage('customer-dashboard')">
-                                        Switch to Customer View
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    for (const order of allOrders) {
-                        // Get order items for each order
-                        let orderItems = [];
-                        try {
-                            orderItems = await ApiClient.getOrderItems(order.id);
-                        } catch (error) {
-                            // Use cart items as demo order items
-                            if (window.customerCart && window.customerCart.length > 0) {
-                                orderItems = window.customerCart.map(item => ({
-                                    product_name: item.name,
-                                    quantity: item.quantity,
-                                    price: item.price
-                                }));
-                            }
-                        }
-                        
-                        const orderCard = document.createElement('div');
-                        orderCard.className = 'delivery-card';
-                        
-                        const statusClass = `status-${order.status}`;
-                        const statusText = order.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                        
-                        let itemsHTML = '';
-                        if (orderItems && orderItems.length > 0) {
-                            itemsHTML = `
-                                <div style="margin: 10px 0; padding: 10px; background: var(--light); border-radius: 8px;">
-                                    <strong>Items to Prepare:</strong>
-                                    ${orderItems.map(item => `
-                                        <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                                            <span>${item.product_name} × ${item.quantity}</span>
-                                            <span>${UIHelper.formatPrice(item.price * item.quantity)}</span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            `;
-                        }
-                        
-                        orderCard.innerHTML = `
-                            <div class="delivery-header">
-                                <div>
-                                    <h4>Order #${order.order_number}</h4>
-                                    <div style="color: var(--gray); font-size: 14px; margin-top: 5px;">
-                                        ${UIHelper.formatDate(order.created_at)}
-                                        ${order.id.includes('demo-') ? '<span style="color: var(--warning); margin-left: 10px;">(Demo Order)</span>' : ''}
-                                    </div>
-                                </div>
-                                <span class="delivery-status ${statusClass}">${statusText}</span>
-                            </div>
-                            
-                            ${itemsHTML}
-                            
-                            <div style="margin: 15px 0;">
-                                <p><strong>Customer:</strong> ${order.customer_id}</p>
-                                <p><strong>Delivery Address:</strong> ${order.shipping_address}</p>
-                                ${order.delivery_instructions ? `<p><strong>Instructions:</strong> ${order.delivery_instructions}</p>` : ''}
-                            </div>
-                            
-                            <div style="font-weight: bold; font-size: 18px; text-align: right; margin-top: 15px;">
-                                Total: ${UIHelper.formatPrice(order.total)}
-                            </div>
-                            
-                            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                ${order.status === 'created' ? `
-                                    <button class="btn btn-primary" onclick="SellerDashboard.updateOrderStatus('${order.id}', 'accepted')">
-                                        <i class="fas fa-check"></i> Accept Order
-                                    </button>
-                                    <button class="btn btn-danger" onclick="SellerDashboard.updateOrderStatus('${order.id}', 'cancelled')">
-                                        <i class="fas fa-times"></i> Cancel
-                                    </button>
-                                ` : ''}
-                                ${order.status === 'accepted' ? `
-                                    <button class="btn btn-success" onclick="SellerDashboard.updateOrderStatus('${order.id}', 'ready')">
-                                        <i class="fas fa-check-double"></i> Mark as Ready for Pickup
-                                    </button>
-                                ` : ''}
-                                <button class="btn btn-outline btn-sm" onclick="SellerDashboard.viewOrderDetails('${order.id}')">
-                                    <i class="fas fa-eye"></i> Details
-                                </button>
-                            </div>
-                        `;
-                        
-                        container.appendChild(orderCard);
-                    }
-                } catch (error) {
-                    console.error('Error loading seller orders:', error);
-                    UIHelper.showNotification('Error loading orders', 'error');
-                }
-            }
+                        })
+                        .eq('id', orderId);
 
-            static async updateOrderStatus(orderId, status) {
-                try {
-                    await ApiClient.updateOrderStatus(orderId, status);
+                    if (error) throw error;
+
+                    UIHelper.showNotification('Payment confirmed! Your order is being processed.', 'success');
                     
-                    let message = `Order marked as ${status}`;
-                    if (status === 'ready') {
-                        message = 'Order marked as ready for pickup! Riders will now see this delivery.';
+                    // Reload orders if on customer dashboard
+                    if (typeof CustomerDashboard !== 'undefined') {
+                        CustomerDashboard.loadOrders();
                     }
-                    
-                    UIHelper.showNotification(message, 'success');
-                    this.loadOrders();
-                    this.loadSellerOverview();
-                    
                 } catch (error) {
                     console.error('Error updating order status:', error);
-                    UIHelper.showNotification('Error updating order', 'error');
-                }
-            }
-
-            static async viewOrderDetails(orderId) {
-                try {
-                    const order = await ApiClient.getOrders({ sellerId: window.currentUser.id })
-                        .then(orders => orders.find(o => o.id === orderId));
-                    
-                    const orderItems = await ApiClient.getOrderItems(orderId);
-                    
-                    let itemsHTML = '';
-                    if (orderItems && orderItems.length > 0) {
-                        itemsHTML = `
-                            <h4>Order Items:</h4>
-                            ${orderItems.map(item => `
-                                <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--light-gray);">
-                                    <div>
-                                        <strong>${item.product_name}</strong>
-                                        <div>Quantity: ${item.quantity}</div>
-                                    </div>
-                                    <div>${UIHelper.formatPrice(item.price * item.quantity)}</div>
-                                </div>
-                            `).join('')}
-                        `;
-                    }
-                    
-                    alert(`Order Details for #${order.order_number}\n\nStatus: ${order.status}\nTotal: ${UIHelper.formatPrice(order.total)}\nCustomer: ${order.customer_id}\n\n${itemsHTML}`);
-                } catch (error) {
-                    console.error('Error fetching order details:', error);
-                    alert(`Order Details for #${orderId}\n\nFull order details would be shown here with customer information and order timeline.`);
-                }
-            }
-
-            static createDemoOrder() {
-                const demoOrder = {
-                    id: 'demo-order-' + Date.now(),
-                    order_number: 'ORD' + Date.now(),
-                    customer_id: 'demo-customer',
-                    seller_id: window.currentUser.id,
-                    total: 2850,
-                    subtotal: 2700,
-                    delivery_fee: 150,
-                    status: 'created',
-                    payment_method: 'cash',
-                    payment_status: 'pending',
-                    shipping_address: '123 Demo Street, Nairobi',
-                    delivery_instructions: 'Call before delivery',
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()
-                };
-                
-                UIHelper.showNotification('Demo order created!', 'success');
-                
-                // Reload orders to show the demo order
-                this.loadOrders();
-            }
-
-            static async deleteProduct(productId) {
-                if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
-                
-                try {
-                    await ApiClient.deleteProduct(productId);
-                    UIHelper.showNotification('Product deleted successfully', 'success');
-                    this.loadProducts();
-                    this.loadSellerOverview();
-                } catch (error) {
-                    console.error('Error deleting product:', error);
-                    UIHelper.showNotification('Error deleting product', 'error');
-                }
-            }
-
-            static handleImageUpload(event) {
-                const files = event.target.files;
-                const previewGrid = document.getElementById('image-preview-grid');
-                this.uploadedImages = [];
-                
-                if (files.length > 12) {
-                    UIHelper.showNotification('You can only upload up to 12 images', 'error');
-                    return;
-                }
-                
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    
-                    // Check file type
-                    if (!file.type.match('image.*')) {
-                        UIHelper.showNotification('Please select only image files', 'error');
-                        continue;
-                    }
-                    
-                    // Check file size (max 6MB)
-                    if (file.size > 6 * 1024 * 1024) {
-                        UIHelper.showNotification(`Image ${file.name} is too large. Maximum size is 6MB.`, 'error');
-                        continue;
-                    }
-                    
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const imagePreview = document.createElement('div');
-                        imagePreview.className = 'image-preview';
-                        imagePreview.innerHTML = `
-                            <img src="${e.target.result}" alt="Preview">
-                            <div class="image-preview-actions">
-                                <button class="btn btn-sm btn-danger" onclick="this.parentElement.parentElement.remove()">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        `;
-                        previewGrid.appendChild(imagePreview);
-                    };
-                    reader.readAsDataURL(file);
-                    
-                    // Store file for upload
-                    this.uploadedImages.push(file);
-                }
-                
-                // Reset file input
-                event.target.value = '';
-            }
-
-            static async saveProductAsDraft() {
-                await this.saveProduct('draft');
-            }
-
-            static async publishProduct() {
-                await this.saveProduct('published');
-            }
-
-            static async saveProduct(status) {
-                const name = document.getElementById('product-name').value;
-                const description = document.getElementById('product-description').value;
-                const price = parseFloat(document.getElementById('product-price').value);
-                const category = document.getElementById('product-category').value;
-                const stock = parseInt(document.getElementById('product-stock').value);
-                
-                if (!name || !description || !price || !category || isNaN(stock)) {
-                    UIHelper.showNotification('Please fill in all required fields', 'error');
-                    return;
-                }
-                
-                if (price <= 0) {
-                    UIHelper.showNotification('Price must be greater than 0', 'error');
-                    return;
-                }
-                
-                if (stock < 0) {
-                    UIHelper.showNotification('Stock cannot be negative', 'error');
-                    return;
-                }
-                
-                if (!window.currentUser) {
-                    UIHelper.showNotification('Please log in to add products', 'error');
-                    return;
-                }
-                
-                UIHelper.showLoading();
-                
-                try {
-                    const productData = {
-                        seller_id: window.currentUser.id,
-                        seller_name: window.currentUser.profile.name,
-                        title: ValidationHelper.sanitizeInput(name),
-                        short_description: ValidationHelper.sanitizeInput(description),
-                        full_description: ValidationHelper.sanitizeInput(description),
-                        price: price,
-                        category: ValidationHelper.sanitizeInput(category),
-                        stock: stock,
-                        status: status
-                    };
-                    
-                    const product = await ApiClient.createProduct(productData);
-                    
-                    // Upload images if any
-                    if (this.uploadedImages.length > 0) {
-                        for (const file of this.uploadedImages) {
-                            await ApiClient.uploadProductImage(file, product.id);
-                        }
-                    }
-                    
-                    closeAddProductModal();
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification(`Product ${status === 'draft' ? 'saved as draft' : 'published'} successfully!`, 'success');
-                    
-                    // Reset form
-                    document.getElementById('product-name').value = '';
-                    document.getElementById('product-description').value = '';
-                    document.getElementById('product-price').value = '';
-                    document.getElementById('product-stock').value = '';
-                    document.getElementById('image-preview-grid').innerHTML = '';
-                    this.uploadedImages = [];
-                    
-                    this.loadProducts();
-                    this.loadSellerOverview();
-                    
-                } catch (error) {
-                    console.error('Error saving product:', error);
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Error saving product', 'error');
                 }
             }
         }
 
-        // ========== RIDER DASHBOARD ==========
-        class RiderDashboard {
-            static initialize() {
-                if (!AuthManager.requireAuth()) return;
+        // Chat Manager (NEW)
+        class ChatManager {
+            static currentConversation = null;
+
+            static toggleChat() {
+                const widget = document.getElementById('chatWidget');
+                widget.classList.toggle('active');
                 
-                const user = window.currentUser;
-                
-                // Update UI with user data
-                document.getElementById('rider-name').textContent = user.profile.name;
-                document.getElementById('rider-avatar').textContent = user.profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                
-                this.loadRiderDashboard();
-                this.loadAvailableDeliveries();
-                this.loadActiveDeliveries();
-                this.loadRiderEarnings();
+                if (widget.classList.contains('active')) {
+                    this.loadConversation();
+                }
             }
 
-            static async loadRiderDashboard() {
+            static async loadConversation() {
                 if (!window.currentUser) return;
-                
-                try {
-                    const deliveries = await ApiClient.getOrders({ riderId: window.currentUser.id });
-                    const availableDeliveries = await ApiClient.getOrders({ status: 'ready' });
-                    
-                    // Calculate stats
-                    const completedToday = deliveries.filter(d => 
-                        d.status === 'delivered' && 
-                        new Date(d.updated_at).toDateString() === new Date().toDateString()
-                    ).length;
-                    
-                    const earningsToday = deliveries
-                        .filter(d => d.status === 'delivered' && new Date(d.updated_at).toDateString() === new Date().toDateString())
-                        .reduce((sum, d) => sum + (d.total * 0.2), 0); // 20% of order value
-                        
-                    const weeklyDeliveries = deliveries.filter(d => {
-                        const deliveryDate = new Date(d.updated_at);
-                        const oneWeekAgo = new Date();
-                        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-                        return deliveryDate > oneWeekAgo;
-                    }).length;
 
-                    // Update stats
-                    document.getElementById('deliveries-today').textContent = completedToday;
-                    document.getElementById('earnings-today').textContent = UIHelper.formatPrice(earningsToday);
-                    document.getElementById('deliveries-week').textContent = weeklyDeliveries;
+                // For demo, create a support conversation
+                this.currentConversation = {
+                    id: 'support_' + window.currentUser.id,
+                    type: 'support'
+                };
 
-                    // Load current delivery
-                    const currentDelivery = deliveries.find(d => 
-                        ['assigned', 'accepted', 'picked_up', 'in_transit'].includes(d.status)
-                    );
-                    
-                    this.loadCurrentDelivery(currentDelivery);
-                    
-                    // Load available deliveries for dashboard section
-                    this.loadAvailableDeliveriesForDashboard(availableDeliveries);
-                    
-                } catch (error) {
-                    console.error('Error loading rider dashboard:', error);
-                }
+                this.renderMessages([
+                    {
+                        id: 1,
+                        body: 'Hello! Welcome to IPATE Deliveries support. How can we help you today?',
+                        sender_id: 'support',
+                        created_at: new Date().toISOString()
+                    }
+                ]);
             }
 
-            static loadCurrentDelivery(currentDelivery) {
-                const container = document.getElementById('current-delivery');
-                if (!container) return;
-                
-                if (!currentDelivery) {
-                    container.innerHTML = `
-                        <div class="delivery-card">
-                            <p style="text-align: center; color: var(--gray);">No active delivery</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                const statusClass = `status-${currentDelivery.status}`;
-                const statusText = currentDelivery.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                
-                container.innerHTML = `
-                    <div class="delivery-card">
-                        <div class="delivery-header">
-                            <h4>Order #${currentDelivery.order_number}</h4>
-                            <span class="delivery-status ${statusClass}">${statusText}</span>
-                        </div>
-                        
-                        <div style="margin: 15px 0;">
-                            <p><strong>Customer:</strong> ${currentDelivery.customer_id}</p>
-                            <p><strong>Delivery Address:</strong> ${currentDelivery.shipping_address}</p>
-                            <p><strong>Instructions:</strong> ${currentDelivery.delivery_instructions || 'None'}</p>
-                            <p><strong>Earnings:</strong> ${UIHelper.formatPrice(currentDelivery.total * 0.2)}</p>
-                        </div>
-                        
-                        <div style="margin-top: 15px; display: flex; gap: 10px;">
-                            ${currentDelivery.status === 'assigned' ? `
-                                <button class="btn btn-success" onclick="RiderDashboard.updateDeliveryStatus('${currentDelivery.id}', 'accepted')">
-                                    <i class="fas fa-check"></i> Accept Delivery
-                                </button>
-                            ` : ''}
-                            ${currentDelivery.status === 'accepted' ? `
-                                <button class="btn btn-primary" onclick="RiderDashboard.updateDeliveryStatus('${currentDelivery.id}', 'picked_up')">
-                                    <i class="fas fa-box"></i> Mark as Picked Up
-                                </button>
-                            ` : ''}
-                            ${currentDelivery.status === 'picked_up' ? `
-                                <button class="btn btn-success" onclick="RiderDashboard.updateDeliveryStatus('${currentDelivery.id}', 'in_transit')">
-                                    <i class="fas fa-shipping-fast"></i> Start Delivery
-                                </button>
-                            ` : ''}
-                            ${currentDelivery.status === 'in_transit' ? `
-                                <button class="btn btn-success" onclick="RiderDashboard.updateDeliveryStatus('${currentDelivery.id}', 'delivered')">
-                                    <i class="fas fa-check-circle"></i> Mark as Delivered
-                                </button>
-                            ` : ''}
-                            <button class="btn btn-outline btn-sm" onclick="RiderDashboard.viewDeliveryDetails('${currentDelivery.id}')">
-                                <i class="fas fa-eye"></i> Details
-                            </button>
-                        </div>
+            static renderMessages(messages) {
+                const container = document.getElementById('chatMessages');
+                container.innerHTML = messages.map(msg => `
+                    <div class="chat-message ${msg.sender_id === window.currentUser?.id ? 'sent' : 'received'}">
+                        ${msg.body}
                     </div>
-                `;
+                `).join('');
+                
+                container.scrollTop = container.scrollHeight;
             }
 
-            static async loadAvailableDeliveries() {
-                try {
-                    const orders = await ApiClient.getOrders({ status: 'ready' });
-                    const container = document.getElementById('available-deliveries-list') || document.getElementById('available-deliveries');
-                    
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (orders.length === 0) {
-                        container.innerHTML = `
-                            <div class="delivery-card">
-                                <p style="text-align: center; color: var(--gray);">No available deliveries at the moment</p>
-                            </div>
-                        `;
-                        return;
+            static async sendMessage() {
+                const input = document.getElementById('chatInput');
+                const message = input.value.trim();
+                
+                if (!message) return;
+
+                // Add message to UI immediately
+                this.renderMessages([
+                    ...Array.from(container.children).map(child => ({
+                        body: child.textContent,
+                        sender_id: child.classList.contains('sent') ? window.currentUser.id : 'support'
+                    })),
+                    {
+                        body: message,
+                        sender_id: window.currentUser.id,
+                        created_at: new Date().toISOString()
                     }
-                    
-                    for (const order of orders) {
-                        // Get order items for each order
-                        const orderItems = await ApiClient.getOrderItems(order.id);
-                        
-                        const deliveryCard = document.createElement('div');
-                        deliveryCard.className = 'delivery-card';
-                        
-                        // Calculate distance and earnings (mock data)
-                        const distance = (Math.random() * 10 + 2).toFixed(1);
-                        const earnings = Math.floor(order.total * 0.2);
-                        
-                        let itemsHTML = '';
-                        if (orderItems && orderItems.length > 0) {
-                            itemsHTML = `
-                                <div style="margin: 10px 0; padding: 10px; background: var(--light); border-radius: 8px;">
-                                    <strong>Items to Deliver:</strong>
-                                    ${orderItems.map(item => `
-                                        <div style="margin-top: 5px;">
-                                            <span>${item.product_name} × ${item.quantity}</span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            `;
+                ]);
+
+                input.value = '';
+
+                // Simulate support response
+                setTimeout(() => {
+                    this.renderMessages([
+                        ...Array.from(document.getElementById('chatMessages').children).map(child => ({
+                            body: child.textContent,
+                            sender_id: child.classList.contains('sent') ? window.currentUser.id : 'support'
+                        })),
+                        {
+                            body: 'Thank you for your message. Our support team will get back to you shortly.',
+                            sender_id: 'support',
+                            created_at: new Date().toISOString()
                         }
-                        
-                        deliveryCard.innerHTML = `
-                            <div class="delivery-header">
-                                <h4>Order #${order.order_number}</h4>
-                                <span class="delivery-status status-ready">Ready for Pickup</span>
-                            </div>
-                            
-                            ${itemsHTML}
-                            
-                            <div style="margin: 15px 0;">
-                                <p><strong>Pickup:</strong> Seller Location</p>
-                                <p><strong>Delivery:</strong> ${order.shipping_address}</p>
-                                <p><strong>Distance:</strong> ${distance} km</p>
-                                <p><strong>Earnings:</strong> ${UIHelper.formatPrice(earnings)}</p>
-                                <p><strong>Customer:</strong> ${order.customer_id}</p>
-                            </div>
-                            
-                            <div style="margin-top: 15px;">
-                                <button class="btn btn-primary btn-block" onclick="RiderDashboard.acceptDelivery('${order.id}')">
-                                    <i class="fas fa-check"></i> Accept Delivery
-                                </button>
-                            </div>
-                        `;
-                        
-                        container.appendChild(deliveryCard);
-                    }
-                } catch (error) {
-                    console.error('Error loading available deliveries:', error);
-                }
+                    ]);
+                }, 1000);
             }
+        }
 
-            static loadAvailableDeliveriesForDashboard(orders) {
-                const container = document.getElementById('available-deliveries');
-                if (!container || !orders) return;
-                
-                // Show only 2-3 deliveries in dashboard
-                const limitedOrders = orders.slice(0, 3);
-                
-                if (limitedOrders.length === 0) {
-                    container.innerHTML = `
-                        <div class="delivery-card">
-                            <p style="text-align: center; color: var(--gray);">No available deliveries at the moment</p>
-                        </div>
-                    `;
-                    return;
+        // ========== ENHANCED EXISTING CLASSES ==========
+
+        // Enhanced Customer Dashboard with real-time updates
+        if (typeof CustomerDashboard !== 'undefined') {
+            const originalInitialize = CustomerDashboard.initialize;
+            CustomerDashboard.initialize = function() {
+                originalInitialize.call(this);
+                this.setupRealtimeListeners();
+            };
+
+            CustomerDashboard.setupRealtimeListeners = function() {
+                // Additional real-time setup if needed
+            };
+
+            CustomerDashboard.handleOrderUpdate = function(order, eventType) {
+                // Update UI when order changes
+                if (eventType === 'UPDATE' && order.status === 'paid') {
+                    UIHelper.showToast('Payment Confirmed', `Order #${order.order_number} payment confirmed!`, 'success');
                 }
                 
-                limitedOrders.forEach(order => {
-                    const deliveryCard = document.createElement('div');
-                    deliveryCard.className = 'delivery-card';
-                    deliveryCard.style.marginBottom = '15px';
-                    
-                    const distance = (Math.random() * 10 + 2).toFixed(1);
-                    const earnings = Math.floor(order.total * 0.2);
-                    
-                    deliveryCard.innerHTML = `
-                        <div class="delivery-header">
-                            <h5>Order #${order.order_number}</h5>
-                            <span class="delivery-status status-ready" style="font-size: 10px;">Ready</span>
-                        </div>
-                        <p style="margin: 10px 0; font-size: 14px;">
-                            <strong>${distance} km</strong> • ${UIHelper.formatPrice(earnings)}
-                        </p>
-                        <button class="btn btn-primary btn-sm" onclick="RiderDashboard.acceptDelivery('${order.id}')" style="width: 100%;">
-                            <i class="fas fa-check"></i> Accept
-                        </button>
-                    `;
-                    
-                    container.appendChild(deliveryCard);
-                });
-            }
+                // Reload orders to reflect changes
+                this.loadOrders();
+                this.loadDashboardData();
+            };
 
-            static async loadActiveDeliveries() {
-                if (!window.currentUser) return;
+            CustomerDashboard.handleDeliveryUpdate = function(delivery) {
+                UIHelper.showToast('Delivery Update', 'Your delivery status has been updated', 'info');
+                this.loadOrders();
+            };
+        }
+
+        // Enhanced Seller Dashboard with real-time updates
+        if (typeof SellerDashboard !== 'undefined') {
+            const originalSellerInitialize = SellerDashboard.initialize;
+            SellerDashboard.initialize = function() {
+                originalSellerInitialize.call(this);
+                this.setupRealtimeListeners();
+            };
+
+            SellerDashboard.setupRealtimeListeners = function() {
+                // Additional real-time setup
+            };
+
+            SellerDashboard.handleOrderUpdate = function(order, eventType) {
+                if (eventType === 'INSERT') {
+                    UIHelper.showToast('New Order!', `You have a new order #${order.order_number}`, 'success');
+                }
                 
-                try {
-                    const deliveries = await ApiClient.getOrders({ riderId: window.currentUser.id });
-                    const activeDeliveries = deliveries.filter(d => 
-                        ['assigned', 'accepted', 'picked_up', 'in_transit'].includes(d.status)
-                    );
-                    
-                    const container = document.getElementById('rider-active-deliveries');
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (activeDeliveries.length === 0) {
-                        container.innerHTML = `
-                            <div class="delivery-card">
-                                <p style="text-align: center; color: var(--gray);">You don't have any active deliveries</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    for (const delivery of activeDeliveries) {
-                        // Get order items for each delivery
-                        const orderItems = await ApiClient.getOrderItems(delivery.id);
-                        
-                        const deliveryCard = document.createElement('div');
-                        deliveryCard.className = 'delivery-card';
-                        
-                        const statusClass = `status-${delivery.status}`;
-                        const statusText = delivery.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                        
-                        let itemsHTML = '';
-                        if (orderItems && orderItems.length > 0) {
-                            itemsHTML = `
-                                <div style="margin: 10px 0; padding: 10px; background: var(--light); border-radius: 8px;">
-                                    <strong>Items to Deliver:</strong>
-                                    ${orderItems.map(item => `
-                                        <div style="margin-top: 5px;">
-                                            <span>${item.product_name} × ${item.quantity}</span>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            `;
-                        }
-                        
-                        deliveryCard.innerHTML = `
-                            <div class="delivery-header">
-                                <h4>Order #${delivery.order_number}</h4>
-                                <span class="delivery-status ${statusClass}">${statusText}</span>
-                            </div>
-                            
-                            ${itemsHTML}
-                            
-                            <div style="margin: 15px 0;">
-                                <p><strong>Customer:</strong> ${delivery.customer_id}</p>
-                                <p><strong>Delivery Address:</strong> ${delivery.shipping_address}</p>
-                                <p><strong>Instructions:</strong> ${delivery.delivery_instructions || 'None'}</p>
-                                <p><strong>Earnings:</strong> ${UIHelper.formatPrice(delivery.total * 0.2)}</p>
-                            </div>
-                            
-                            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                ${delivery.status === 'assigned' ? `
-                                    <button class="btn btn-success" onclick="RiderDashboard.updateDeliveryStatus('${delivery.id}', 'accepted')">
-                                        <i class="fas fa-check"></i> Accept Delivery
-                                    </button>
-                                ` : ''}
-                                ${delivery.status === 'accepted' ? `
-                                    <button class="btn btn-primary" onclick="RiderDashboard.updateDeliveryStatus('${delivery.id}', 'picked_up')">
-                                        <i class="fas fa-box"></i> Mark as Picked Up
-                                    </button>
-                                ` : ''}
-                                ${delivery.status === 'picked_up' ? `
-                                    <button class="btn btn-success" onclick="RiderDashboard.updateDeliveryStatus('${delivery.id}', 'in_transit')">
-                                        <i class="fas fa-shipping-fast"></i> Start Delivery
-                                    </button>
-                                ` : ''}
-                                ${delivery.status === 'in_transit' ? `
-                                    <button class="btn btn-success" onclick="RiderDashboard.updateDeliveryStatus('${delivery.id}', 'delivered')">
-                                        <i class="fas fa-check-circle"></i> Mark as Delivered
-                                    </button>
-                                ` : ''}
-                                <button class="btn btn-outline btn-sm" onclick="RiderDashboard.viewDeliveryDetails('${delivery.id}')">
-                                    <i class="fas fa-eye"></i> Details
-                                </button>
-                            </div>
-                        `;
-                        
-                        container.appendChild(deliveryCard);
-                    }
-                } catch (error) {
-                    console.error('Error loading active deliveries:', error);
-                }
-            }
-
-            static async loadRiderEarnings() {
-                if (!window.currentUser) return;
-                
-                try {
-                    const deliveries = await ApiClient.getOrders({ riderId: window.currentUser.id });
-                    const completedDeliveries = deliveries.filter(d => d.status === 'delivered');
-                    
-                    const totalEarnings = completedDeliveries.reduce((sum, d) => sum + (d.total * 0.2), 0);
-                    const weeklyEarnings = completedDeliveries
-                        .filter(d => {
-                            const deliveryDate = new Date(d.updated_at);
-                            const oneWeekAgo = new Date();
-                            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-                            return deliveryDate > oneWeekAgo;
-                        })
-                        .reduce((sum, d) => sum + (d.total * 0.2), 0);
-                        
-                    const todayEarnings = completedDeliveries
-                        .filter(d => new Date(d.updated_at).toDateString() === new Date().toDateString())
-                        .reduce((sum, d) => sum + (d.total * 0.2), 0);
-
-                    // Update earnings stats
-                    document.getElementById('total-earnings').textContent = UIHelper.formatPrice(totalEarnings);
-                    document.getElementById('weekly-earnings').textContent = UIHelper.formatPrice(weeklyEarnings);
-                    document.getElementById('today-earnings').textContent = UIHelper.formatPrice(todayEarnings);
-                    document.getElementById('total-deliveries').textContent = completedDeliveries.length;
-                } catch (error) {
-                    console.error('Error loading rider earnings:', error);
-                }
-            }
-
-            static async acceptDelivery(orderId) {
-                if (!window.currentUser) return;
-                
-                try {
-                    await ApiClient.updateOrderStatus(orderId, 'assigned', {
-                        rider_id: window.currentUser.id
-                    });
-                    
-                    UIHelper.showNotification('Delivery accepted successfully!', 'success');
-                    this.loadAvailableDeliveries();
-                    this.loadActiveDeliveries();
-                    this.loadRiderDashboard();
-                    
-                } catch (error) {
-                    console.error('Error accepting delivery:', error);
-                    UIHelper.showNotification('Error accepting delivery', 'error');
-                }
-            }
-
-            static async updateDeliveryStatus(orderId, status) {
-                try {
-                    await ApiClient.updateOrderStatus(orderId, status);
-                    
-                    let message = `Delivery marked as ${status.replace('_', ' ')}`;
-                    if (status === 'delivered') {
-                        message = 'Delivery completed successfully!';
-                    }
-                    
-                    UIHelper.showNotification(message, 'success');
-                    this.loadActiveDeliveries();
-                    this.loadRiderDashboard();
-                    this.loadRiderEarnings();
-                    
-                } catch (error) {
-                    console.error('Error updating delivery status:', error);
-                    UIHelper.showNotification('Error updating delivery', 'error');
-                }
-            }
-
-            static async viewDeliveryDetails(deliveryId) {
-                try {
-                    const delivery = await ApiClient.getOrders({ riderId: window.currentUser.id })
-                        .then(deliveries => deliveries.find(d => d.id === deliveryId));
-                    
-                    const orderItems = await ApiClient.getOrderItems(deliveryId);
-                    
-                    let itemsHTML = '';
-                    if (orderItems && orderItems.length > 0) {
-                        itemsHTML = `
-                            <h4>Delivery Items:</h4>
-                            ${orderItems.map(item => `
-                                <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--light-gray);">
-                                    <div>
-                                        <strong>${item.product_name}</strong>
-                                        <div>Quantity: ${item.quantity}</div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        `;
-                    }
-                    
-                    alert(`Delivery Details for #${delivery.order_number}\n\nStatus: ${delivery.status}\nEarnings: ${UIHelper.formatPrice(delivery.total * 0.2)}\nCustomer: ${delivery.customer_id}\nAddress: ${delivery.shipping_address}\n\n${itemsHTML}`);
-                } catch (error) {
-                    console.error('Error fetching delivery details:', error);
-                    alert(`Delivery Details for #${deliveryId}\n\nFull delivery details would be shown here with customer contact information and delivery timeline.`);
-                }
-            }
+                this.loadOrders();
+                this.loadSellerOverview();
+            };
         }
 
         // ========== PAGE MANAGEMENT ==========
         function showPage(pageId) {
-            // Hide all pages
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
             
-            // Show the selected page
             document.getElementById(pageId).classList.add('active');
-            
-            // Update navigation
             updateNavigation();
         }
 
         function showCustomerSection(sectionId) {
-            // Hide all customer sections
             document.querySelectorAll('.customer-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Show the selected section
             document.getElementById('customer-' + sectionId + '-section').classList.add('active');
             
-            // Update navigation links
             document.querySelectorAll('#customer-dashboard .dashboard-nav-link').forEach(link => {
                 link.classList.remove('active');
             });
@@ -4611,15 +3032,12 @@
         }
 
         function showSellerSection(sectionId) {
-            // Hide all seller sections
             document.querySelectorAll('.seller-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Show the selected section
             document.getElementById('seller-' + sectionId + '-section').classList.add('active');
             
-            // Update navigation links
             document.querySelectorAll('#seller-dashboard .dashboard-nav-link').forEach(link => {
                 link.classList.remove('active');
             });
@@ -4627,15 +3045,12 @@
         }
 
         function showRiderSection(sectionId) {
-            // Hide all rider sections
             document.querySelectorAll('.rider-section').forEach(section => {
                 section.classList.remove('active');
             });
             
-            // Show the selected section
             document.getElementById('rider-' + sectionId + '-section').classList.add('active');
             
-            // Update navigation links
             document.querySelectorAll('#rider-dashboard .dashboard-nav-link').forEach(link => {
                 link.classList.remove('active');
             });
@@ -4643,7 +3058,6 @@
         }
 
         function updateNavigation() {
-            // Update header based on current page
             const header = document.getElementById('header');
             if (window.scrollY > 100) {
                 header.classList.add('header-scrolled');
@@ -4655,7 +3069,6 @@
         // ========== MODAL MANAGEMENT ==========
         function openAuthModal() {
             document.getElementById('auth-modal').style.display = 'flex';
-            // Show login form by default
             document.getElementById('login-form').style.display = 'block';
             document.getElementById('signup-form').style.display = 'none';
             document.getElementById('loginTab').style.borderBottomColor = 'var(--primary)';
@@ -4668,40 +3081,9 @@
             document.getElementById('auth-modal').style.display = 'none';
         }
 
-        function openCheckoutModal() {
-            CustomerDashboard.openCheckoutModal();
+        function closeMpesaModal() {
+            MpesaManager.closeModal();
         }
-
-        function closeCheckoutModal() {
-            CustomerDashboard.closeCheckoutModal();
-        }
-
-        function openAddProductModal() {
-            document.getElementById('add-product-modal').style.display = 'flex';
-        }
-
-        function closeAddProductModal() {
-            document.getElementById('add-product-modal').style.display = 'none';
-        }
-
-        // Auth modal tab switching
-        document.getElementById('loginTab').addEventListener('click', function() {
-            document.getElementById('login-form').style.display = 'block';
-            document.getElementById('signup-form').style.display = 'none';
-            this.style.borderBottomColor = 'var(--primary)';
-            this.style.color = 'var(--primary)';
-            document.getElementById('registerTab').style.borderBottomColor = 'transparent';
-            document.getElementById('registerTab').style.color = 'var(--dark)';
-        });
-
-        document.getElementById('registerTab').addEventListener('click', function() {
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('signup-form').style.display = 'block';
-            this.style.borderBottomColor = 'var(--primary)';
-            this.style.color = 'var(--primary)';
-            document.getElementById('loginTab').style.borderBottomColor = 'transparent';
-            document.getElementById('loginTab').style.color = 'var(--dark)';
-        });
 
         // ========== AUTH FUNCTIONS ==========
         async function login() {
@@ -4720,9 +3102,10 @@
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             const role = document.getElementById('signup-role').value;
+            const phone = ''; // You can add phone input to your signup form
             
             try {
-                await AuthManager.signup(email, password, name, role);
+                await AuthManager.signup(email, password, name, role, phone);
             } catch (error) {
                 console.error('Signup failed:', error);
             }
@@ -4732,74 +3115,33 @@
             await AuthManager.logout();
         }
 
-        // ========== ORDER FUNCTIONS ==========
-        function placeOrder() {
-            CustomerDashboard.placeOrder();
-        }
-
-        function clearCart() {
-            CustomerDashboard.clearCart();
-        }
-
-        // ========== PRODUCT FUNCTIONS ==========
-        function handleImageUpload(event) {
-            SellerDashboard.handleImageUpload(event);
-        }
-
-        function saveProductAsDraft() {
-            SellerDashboard.saveProductAsDraft();
-        }
-
-        function publishProduct() {
-            SellerDashboard.publishProduct();
-        }
-
-        // ========== LANGUAGE FUNCTIONS ==========
-        function setLanguage(lang) {
-            LanguageManager.setLanguage(lang);
-        }
-
         // ========== INITIALIZATION ==========
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize components
-            ErrorHandler.init();
-            LanguageManager.init();
-            NotificationManager.init();
-            PerformanceHelper.lazyLoadImages();
-            
-            // Initialize database
-            DatabaseSetup.initializeDatabase();
-            
-            // Initialize authentication
+            // Initialize auth
             AuthManager.initAuth();
+            
+            // Initialize notification system
+            NotificationManager.init();
             
             // Set up event listeners
             window.addEventListener('scroll', updateNavigation);
             
-            // Product search and filter
-            const searchProducts = document.getElementById('searchProducts');
-            if (searchProducts) {
-                searchProducts.addEventListener('input', PerformanceHelper.debounce(() => {
-                    CustomerDashboard.loadProducts();
-                }, 500));
+            // Initialize existing functionality
+            if (typeof CustomerDashboard !== 'undefined') {
+                // Ensure cart is loaded
+                CustomerDashboard.updateCartDisplay();
             }
             
-            const categoryFilter = document.getElementById('categoryFilter');
-            if (categoryFilter) {
-                categoryFilter.addEventListener('change', () => {
-                    CustomerDashboard.loadProducts();
-                });
-            }
-            
-            const orderStatusFilter = document.getElementById('orderStatusFilter');
-            if (orderStatusFilter) {
-                orderStatusFilter.addEventListener('change', () => {
-                    CustomerDashboard.filterOrders();
-                });
-            }
-            
-            console.log('✅ IPATE Deliveries initialized successfully');
+            console.log('🚀 IPATE Deliveries fully initialized');
         });
+
+        // Export managers to global scope for HTML onclick handlers
+        window.AuthManager = AuthManager;
+        window.NotificationManager = NotificationManager;
+        window.MpesaManager = MpesaManager;
+        window.ChatManager = ChatManager;
+        window.RealtimeManager = RealtimeManager;
+        window.UIHelper = UIHelper;
     </script>
 </body>
 </html>
