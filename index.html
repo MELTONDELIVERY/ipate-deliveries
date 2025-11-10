@@ -1353,9 +1353,6 @@
                     <div id="seller-orders-section" class="seller-section">
                         <div style="margin-bottom: 20px;">
                             <h2>📋 <span id="manage-orders-title">Manage Orders</span></h2>
-                            <button class="btn btn-outline" onclick="SellerDashboard.refreshOrders()" style="margin-bottom: 20px;">
-                                <i class="fas fa-sync"></i> Refresh Orders
-                            </button>
                         </div>
                         
                         <div id="seller-orders-list">
@@ -1418,13 +1415,6 @@
             <div class="dashboard-content">
                 <div class="container">
                     <h2 style="margin-bottom: 20px;">🚴‍♂️ <span id="rider-dashboard-title">Rider Dashboard</span></h2>
-                    
-                    <!-- EMERGENCY REFRESH BUTTON -->
-                    <div style="margin: 10px 0; text-align: center;">
-                        <button class="btn btn-warning" onclick="RiderDashboard.forceRefreshDeliveries()">
-                            <i class="fas fa-sync-alt"></i> Refresh Available Deliveries
-                        </button>
-                    </div>
                     
                     <div class="dashboard-nav-links">
                         <a class="dashboard-nav-link active" onclick="showRiderSection('dashboard')"><span id="dashboard-nav-3">Dashboard</span></a>
@@ -1748,6 +1738,255 @@
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
             auth: { persistSession: true }
         });
+
+        // ========== REAL-TIME ORDER UPDATES ==========
+        class RealTimeOrderManager {
+            static subscriptions = new Map();
+
+            static initialize() {
+                console.log('🔄 Initializing real-time order updates...');
+                
+                // Subscribe to all order changes
+                this.subscribeToAllOrders();
+                
+                // Set up user-specific subscriptions based on role
+                if (window.currentUser) {
+                    this.setupUserSpecificSubscriptions();
+                }
+            }
+
+            static subscribeToAllOrders() {
+                // Subscribe to all order changes
+                const subscription = supabase
+                    .channel('all-orders')
+                    .on('postgres_changes', 
+                        { 
+                            event: '*', 
+                            schema: 'public', 
+                            table: 'orders'
+                        }, 
+                        (payload) => {
+                            console.log('🔄 Real-time order update:', payload);
+                            this.handleOrderUpdate(payload);
+                        }
+                    )
+                    .subscribe();
+
+                this.subscriptions.set('all-orders', subscription);
+                console.log('✅ Subscribed to all order changes');
+            }
+
+            static setupUserSpecificSubscriptions() {
+                const user = window.currentUser;
+                if (!user) return;
+
+                // Customer: Subscribe to their own orders
+                if (user.profile.role === 'customer') {
+                    const customerSubscription = supabase
+                        .channel('customer-orders')
+                        .on('postgres_changes', 
+                            { 
+                                event: '*', 
+                                schema: 'public', 
+                                table: 'orders',
+                                filter: `customer_id=eq.${user.id}`
+                            }, 
+                            (payload) => {
+                                console.log('🔄 Customer order update:', payload);
+                                this.handleCustomerOrderUpdate(payload);
+                            }
+                        )
+                        .subscribe();
+
+                    this.subscriptions.set('customer-orders', customerSubscription);
+                    console.log('✅ Customer subscribed to their orders');
+                }
+
+                // Seller: Subscribe to their orders
+                if (user.profile.role === 'seller') {
+                    const sellerSubscription = supabase
+                        .channel('seller-orders')
+                        .on('postgres_changes', 
+                            { 
+                                event: '*', 
+                                schema: 'public', 
+                                table: 'orders',
+                                filter: `seller_id=eq.${user.id}`
+                            }, 
+                            (payload) => {
+                                console.log('🔄 Seller order update:', payload);
+                                this.handleSellerOrderUpdate(payload);
+                            }
+                        )
+                        .subscribe();
+
+                    this.subscriptions.set('seller-orders', sellerSubscription);
+                    console.log('✅ Seller subscribed to their orders');
+                }
+
+                // Rider: Subscribe to their deliveries and available deliveries
+                if (user.profile.role === 'rider') {
+                    const riderSubscription = supabase
+                        .channel('rider-orders')
+                        .on('postgres_changes', 
+                            { 
+                                event: '*', 
+                                schema: 'public', 
+                                table: 'orders',
+                                filter: `rider_id=eq.${user.id}`
+                            }, 
+                            (payload) => {
+                                console.log('🔄 Rider delivery update:', payload);
+                                this.handleRiderDeliveryUpdate(payload);
+                            }
+                        )
+                        .subscribe();
+
+                    // Also subscribe to available deliveries (orders with status 'ready')
+                    const availableSubscription = supabase
+                        .channel('available-deliveries')
+                        .on('postgres_changes', 
+                            { 
+                                event: '*', 
+                                schema: 'public', 
+                                table: 'orders',
+                                filter: `status=eq.ready`
+                            }, 
+                            (payload) => {
+                                console.log('🔄 Available delivery update:', payload);
+                                this.handleAvailableDeliveryUpdate(payload);
+                            }
+                        )
+                        .subscribe();
+
+                    this.subscriptions.set('rider-orders', riderSubscription);
+                    this.subscriptions.set('available-deliveries', availableSubscription);
+                    console.log('✅ Rider subscribed to deliveries');
+                }
+            }
+
+            static handleOrderUpdate(payload) {
+                // Generic handler for all order updates
+                const { eventType, new: newData, old: oldData } = payload;
+                
+                console.log(`📦 Order ${eventType}:`, newData);
+                
+                // Show notification for important events
+                if (eventType === 'INSERT') {
+                    UIHelper.showNotification(`New order #${newData.order_number} created`, 'info');
+                } else if (eventType === 'UPDATE' && newData.status !== oldData.status) {
+                    UIHelper.showNotification(`Order #${newData.order_number} status changed to ${newData.status}`, 'info');
+                }
+            }
+
+            static handleCustomerOrderUpdate(payload) {
+                const { eventType, new: newData, old: oldData } = payload;
+                
+                // Update customer dashboard in real-time
+                if (document.getElementById('customer-dashboard').classList.contains('active')) {
+                    if (eventType === 'INSERT') {
+                        // New order created
+                        CustomerDashboard.loadDashboardData();
+                        CustomerDashboard.loadOrders();
+                    } else if (eventType === 'UPDATE') {
+                        // Order updated - refresh relevant sections
+                        CustomerDashboard.loadDashboardData();
+                        
+                        // If we're on the orders page, refresh it
+                        if (document.getElementById('customer-orders-section').classList.contains('active')) {
+                            CustomerDashboard.loadOrders();
+                        }
+                        
+                        // Show status change notification
+                        if (newData.status !== oldData.status) {
+                            const statusText = newData.status.split('_').map(word => 
+                                word.charAt(0).toUpperCase() + word.slice(1)
+                            ).join(' ');
+                            UIHelper.showNotification(`Your order #${newData.order_number} is now ${statusText}`, 'success');
+                        }
+                    }
+                }
+            }
+
+            static handleSellerOrderUpdate(payload) {
+                const { eventType, new: newData, old: oldData } = payload;
+                
+                // Update seller dashboard in real-time
+                if (document.getElementById('seller-dashboard').classList.contains('active')) {
+                    if (eventType === 'INSERT') {
+                        // New order received
+                        SellerDashboard.loadSellerOverview();
+                        SellerDashboard.loadOrders();
+                        UIHelper.showNotification(`New order #${newData.order_number} received!`, 'success');
+                    } else if (eventType === 'UPDATE') {
+                        // Order updated
+                        SellerDashboard.loadSellerOverview();
+                        
+                        // If we're on the orders page, refresh it
+                        if (document.getElementById('seller-orders-section').classList.contains('active')) {
+                            SellerDashboard.loadOrders();
+                        }
+                        
+                        // Show status change notification
+                        if (newData.status !== oldData.status && newData.status === 'ready') {
+                            UIHelper.showNotification(`Order #${newData.order_number} is ready for pickup`, 'info');
+                        }
+                    }
+                }
+            }
+
+            static handleRiderDeliveryUpdate(payload) {
+                const { eventType, new: newData } = payload;
+                
+                // Update rider dashboard in real-time
+                if (document.getElementById('rider-dashboard').classList.contains('active')) {
+                    if (eventType === 'INSERT' && newData.status === 'ready') {
+                        // New delivery available
+                        RiderDashboard.forceRefreshDeliveries();
+                        UIHelper.showNotification('New delivery available!', 'info');
+                    } else if (eventType === 'UPDATE') {
+                        // Delivery updated
+                        RiderDashboard.loadRiderDashboard();
+                        RiderDashboard.loadActiveDeliveries();
+                        RiderDashboard.loadRiderEarnings();
+                        
+                        // Refresh available deliveries if status changed to ready
+                        if (newData.status === 'ready') {
+                            RiderDashboard.forceRefreshDeliveries();
+                        }
+                    }
+                }
+            }
+
+            static handleAvailableDeliveryUpdate(payload) {
+                const { eventType, new: newData } = payload;
+                
+                // Update available deliveries for riders
+                if (document.getElementById('rider-dashboard').classList.contains('active') && 
+                    newData.status === 'ready') {
+                    RiderDashboard.forceRefreshDeliveries();
+                    
+                    if (eventType === 'INSERT') {
+                        UIHelper.showNotification('New delivery available!', 'info');
+                    }
+                }
+            }
+
+            static cleanup() {
+                // Unsubscribe from all channels
+                this.subscriptions.forEach((subscription, key) => {
+                    supabase.removeChannel(subscription);
+                    console.log(`🔴 Unsubscribed from ${key}`);
+                });
+                this.subscriptions.clear();
+            }
+
+            static reinitialize() {
+                // Clean up existing subscriptions and reinitialize
+                this.cleanup();
+                this.initialize();
+            }
+        }
 
         // ========== ENHANCEMENTS ==========
         
@@ -2582,6 +2821,9 @@
                     // Update UI
                     await this.renderHeader();
                     
+                    // Initialize real-time updates for the logged-in user
+                    RealTimeOrderManager.reinitialize();
+                    
                     // Redirect based on role
                     this.redirectToDashboard(profile.role);
                     
@@ -2632,6 +2874,10 @@
                 DataStore.clearUserData();
                 document.getElementById('authButtons').style.display = 'flex';
                 document.getElementById('userInfo').style.display = 'none';
+                
+                // Clean up real-time subscriptions
+                RealTimeOrderManager.cleanup();
+                
                 showPage('landing-page');
             }
 
@@ -3679,32 +3925,6 @@
                 this.loadSellerOverview();
                 this.loadProducts();
                 this.loadOrders();
-                
-                // Set up real-time updates for new orders
-                this.setupRealTimeUpdates();
-            }
-
-            static setupRealTimeUpdates() {
-                // Subscribe to order changes for this seller
-                const subscription = supabase
-                    .channel('orders')
-                    .on('postgres_changes', 
-                        { 
-                            event: '*', 
-                            schema: 'public', 
-                            table: 'orders',
-                            filter: `seller_id=eq.${window.currentUser.id}`
-                        }, 
-                        (payload) => {
-                            console.log('🔄 Real-time order update:', payload);
-                            UIHelper.showNotification('New order received!', 'success');
-                            this.loadOrders();
-                            this.loadSellerOverview();
-                        }
-                    )
-                    .subscribe();
-
-                console.log('📡 Real-time updates enabled for seller');
             }
 
             static async loadSellerOverview() {
@@ -3992,11 +4212,6 @@
                 }
             }
 
-            static refreshOrders() {
-                this.loadOrders();
-                UIHelper.showNotification('Orders refreshed', 'success');
-            }
-
             static async deleteProduct(productId) {
                 if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
                 
@@ -4153,51 +4368,10 @@
                 document.getElementById('rider-name').textContent = user.profile.name;
                 document.getElementById('rider-avatar').textContent = user.profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
                 
-                // FIXED: Initialize real-time updates
-                this.setupRealTimeUpdates();
-                
                 this.loadRiderDashboard();
                 this.forceRefreshDeliveries();
                 this.loadActiveDeliveries();
                 this.loadRiderEarnings();
-                
-                // Set up auto-refresh every 30 seconds as backup
-                setInterval(() => {
-                    if (document.getElementById('rider-dashboard').classList.contains('active')) {
-                        console.log('🔄 Auto-refreshing deliveries...');
-                        this.forceRefreshDeliveries();
-                    }
-                }, 30000);
-            }
-
-            // FIXED: Enhanced real-time subscription
-            static setupRealTimeUpdates() {
-                // Subscribe to ALL order changes, not just 'ready' status
-                const subscription = supabase
-                    .channel('rider-orders')
-                    .on('postgres_changes', 
-                        { 
-                            event: '*', 
-                            schema: 'public', 
-                            table: 'orders'
-                        }, 
-                        (payload) => {
-                            console.log('🔄 Real-time order update for riders:', payload);
-                            
-                            // Only show notification and refresh if status changed to 'ready'
-                            if (payload.new.status === 'ready') {
-                                UIHelper.showNotification('New delivery available!', 'info');
-                                this.forceRefreshDeliveries();
-                            }
-                            
-                            // Always refresh the dashboard to show current state
-                            this.loadRiderDashboard();
-                            this.loadActiveDeliveries();
-                        }
-                    )
-                    .subscribe();
-
-                console.log('📡 Real-time updates enabled for rider');
             }
 
             static async loadRiderDashboard() {
@@ -4836,6 +5010,9 @@
             // Initialize authentication
             AuthManager.initAuth();
             
+            // Initialize real-time order updates
+            RealTimeOrderManager.initialize();
+            
             // Set up event listeners
             window.addEventListener('scroll', updateNavigation);
             
@@ -4861,20 +5038,8 @@
                 });
             }
             
-            console.log('✅ IPATE Deliveries initialized successfully');
+            console.log('✅ IPATE Deliveries with real-time updates initialized successfully');
         });
-
-        // Temporary debug function - call this in browser console
-        async function debugRiderDeliveries() {
-            const { data: orders, error } = await supabase
-                .from('orders')
-                .select('*')
-                .eq('status', 'ready')
-                .is('rider_id', null);
-            
-            console.log('🔍 DEBUG - Available deliveries:', orders);
-            return orders;
-        }
     </script>
 </body>
 </html>
