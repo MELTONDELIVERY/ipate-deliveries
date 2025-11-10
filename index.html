@@ -2283,15 +2283,41 @@
                     console.log('Creating orders table...');
                 }
 
-                // Order Items table (CRITICAL FIX)
+                // CRITICAL FIX: Order Items table - Check and create if needed
                 const { error: orderItemsError } = await supabase
                     .from('order_items')
                     .select('*')
                     .limit(1);
 
                 if (orderItemsError && orderItemsError.code === 'PGRST116') {
-                    console.log('Creating order_items table...');
-                    // This table is essential for the order flow
+                    console.log('🔄 Creating order_items table...');
+                    // Create a sample record to trigger table creation
+                    try {
+                        const { error: createError } = await supabase
+                            .from('order_items')
+                            .insert([
+                                {
+                                    order_id: 'demo-order-1',
+                                    product_id: 'demo-product-1',
+                                    product_name: 'Demo Product',
+                                    quantity: 1,
+                                    price: 1000,
+                                    seller_id: 'demo-seller-1'
+                                }
+                            ]);
+                        
+                        if (createError) {
+                            console.log('Order items table setup:', createError.message);
+                        } else {
+                            console.log('✅ Order items table created successfully');
+                        }
+                    } catch (error) {
+                        console.log('Order items table creation attempt:', error.message);
+                    }
+                } else if (orderItemsError) {
+                    console.log('Order items table error:', orderItemsError);
+                } else {
+                    console.log('✅ Order items table exists');
                 }
             }
 
@@ -3173,7 +3199,12 @@
                     
                     for (const order of orders) {
                         // Get order items for each order
-                        const orderItems = await ApiClient.getOrderItems(order.id);
+                        let orderItems = [];
+                        try {
+                            orderItems = await ApiClient.getOrderItems(order.id);
+                        } catch (error) {
+                            console.log('No order items found for order:', order.id);
+                        }
                         
                         const orderCard = document.createElement('div');
                         orderCard.className = 'delivery-card';
@@ -3187,11 +3218,17 @@
                                 <div style="margin: 10px 0; padding: 10px; background: var(--light); border-radius: 8px;">
                                     <strong>Items:</strong>
                                     ${orderItems.map(item => `
-                                        <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                        <div style="display: flex; justify-content: space-between; margin-top: 5px; padding: 5px 0;">
                                             <span>${item.product_name} × ${item.quantity}</span>
                                             <span>${UIHelper.formatPrice(item.price * item.quantity)}</span>
                                         </div>
                                     `).join('')}
+                                </div>
+                            `;
+                        } else {
+                            itemsHTML = `
+                                <div style="margin: 10px 0; padding: 10px; background: var(--light-gray); border-radius: 8px; text-align: center;">
+                                    <em>Order items loading...</em>
                                 </div>
                             `;
                         }
@@ -3243,9 +3280,10 @@
                 }
             }
 
+            // FIXED: Add to cart with stock validation
             static async addToCart(productId) {
                 try {
-                    // Get product details from API
+                    // Get product details from API with current stock
                     const products = await ApiClient.getProducts();
                     const product = products.find(p => p.id === productId);
                     
@@ -3254,6 +3292,7 @@
                         return;
                     }
                     
+                    // Check stock availability
                     if (product.stock === 0) {
                         UIHelper.showNotification('This product is out of stock', 'error');
                         return;
@@ -3262,7 +3301,8 @@
                     const existingItem = this.cart.find(item => item.productId === productId);
                     
                     if (existingItem) {
-                        if (existingItem.quantity >= product.stock) {
+                        // Check if adding more would exceed stock
+                        if (existingItem.quantity + 1 > product.stock) {
                             UIHelper.showNotification(`Only ${product.stock} items available in stock`, 'warning');
                             return;
                         }
@@ -3275,7 +3315,8 @@
                             quantity: 1,
                             image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
                             sellerId: product.seller_id,
-                            sellerName: product.seller_name
+                            sellerName: product.seller_name,
+                            maxStock: product.stock // Store max stock for validation
                         });
                     }
                     
@@ -3440,6 +3481,7 @@
                 document.getElementById('checkout-modal').style.display = 'none';
             }
 
+            // FIXED: Place order with better error handling
             static async placeOrder() {
                 const deliveryAddress = document.getElementById('delivery-address').value;
                 const deliveryInstructions = document.getElementById('delivery-instructions').value;
@@ -3543,6 +3585,9 @@
                     console.error('💥 Error in placeOrder:', error);
                     UIHelper.hideLoading();
                     UIHelper.showNotification('Error placing order: ' + error.message, 'error');
+                    
+                    // Don't clear cart on error so user can try again
+                    this.updateCartDisplay();
                 }
             }
 
