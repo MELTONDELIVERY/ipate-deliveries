@@ -2717,210 +2717,278 @@
         }
 
         // ========== API CLIENT ==========
-        class ApiClient {
-            static async getProducts(filters = {}) {
-                try {
-                    let query = supabase
-                        .from('products')
-                        .select('*')
-                        .eq('status', 'published');
+     // ========== API CLIENT ==========
+class ApiClient {
+    static async getProducts(filters = {}) {
+        try {
+            let query = supabase
+                .from('products')
+                .select('*')
+                .eq('status', 'published');
 
-                    // Apply filters
-                    if (filters.category && filters.category !== 'all') {
-                        query = query.eq('category', filters.category);
-                    }
-
-                    if (filters.search) {
-                        query = query.ilike('title', `%${ValidationHelper.sanitizeInput(filters.search)}%`);
-                    }
-
-                    if (filters.sellerId) {
-                        query = query.eq('seller_id', filters.sellerId);
-                    }
-
-                    const { data, error } = await query.order('created_at', { ascending: false });
-
-                    if (error) throw error;
-                    return data || [];
-                } catch (error) {
-                    console.error('Error fetching products:', error);
-                    throw error;
-                }
+            // Apply filters
+            if (filters.category && filters.category !== 'all') {
+                query = query.eq('category', filters.category);
             }
 
-            static async createProduct(productData) {
-                try {
-                    // Validate product data
-                    if (!ValidationHelper.validatePrice(productData.price)) {
-                        throw new Error('Invalid product price');
-                    }
-                    
-                    const { data: product, error } = await supabase
-                        .from('products')
-                        .insert([productData])
-                        .select()
-                        .single();
-
-                    if (error) throw error;
-                    return product;
-                } catch (error) {
-                    console.error('Error creating product:', error);
-                    throw error;
-                }
+            if (filters.search) {
+                query = query.ilike('title', `%${ValidationHelper.sanitizeInput(filters.search)}%`);
             }
 
-            static async updateProduct(productId, updates) {
-                try {
-                    const { data: product, error } = await supabase
-                        .from('products')
-                        .update(updates)
-                        .eq('id', productId)
-                        .select()
-                        .single();
-
-                    if (error) throw error;
-                    return product;
-                } catch (error) {
-                    console.error('Error updating product:', error);
-                    throw error;
-                }
+            if (filters.sellerId) {
+                query = query.eq('seller_id', filters.sellerId);
             }
 
-            static async deleteProduct(productId) {
-                try {
-                    const { error } = await supabase
-                        .from('products')
-                        .delete()
-                        .eq('id', productId);
+            const { data, error } = await query.order('created_at', { ascending: false });
 
-                    if (error) throw error;
-                    return true;
-                } catch (error) {
-                    console.error('Error deleting product:', error);
-                    throw error;
-                }
-            }
-
-         static async createOrder(orderData) {
-    try {
-        console.log('🔧 Creating order with data:', orderData);
-        
-        // Validate required fields
-        if (!orderData.customer_id || !orderData.seller_id) {
-            throw new Error('Missing required fields: customer_id and seller_id are required');
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            throw error;
         }
-        
-        // Ensure all required fields are present with defaults
-        const dbOrderData = {
-            order_number: orderData.order_number || 'ORD' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase(),
-            customer_id: orderData.customer_id,
-            customer_name: orderData.customer_name || 'Customer',
-            seller_id: orderData.seller_id,
-            seller_name: orderData.seller_name || 'Seller',
-            total: parseFloat(orderData.total) || 0,
-            subtotal: parseFloat(orderData.subtotal) || 0,
-            delivery_fee: parseFloat(orderData.delivery_fee) || 150,
-            status: orderData.status || 'created',
-            payment_method: orderData.payment_method || 'cash',
-            payment_status: orderData.payment_status || 'pending',
-            shipping_address: orderData.shipping_address || 'No address provided',
-            delivery_instructions: orderData.delivery_instructions || ''
-        };
-        
-        console.log('📦 Final DB Order data:', dbOrderData);
-        
-        const { data: order, error } = await supabase
-            .from('orders')
-            .insert([dbOrderData])
-            .select()
-            .single();
+    }
 
-        if (error) {
-            console.error('❌ Order creation error:', error);
-            console.error('Error details:', error.details);
-            console.error('Error message:', error.message);
-            throw new Error(`Order creation failed: ${error.message}`);
+    static async createProduct(productData) {
+        try {
+            // Validate product data
+            if (!ValidationHelper.validatePrice(productData.price)) {
+                throw new Error('Invalid product price');
+            }
+            
+            const { data: product, error } = await supabase
+                .from('products')
+                .insert([productData])
+                .select()
+                .single();
+
+            if (error) throw error;
+            return product;
+        } catch (error) {
+            console.error('Error creating product:', error);
+            throw error;
         }
-        
-        console.log('✅ Order created successfully:', order);
-        return order;
-        
-    } catch (error) {
-        console.error('💥 Error in createOrder:', error);
-        throw error;
+    }
+
+    static async updateProduct(productId, updates) {
+        try {
+            const { data: product, error } = await supabase
+                .from('products')
+                .update(updates)
+                .eq('id', productId)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return product;
+        } catch (error) {
+            console.error('Error updating product:', error);
+            throw error;
+        }
+    }
+
+    static async deleteProduct(productId) {
+        try {
+            const { error } = await supabase
+                .from('products')
+                .delete()
+                .eq('id', productId);
+
+            if (error) throw error;
+            return true;
+        } catch (error) {
+            console.error('Error deleting product:', error);
+            throw error;
+        }
+    }
+
+    static async createOrder(orderData) {
+        try {
+            console.log('🔧 Creating order with data:', orderData);
+            
+            // Validate required fields
+            if (!orderData.customer_id || !orderData.seller_id) {
+                throw new Error('Missing required fields: customer_id and seller_id are required');
+            }
+            
+            // Ensure all required fields are present with defaults
+            const dbOrderData = {
+                order_number: orderData.order_number || 'ORD' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase(),
+                customer_id: orderData.customer_id,
+                customer_name: orderData.customer_name || 'Customer',
+                seller_id: orderData.seller_id,
+                seller_name: orderData.seller_name || 'Seller',
+                total: parseFloat(orderData.total) || 0,
+                subtotal: parseFloat(orderData.subtotal) || 0,
+                delivery_fee: parseFloat(orderData.delivery_fee) || 150,
+                status: orderData.status || 'created',
+                payment_method: orderData.payment_method || 'cash',
+                payment_status: orderData.payment_status || 'pending',
+                shipping_address: orderData.shipping_address || 'No address provided',
+                delivery_instructions: orderData.delivery_instructions || ''
+            };
+            
+            console.log('📦 Final DB Order data:', dbOrderData);
+            
+            const { data: order, error } = await supabase
+                .from('orders')
+                .insert([dbOrderData])
+                .select()
+                .single();
+
+            if (error) {
+                console.error('❌ Order creation error:', error);
+                console.error('Error details:', error.details);
+                console.error('Error message:', error.message);
+                throw new Error(`Order creation failed: ${error.message}`);
+            }
+            
+            console.log('✅ Order created successfully:', order);
+            return order;
+            
+        } catch (error) {
+            console.error('💥 Error in createOrder:', error);
+            throw error;
+        }
+    }
+
+    static async getOrders(filters = {}) {
+        try {
+            let query = supabase
+                .from('orders')
+                .select('*');
+
+            if (filters.customerId) {
+                query = query.eq('customer_id', filters.customerId);
+            }
+
+            if (filters.sellerId) {
+                query = query.eq('seller_id', filters.sellerId);
+            }
+
+            if (filters.riderId) {
+                query = query.eq('rider_id', filters.riderId);
+            }
+
+            if (filters.status && filters.status !== 'all') {
+                query = query.eq('status', filters.status);
+            }
+
+            const { data, error } = await query.order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('Database error:', error);
+                throw error;
+            }
+            
+            console.log('📊 Orders fetched:', data ? data.length : 0, 'with filters:', filters);
+            
+            // Normalize the data
+            const normalizedData = (data || []).map(order => ({
+                ...order,
+                total: order.total || 0,
+                subtotal: order.subtotal || 0,
+                delivery_fee: order.delivery_fee || 150
+            }));
+            
+            return normalizedData;
+            
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+            throw error;
+        }
+    }
+
+    static async updateOrderStatus(orderId, status, updates = {}) {
+        try {
+            const { data, error } = await supabase
+                .from('orders')
+                .update({ 
+                    status, 
+                    updated_at: new Date().toISOString(),
+                    ...updates 
+                })
+                .eq('id', orderId)
+                .select()
+                .single();
+
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Error updating order:', error);
+            throw error;
+        }
+    }
+
+    // CRITICAL FIX: Save order items - UPDATED FOR YOUR TABLE STRUCTURE
+    static async saveOrderItems(orderId, items) {
+        try {
+            const orderItems = items.map(item => ({
+                order_id: orderId,
+                product_id: item.productId,
+                product_name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+                seller_id: item.sellerId
+            }));
+
+            console.log('💾 Saving order items:', orderItems);
+
+            const { data, error } = await supabase
+                .from('order_items')
+                .insert(orderItems)
+                .select();
+
+            if (error) {
+                console.error('Order items error:', error);
+                throw error;
+            }
+            return data || [];
+        } catch (error) {
+            console.error('Error saving order items:', error);
+            throw error;
+        }
+    }
+
+    // CRITICAL FIX: Get order items
+    static async getOrderItems(orderId) {
+        try {
+            const { data, error } = await supabase
+                .from('order_items')
+                .select('*')
+                .eq('order_id', orderId);
+
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('Error fetching order items:', error);
+            throw error;
+        }
+    }
+
+    static async uploadProductImage(file, productId) {
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${productId}/${Math.random()}.${fileExt}`;
+            
+            const { data, error } = await supabase.storage
+                .from('product-images')
+                .upload(fileName, file);
+
+            if (error) throw error;
+
+            // Get public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('product-images')
+                .getPublicUrl(fileName);
+
+            return publicUrl;
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            throw error;
+        }
     }
 }
-
-            // CRITICAL FIX: Save order items - UPDATED FOR YOUR TABLE STRUCTURE
-            static async saveOrderItems(orderId, items) {
-                try {
-                    const orderItems = items.map(item => ({
-                        order_id: orderId,
-                        product_id: item.productId,
-                        product_name: item.name,
-                        quantity: item.quantity,
-                        price: item.price,
-                        seller_id: item.sellerId
-                    }));
-
-                    console.log('💾 Saving order items:', orderItems);
-
-                    const { data, error } = await supabase
-                        .from('order_items')
-                        .insert(orderItems)
-                        .select();
-
-                    if (error) {
-                        console.error('Order items error:', error);
-                        throw error;
-                    }
-                    return data || [];
-                } catch (error) {
-                    console.error('Error saving order items:', error);
-                    throw error;
-                }
-            }
-
-            // CRITICAL FIX: Get order items
-            static async getOrderItems(orderId) {
-                try {
-                    const { data, error } = await supabase
-                        .from('order_items')
-                        .select('*')
-                        .eq('order_id', orderId);
-
-                    if (error) throw error;
-                    return data || [];
-                } catch (error) {
-                    console.error('Error fetching order items:', error);
-                    throw error;
-                }
-            }
-
-            static async uploadProductImage(file, productId) {
-                try {
-                    const fileExt = file.name.split('.').pop();
-                    const fileName = `${productId}/${Math.random()}.${fileExt}`;
-                    
-                    const { data, error } = await supabase.storage
-                        .from('product-images')
-                        .upload(fileName, file);
-
-                    if (error) throw error;
-
-                    // Get public URL
-                    const { data: { publicUrl } } = supabase.storage
-                        .from('product-images')
-                        .getPublicUrl(fileName);
-
-                    return publicUrl;
-                } catch (error) {
-                    console.error('Error uploading image:', error);
-                    throw error;
-                }
-            }
-        }
-
         // ========== CUSTOMER DASHBOARD ==========
         class CustomerDashboard {
             static cart = window.customerCart;
@@ -3378,111 +3446,111 @@
             }
 
             static async placeOrder() {
-                const deliveryAddress = document.getElementById('delivery-address').value;
-                const deliveryInstructions = document.getElementById('delivery-instructions').value;
-                
-                if (!deliveryAddress) {
-                    UIHelper.showNotification('Please enter a delivery address', 'error');
-                    return;
-                }
-                
-                if (this.cart.length === 0) {
-                    UIHelper.showNotification('Your cart is empty', 'error');
-                    return;
-                }
-                
-                if (!window.currentUser) {
-                    UIHelper.showNotification('Please log in to place an order', 'error');
-                    return;
-                }
-                
-                UIHelper.showLoading();
-                
-                try {
-                    // Calculate total
-                    const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                    const deliveryFee = 150;
-                    const total = subtotal + deliveryFee;
-                    
-                    console.log('🛒 Cart items:', this.cart);
-                    console.log('💰 Totals - Subtotal:', subtotal, 'Delivery:', deliveryFee, 'Total:', total);
-                    
-                    // CRITICAL FIX: Group items by seller and create separate orders
-                    const ordersBySeller = {};
-                    
-                    this.cart.forEach(item => {
-                        if (!ordersBySeller[item.sellerId]) {
-                            ordersBySeller[item.sellerId] = {
-                                seller_id: item.sellerId,
-                                seller_name: item.sellerName,
-                                items: [],
-                                subtotal: 0
-                            };
-                        }
-                        ordersBySeller[item.sellerId].items.push(item);
-                        ordersBySeller[item.sellerId].subtotal += item.price * item.quantity;
-                    });
-                    
-                    // Create orders for each seller
-                    const orderPromises = Object.values(ordersBySeller).map(async (sellerOrder) => {
-                        const orderTotal = sellerOrder.subtotal + deliveryFee;
-                        
-                        const orderData = {
-                            customer_id: window.currentUser.id,
-                            customer_name: window.currentUser.profile.name,
-                            seller_id: sellerOrder.seller_id,
-                            seller_name: sellerOrder.seller_name,
-                            total: orderTotal,
-                            subtotal: sellerOrder.subtotal,
-                            delivery_fee: deliveryFee,
-                            status: 'created',
-                            payment_method: 'cash',
-                            payment_status: 'pending',
-                            shipping_address: deliveryAddress,
-                            delivery_instructions: deliveryInstructions || '',
-                            order_number: 'ORD' + Date.now() + Math.random().toString(36).substr(2, 5)
-                        };
-                        
-                        console.log('🚀 Creating order for seller:', sellerOrder.seller_name, orderData);
-                        
-                        // Create order
-                        const order = await ApiClient.createOrder(orderData);
-                        console.log('📝 Order created:', order);
-                        
-                        // Save order items
-                        if (order) {
-                            console.log('💾 Saving order items to database...');
-                            await ApiClient.saveOrderItems(order.id, sellerOrder.items);
-                        }
-                        
-                        return order;
-                    });
-                    
-                    const orders = await Promise.all(orderPromises);
-                    
-                    // Clear cart
-                    this.cart = [];
-                    this.saveCart();
-                    this.updateCartDisplay();
-                    
-                    this.closeCheckoutModal();
-                    UIHelper.hideLoading();
-                    
-                    UIHelper.showNotification(`Order placed successfully! ${orders.length > 1 ? `${orders.length} orders` : 'Order'} sent to seller${orders.length > 1 ? 's' : ''}.`, 'success');
-                    
-                    // Refresh dashboards
-                    setTimeout(() => {
-                        this.loadDashboardData();
-                        this.loadOrders();
-                    }, 1000);
-                    
-                } catch (error) {
-                    console.error('💥 Error in placeOrder:', error);
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Error placing order: ' + error.message, 'error');
-                }
+    const deliveryAddress = document.getElementById('delivery-address').value;
+    const deliveryInstructions = document.getElementById('delivery-instructions').value;
+    
+    if (!deliveryAddress) {
+        UIHelper.showNotification('Please enter a delivery address', 'error');
+        return;
+    }
+    
+    if (this.cart.length === 0) {
+        UIHelper.showNotification('Your cart is empty', 'error');
+        return;
+    }
+    
+    if (!window.currentUser) {
+        UIHelper.showNotification('Please log in to place an order', 'error');
+        return;
+    }
+    
+    UIHelper.showLoading();
+    
+    try {
+        // Calculate total
+        const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const deliveryFee = 150;
+        const total = subtotal + deliveryFee;
+        
+        console.log('🛒 Cart items:', this.cart);
+        console.log('💰 Totals - Subtotal:', subtotal, 'Delivery:', deliveryFee, 'Total:', total);
+        
+        // CRITICAL FIX: Group items by seller and create separate orders
+        const ordersBySeller = {};
+        
+        this.cart.forEach(item => {
+            if (!ordersBySeller[item.sellerId]) {
+                ordersBySeller[item.sellerId] = {
+                    seller_id: item.sellerId,
+                    seller_name: item.sellerName || 'Seller', // FIX: Ensure seller_name is defined
+                    items: [],
+                    subtotal: 0
+                };
             }
-
+            ordersBySeller[item.sellerId].items.push(item);
+            ordersBySeller[item.sellerId].subtotal += item.price * item.quantity;
+        });
+        
+        // Create orders for each seller
+        const orderPromises = Object.values(ordersBySeller).map(async (sellerOrder) => {
+            const orderTotal = sellerOrder.subtotal + deliveryFee;
+            
+            const orderData = {
+                customer_id: window.currentUser.id,
+                customer_name: window.currentUser.profile.name,
+                seller_id: sellerOrder.seller_id,
+                seller_name: sellerOrder.seller_name,
+                total: orderTotal,
+                subtotal: sellerOrder.subtotal,
+                delivery_fee: deliveryFee,
+                status: 'created',
+                payment_method: 'cash',
+                payment_status: 'pending',
+                shipping_address: deliveryAddress,
+                delivery_instructions: deliveryInstructions || '',
+                order_number: 'ORD' + Date.now() + Math.random().toString(36).substr(2, 5)
+            };
+            
+            console.log('🚀 Creating order for seller:', sellerOrder.seller_name, orderData);
+            
+            // Create order
+            const order = await ApiClient.createOrder(orderData);
+            console.log('📝 Order created:', order);
+            
+            // Save order items
+            if (order) {
+                console.log('💾 Saving order items to database...');
+                await ApiClient.saveOrderItems(order.id, sellerOrder.items);
+            }
+            
+            return order;
+        });
+        
+        const orders = await Promise.all(orderPromises);
+        
+        // Clear cart
+        this.cart = [];
+        this.saveCart();
+        this.updateCartDisplay();
+        
+        this.closeCheckoutModal();
+        UIHelper.hideLoading();
+        
+        UIHelper.showNotification(`Order placed successfully! ${orders.length > 1 ? `${orders.length} orders` : 'Order'} sent to seller${orders.length > 1 ? 's' : ''}.`, 'success');
+        
+        // Refresh dashboards
+        setTimeout(() => {
+            this.loadDashboardData();
+            this.loadOrders();
+        }, 1000);
+        
+    } catch (error) {
+        console.error('💥 Error in placeOrder:', error);
+        UIHelper.hideLoading();
+        UIHelper.showNotification('Error placing order: ' + error.message, 'error');
+    }
+}
+        
             static async viewOrderDetails(orderId) {
                 try {
                     const orders = await ApiClient.getOrders({ customerId: window.currentUser.id });
@@ -4693,4 +4761,5 @@
     </script>
 </body>
 </html>
+
 
