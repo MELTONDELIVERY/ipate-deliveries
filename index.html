@@ -1732,7 +1732,7 @@
                 </div>
             </div>
             <div style="text-align: center; padding-top: 20px; border-top: 1px solid var(--light-gray); color: var(--gray);">
-                <p>&copy; 2025 IPATE Deliveries. <span id="rights-text">All rights reserved.</span> | 
+                <p>&copy; 2024 IPATE Deliveries. <span id="rights-text">All rights reserved.</span> | 
                 <a href="#" onclick="showPage('privacy')" style="color: var(--primary);">Privacy Policy</a> | 
                 <a href="#" onclick="showPage('terms')" style="color: var(--primary);">Terms of Service</a></p>
             </div>
@@ -3247,13 +3247,10 @@
                         
                         orderCard.innerHTML = `
                             <div class="delivery-header">
-                                <div>
-                                    <h4>Order #${order.order_number}</h4>
-                                    <div style="color: var(--gray); font-size: 14px; margin-top: 5px;">
-                                        ${UIHelper.formatDate(order.created_at)}
-                                    </div>
+                                <h4>Order #${order.order_number}</h4>
+                                <div style="color: var(--gray); font-size: 14px; margin-top: 5px;">
+                                    ${UIHelper.formatDate(order.created_at)}
                                 </div>
-                                <span class="delivery-status ${statusClass}">${statusText}</span>
                             </div>
                             
                             ${itemsHTML}
@@ -3936,7 +3933,14 @@
 
             static async updateOrderStatus(orderId, status) {
                 try {
-                    await ApiClient.updateOrderStatus(orderId, status);
+                    // Clear rider_id when marking as ready to make it available for all riders
+                    const updates = { status };
+                    if (status === 'ready') {
+                        updates.rider_id = null;
+                        updates.rider_name = null;
+                    }
+                    
+                    await ApiClient.updateOrderStatus(orderId, status, updates);
                     
                     let message = `Order marked as ${status}`;
                     if (status === 'ready') {
@@ -4144,8 +4148,11 @@
                 document.getElementById('rider-name').textContent = user.profile.name;
                 document.getElementById('rider-avatar').textContent = user.profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
                 
+                // FIXED: Initialize real-time updates
+                this.setupRealTimeUpdates();
+                
                 this.loadRiderDashboard();
-                this.forceRefreshDeliveries(); // Use the new method instead
+                this.forceRefreshDeliveries();
                 this.loadActiveDeliveries();
                 this.loadRiderEarnings();
                 
@@ -4158,22 +4165,29 @@
                 }, 30000);
             }
 
+            // FIXED: Enhanced real-time subscription
             static setupRealTimeUpdates() {
-                // Subscribe to order changes for available deliveries
+                // Subscribe to ALL order changes, not just 'ready' status
                 const subscription = supabase
-                    .channel('orders')
+                    .channel('rider-orders')
                     .on('postgres_changes', 
                         { 
                             event: '*', 
                             schema: 'public', 
-                            table: 'orders',
-                            filter: 'status=eq.ready'
+                            table: 'orders'
                         }, 
                         (payload) => {
                             console.log('🔄 Real-time order update for riders:', payload);
-                            UIHelper.showNotification('New delivery available!', 'info');
-                            this.forceRefreshDeliveries();
+                            
+                            // Only show notification and refresh if status changed to 'ready'
+                            if (payload.new.status === 'ready') {
+                                UIHelper.showNotification('New delivery available!', 'info');
+                                this.forceRefreshDeliveries();
+                            }
+                            
+                            // Always refresh the dashboard to show current state
                             this.loadRiderDashboard();
+                            this.loadActiveDeliveries();
                         }
                     )
                     .subscribe();
@@ -4284,16 +4298,17 @@
                 `;
             }
 
-            // FIXED: Emergency refresh method for rider deliveries
+            // FIXED: Enhanced refresh method for rider deliveries
             static async forceRefreshDeliveries() {
                 console.log('🔄 MANUAL REFRESH: Loading available deliveries...');
                 try {
-                    // Get all orders with status 'ready'
+                    // Get all orders with status 'ready' AND no rider assigned
                     const { data: orders, error } = await supabase
                         .from('orders')
                         .select('*')
-                        .eq('status', 'ready');
-                        
+                        .eq('status', 'ready')
+                        .is('rider_id', null); // Only orders not assigned to any rider
+
                     if (error) {
                         console.error('❌ Error fetching ready orders:', error);
                         UIHelper.showNotification('Error loading deliveries', 'error');
@@ -4444,8 +4459,8 @@
                         container.innerHTML = `
                             <div class="delivery-card">
                                 <p style="text-align: center; color: var(--gray);">You don't have any active deliveries</p>
-                            </div>
-                        `;
+                        </div>
+                    `;
                         return;
                     }
                     
@@ -4843,7 +4858,18 @@
             
             console.log('✅ IPATE Deliveries initialized successfully');
         });
+
+        // Temporary debug function - call this in browser console
+        async function debugRiderDeliveries() {
+            const { data: orders, error } = await supabase
+                .from('orders')
+                .select('*')
+                .eq('status', 'ready')
+                .is('rider_id', null);
+            
+            console.log('🔍 DEBUG - Available deliveries:', orders);
+            return orders;
+        }
     </script>
 </body>
 </html>
-
