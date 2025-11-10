@@ -2902,8 +2902,13 @@
                         query = query.eq('rider_id', filters.riderId);
                     }
 
+                    // FIXED: Check for multiple status values to ensure compatibility
                     if (filters.status && filters.status !== 'all') {
-                        query = query.eq('status', filters.status);
+                        if (Array.isArray(filters.status)) {
+                            query = query.in('status', filters.status);
+                        } else {
+                            query = query.eq('status', filters.status);
+                        }
                     }
 
                     const { data, error } = await query.order('created_at', { ascending: false });
@@ -4298,7 +4303,7 @@
                 `;
             }
 
-            // FIXED: Enhanced refresh method for rider deliveries
+            // FIXED: Enhanced refresh method for rider deliveries - NOW CHECKING FOR 'ready' STATUS
             static async forceRefreshDeliveries() {
                 console.log('🔄 MANUAL REFRESH: Loading available deliveries...');
                 try {
@@ -4306,7 +4311,7 @@
                     const { data: orders, error } = await supabase
                         .from('orders')
                         .select('*')
-                        .eq('status', 'ready')
+                        .eq('status', 'ready')  // FIXED: Now correctly looking for 'ready' status
                         .is('rider_id', null); // Only orders not assigned to any rider
 
                     if (error) {
