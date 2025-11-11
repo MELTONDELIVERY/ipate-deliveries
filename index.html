@@ -1187,63 +1187,6 @@
             line-height: 1.6;
         }
 
-        /* Services Section */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-
-        .service-card {
-            background: var(--white);
-            border-radius: var(--radius);
-            padding: 40px 30px;
-            text-align: center;
-            transition: var(--transition);
-            border: 1px solid var(--light-gray);
-            box-shadow: var(--shadow);
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .service-icon {
-            font-size: 48px;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        /* About Section */
-        .about-content {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .about-image {
-            width: 100%;
-            height: 400px;
-            background: var(--light-gray);
-            border-radius: var(--radius);
-            margin: 40px 0;
-            background-image: url('https://images.unsplash.com/photo-1556740711-2d67d1252f8f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
-            background-size: cover;
-            background-position: center;
-        }
-
-        /* Contact Form */
-        .contact-form {
-            max-width: 600px;
-            margin: 0 auto;
-            background: var(--white);
-            padding: 40px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-links, .auth-buttons {
@@ -1293,10 +1236,6 @@
             }
 
             .team-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .services-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -1437,13 +1376,13 @@
                     <div class="feature-card">
                         <i class="fas fa-phone feature-icon"></i>
                         <h3 id="call-us-title">Call Us</h3>
-                        <p><a href="tel:+254748894671" style="color: var(--dark); text-decoration: none;">+254 748 894 671</a></p>
+                        <p>+254 748 894 671</p>
                         <p style="color: var(--gray); margin-top: 10px;" id="available-24-7">Available 24/7</p>
                     </div>
                     <div class="feature-card">
                         <i class="fas fa-envelope feature-icon"></i>
                         <h3 id="email-us-title">Email Us</h3>
-                        <p><a href="mailto:support@ipatedeliveries.com" style="color: var(--dark); text-decoration: none;">support@ipatedeliveries.com</a></p>
+                        <p>support@ipatedeliveries.com</p>
                         <p style="color: var(--gray); margin-top: 10px;" id="quick-response">Quick response guaranteed</p>
                     </div>
                     <div class="feature-card">
@@ -1452,160 +1391,6 @@
                         <p>Nairobi, Kenya</p>
                         <p style="color: var(--gray); margin-top: 10px;" id="multiple-locations">Multiple locations across the city</p>
                     </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Services Page -->
-    <div id="services" class="page">
-        <section class="features">
-            <div class="container">
-                <h2 class="section-title">Our Services</h2>
-                <p class="section-subtitle">Comprehensive delivery solutions for individuals and businesses across Nairobi</p>
-                
-                <div class="services-grid">
-                    <div class="service-card">
-                        <i class="fas fa-utensils service-icon"></i>
-                        <h3>Food Delivery</h3>
-                        <p>Get your favorite meals from restaurants across Nairobi delivered fresh to your doorstep. We partner with top restaurants to bring you the best culinary experiences.</p>
-                        <button class="btn btn-primary" onclick="openAuthModal()">Order Now</button>
-                    </div>
-                    
-                    <div class="service-card">
-                        <i class="fas fa-shopping-basket service-icon"></i>
-                        <h3>Grocery Delivery</h3>
-                        <p>Fresh produce, pantry staples, and household essentials delivered from local markets and supermarkets. Save time and shop conveniently from home.</p>
-                        <button class="btn btn-primary" onclick="openAuthModal()">Shop Groceries</button>
-                    </div>
-                    
-                    <div class="service-card">
-                        <i class="fas fa-box service-icon"></i>
-                        <h3>Package Delivery</h3>
-                        <p>Reliable package delivery services for individuals and businesses. From documents to parcels, we ensure secure and timely delivery across Nairobi.</p>
-                        <button class="btn btn-primary" onclick="openAuthModal()">Send Package</button>
-                    </div>
-                    
-                    <div class="service-card">
-                        <i class="fas fa-bolt service-icon"></i>
-                        <h3>Express Delivery</h3>
-                        <p>Urgent deliveries that can't wait. Our express service guarantees delivery within 2 hours for time-sensitive items across major Nairobi areas.</p>
-                        <button class="btn btn-primary" onclick="openAuthModal()">Express Delivery</button>
-                    </div>
-                    
-                    <div class="service-card">
-                        <i class="fas fa-store service-icon"></i>
-                        <h3>Business Solutions</h3>
-                        <p>Custom delivery solutions for businesses. Integrate our API, manage multiple deliveries, and provide seamless delivery experiences to your customers.</p>
-                        <button class="btn btn-primary" onclick="openAuthModal()">Business Inquiry</button>
-                    </div>
-                    
-                    <div class="service-card">
-                        <i class="fas fa-gift service-icon"></i>
-                        <h3>Special Deliveries</h3>
-                        <p>Special occasion deliveries including gifts, flowers, and surprise packages. Make someone's day with our carefully handled special deliveries.</p>
-                        <button class="btn btn-primary" onclick="openAuthModal()">Send a Gift</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- About Page -->
-    <div id="about" class="page">
-        <section class="features">
-            <div class="container">
-                <h2 class="section-title">About IPATE Deliveries</h2>
-                <div class="about-content">
-                    <p>IPATE Deliveries was founded in 2023 with a mission to revolutionize the delivery ecosystem in Nairobi. We recognized the growing need for reliable, efficient, and affordable delivery services that connect customers, sellers, and riders through a seamless platform.</p>
-                    
-                    <div class="about-image"></div>
-                    
-                    <h3>Our Vision</h3>
-                    <p>To become East Africa's leading delivery platform, empowering local businesses, creating employment opportunities, and providing unparalleled convenience to our customers.</p>
-                    
-                    <h3>Our Values</h3>
-                    <div class="features-grid">
-                        <div class="feature-card">
-                            <i class="fas fa-bolt feature-icon"></i>
-                            <h3>Speed & Efficiency</h3>
-                            <p>We prioritize fast and efficient delivery services to ensure customer satisfaction.</p>
-                        </div>
-                        <div class="feature-card">
-                            <i class="fas fa-shield-alt feature-icon"></i>
-                            <h3>Reliability</h3>
-                            <p>Consistent and dependable service you can count on for all your delivery needs.</p>
-                        </div>
-                        <div class="feature-card">
-                            <i class="fas fa-users feature-icon"></i>
-                            <h3>Community Focus</h3>
-                            <p>We're committed to supporting local businesses and creating opportunities.</p>
-                        </div>
-                    </div>
-                    
-                    <h3>Our Impact</h3>
-                    <p>Since our launch, we've:</p>
-                    <ul style="text-align: left; display: inline-block; margin: 20px 0;">
-                        <li>Completed over 10,000 successful deliveries</li>
-                        <li>Partnered with 200+ local businesses</li>
-                        <li>Created income opportunities for 150+ riders</li>
-                        <li>Expanded to cover all major Nairobi neighborhoods</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Contact Page -->
-    <div id="contact-page" class="page">
-        <section class="features">
-            <div class="container">
-                <h2 class="section-title">Contact Us</h2>
-                <p class="section-subtitle">We're here to help! Get in touch with us for any questions or support.</p>
-                
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <i class="fas fa-phone feature-icon"></i>
-                        <h3>Call Us</h3>
-                        <p><a href="tel:+254748894671" style="color: var(--dark); text-decoration: none; font-size: 1.2rem;">+254 748 894 671</a></p>
-                        <p style="color: var(--gray); margin-top: 10px;">Available 24/7 for urgent matters</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <i class="fas fa-envelope feature-icon"></i>
-                        <h3>Email Us</h3>
-                        <p><a href="mailto:support@ipatedeliveries.com" style="color: var(--dark); text-decoration: none; font-size: 1.2rem;">support@ipatedeliveries.com</a></p>
-                        <p style="color: var(--gray); margin-top: 10px;">We respond within 2 hours during business hours</p>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <i class="fas fa-map-marker-alt feature-icon"></i>
-                        <h3>Visit Our Office</h3>
-                        <p>Westlands Business District</p>
-                        <p>Nairobi, Kenya</p>
-                        <p style="color: var(--gray); margin-top: 10px;">Open Monday-Friday, 8AM-6PM</p>
-                    </div>
-                </div>
-                
-                <div class="contact-form">
-                    <h3 style="text-align: center; margin-bottom: 30px;">Send us a Message</h3>
-                    <div class="form-group">
-                        <label for="contact-name" class="form-label">Your Name</label>
-                        <input type="text" id="contact-name" class="form-control" placeholder="Enter your full name">
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-email" class="form-label">Email Address</label>
-                        <input type="email" id="contact-email" class="form-control" placeholder="Enter your email">
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-subject" class="form-label">Subject</label>
-                        <input type="text" id="contact-subject" class="form-control" placeholder="What is this regarding?">
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-message" class="form-label">Message</label>
-                        <textarea id="contact-message" class="form-control" placeholder="How can we help you?" rows="5"></textarea>
-                    </div>
-                    <button class="btn btn-primary btn-block" onclick="submitContactForm()">Send Message</button>
                 </div>
             </div>
         </section>
@@ -2309,7 +2094,7 @@
                 </div>
                 <button type="button" class="btn btn-primary btn-block" onclick="login()" id="login-btn">Login</button>
                 <p style="text-align: center; margin-top: 15px;">
-                    <a href="#" style="color: var(--primary);" id="forgot-password-link" onclick="showForgotPassword()">Forgot your password?</a>
+                    <a href="#" style="color: var(--primary);" id="forgot-password-link">Forgot your password?</a>
                 </p>
             </form>
             
@@ -2338,18 +2123,6 @@
                 <button type="button" class="btn btn-primary btn-block" onclick="signup()" id="create-account-btn">Create Account</button>
                 <p style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--gray);">
                     <span id="terms-text">By creating an account, you agree to our</span> <a href="#" onclick="showPage('terms')" style="color: var(--primary);" id="terms-link">Terms of Service</a> <span id="and-text">and</span> <a href="#" onclick="showPage('privacy')" style="color: var(--primary);" id="privacy-link">Privacy Policy</a>.
-                </p>
-            </form>
-
-            <!-- Forgot Password Form -->
-            <form id="forgot-password-form" style="display: none;">
-                <div class="form-group">
-                    <label for="forgot-email" class="form-label">Email Address</label>
-                    <input type="email" id="forgot-email" class="form-control" placeholder="Enter your email address">
-                </div>
-                <button type="button" class="btn btn-primary btn-block" onclick="resetPassword()">Reset Password</button>
-                <p style="text-align: center; margin-top: 15px;">
-                    <a href="#" style="color: var(--primary);" onclick="showLoginForm()">Back to Login</a>
                 </p>
             </form>
         </div>
@@ -2463,10 +2236,10 @@
                     </div>
                     <p id="footer-description">Fast and reliable delivery services across Nairobi. Connecting customers, sellers, and riders for seamless deliveries.</p>
                     <div style="display: flex; gap: 15px; margin-top: 20px;">
-                        <a href="https://facebook.com" class="social-link" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://twitter.com" class="social-link" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="https://instagram.com" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="https://linkedin.com" class="social-link" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
                 <div class="feature-card">
@@ -2477,7 +2250,7 @@
                         <li><a href="#" onclick="showPage('about')" id="about-link">About</a></li>
                         <li><a href="#" onclick="showPage('team')" id="team-link">Our Team</a></li>
                         <li><a href="#" onclick="showPage('learn-more')" id="learn-more-link">Learn More</a></li>
-                        <li><a href="#" onclick="showPage('contact-page')" id="contact-link">Contact</a></li>
+                        <li><a href="#" onclick="showPage('contact')" id="contact-link">Contact</a></li>
                     </ul>
                 </div>
                 <div class="feature-card">
@@ -2493,8 +2266,8 @@
                     <h4 id="contact-info-title">Contact Info</h4>
                     <ul style="list-style: none; padding: 0;">
                         <li><i class="fas fa-map-marker-alt"></i> <span id="nairobi-text">Nairobi, Kenya</span></li>
-                        <li><i class="fas fa-phone"></i> <a href="tel:+254748894671" style="color: var(--dark); text-decoration: none;">+254 748 894 671</a></li>
-                        <li><i class="fas fa-envelope"></i> <a href="mailto:support@ipatedeliveries.com" style="color: var(--dark); text-decoration: none;">support@ipatedeliveries.com</a></li>
+                        <li><i class="fas fa-phone"></i> +254 748 894 671</li>
+                        <li><i class="fas fa-envelope"></i> support@ipatedeliveries.com</li>
                     </ul>
                 </div>
             </div>
@@ -5748,41 +5521,16 @@
         function openAuthModal() {
             document.getElementById('auth-modal').style.display = 'flex';
             // Show login form by default
-            showLoginForm();
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
-
-        function showLoginForm() {
             document.getElementById('login-form').style.display = 'block';
             document.getElementById('signup-form').style.display = 'none';
-            document.getElementById('forgot-password-form').style.display = 'none';
             document.getElementById('loginTab').style.borderBottomColor = 'var(--primary)';
             document.getElementById('loginTab').style.color = 'var(--primary)';
             document.getElementById('registerTab').style.borderBottomColor = 'transparent';
             document.getElementById('registerTab').style.color = 'var(--dark)';
         }
 
-        function showSignupForm() {
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('signup-form').style.display = 'block';
-            document.getElementById('forgot-password-form').style.display = 'none';
-            document.getElementById('registerTab').style.borderBottomColor = 'var(--primary)';
-            document.getElementById('registerTab').style.color = 'var(--primary)';
-            document.getElementById('loginTab').style.borderBottomColor = 'transparent';
-            document.getElementById('loginTab').style.color = 'var(--dark)';
-        }
-
-        function showForgotPassword() {
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('signup-form').style.display = 'none';
-            document.getElementById('forgot-password-form').style.display = 'block';
-            document.getElementById('loginTab').style.borderBottomColor = 'transparent';
-            document.getElementById('loginTab').style.color = 'var(--dark)';
-            document.getElementById('registerTab').style.borderBottomColor = 'transparent';
-            document.getElementById('registerTab').style.color = 'var(--dark)';
+        function closeAuthModal() {
+            document.getElementById('auth-modal').style.display = 'none';
         }
 
         function openCheckoutModal() {
@@ -5809,11 +5557,21 @@
 
         // Auth modal tab switching
         document.getElementById('loginTab').addEventListener('click', function() {
-            showLoginForm();
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('signup-form').style.display = 'none';
+            this.style.borderBottomColor = 'var(--primary)';
+            this.style.color = 'var(--primary)';
+            document.getElementById('registerTab').style.borderBottomColor = 'transparent';
+            document.getElementById('registerTab').style.color = 'var(--dark)';
         });
 
         document.getElementById('registerTab').addEventListener('click', function() {
-            showSignupForm();
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('signup-form').style.display = 'block';
+            this.style.borderBottomColor = 'var(--primary)';
+            this.style.color = 'var(--primary)';
+            document.getElementById('loginTab').style.borderBottomColor = 'transparent';
+            document.getElementById('loginTab').style.color = 'var(--dark)';
         });
 
         // ========== AUTH FUNCTIONS ==========
@@ -5845,18 +5603,6 @@
             await AuthManager.logout();
         }
 
-        function resetPassword() {
-            const email = document.getElementById('forgot-email').value;
-            if (!email) {
-                UIHelper.showNotification('Please enter your email address', 'error');
-                return;
-            }
-            
-            // In a real application, this would send a password reset email
-            UIHelper.showNotification('Password reset instructions have been sent to your email', 'success');
-            showLoginForm();
-        }
-
         // ========== ORDER FUNCTIONS ==========
         function placeOrder() {
             CustomerDashboard.placeOrder();
@@ -5884,41 +5630,27 @@
             LanguageManager.setLanguage(lang);
         }
 
-        // ========== CONTACT FORM ==========
-        function submitContactForm() {
-            const name = document.getElementById('contact-name').value;
-            const email = document.getElementById('contact-email').value;
-            const subject = document.getElementById('contact-subject').value;
-            const message = document.getElementById('contact-message').value;
-            
-            if (!name || !email || !subject || !message) {
-                UIHelper.showNotification('Please fill in all fields', 'error');
-                return;
-            }
-            
-            // In a real application, this would send the message to a server
-            UIHelper.showNotification('Thank you for your message! We will get back to you soon.', 'success');
-            
-            // Clear form
-            document.getElementById('contact-name').value = '';
-            document.getElementById('contact-email').value = '';
-            document.getElementById('contact-subject').value = '';
-            document.getElementById('contact-message').value = '';
-        }
-
         // ========== INITIALIZATION ==========
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize components
             ErrorHandler.init();
             LanguageManager.init();
             NotificationManager.init();
-            AuthManager.initAuth();
+            PerformanceHelper.lazyLoadImages();
+            
+            // Initialize database
             DatabaseSetup.initializeDatabase();
+            
+            // Initialize authentication
+            AuthManager.initAuth();
             
             // Set up event listeners
             window.addEventListener('scroll', updateNavigation);
             
-            // Set up search functionality with debouncing
+            // Mobile menu event listener
+            document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
+            
+            // Product search and filter
             const searchProducts = document.getElementById('searchProducts');
             if (searchProducts) {
                 searchProducts.addEventListener('input', PerformanceHelper.debounce(() => {
@@ -5926,7 +5658,6 @@
                 }, 500));
             }
             
-            // Set up category filter
             const categoryFilter = document.getElementById('categoryFilter');
             if (categoryFilter) {
                 categoryFilter.addEventListener('change', () => {
@@ -5934,27 +5665,14 @@
                 });
             }
             
-            // Set up order status filter
             const orderStatusFilter = document.getElementById('orderStatusFilter');
             if (orderStatusFilter) {
                 orderStatusFilter.addEventListener('change', () => {
-                    CustomerDashboard.loadOrders();
+                    CustomerDashboard.filterOrders();
                 });
             }
             
-            // Set up availability toggle
-            const availabilityToggle = document.getElementById('availabilityToggle');
-            if (availabilityToggle) {
-                availabilityToggle.addEventListener('change', function() {
-                    const status = this.checked ? 'available' : 'unavailable';
-                    UIHelper.showNotification(`You are now ${status} for deliveries`, 'success');
-                });
-            }
-            
-            // Initialize lazy loading for images
-            PerformanceHelper.lazyLoadImages();
-            
-            console.log('IPATE Deliveries initialized successfully');
+            console.log('✅ IPATE Deliveries initialized successfully');
         });
     </script>
 </body>
