@@ -966,6 +966,82 @@
             display: block;
         }
 
+        /* Payment Method Styles */
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .payment-method {
+            flex: 1;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary);
+            background: rgba(255, 122, 0, 0.05);
+        }
+
+        .payment-method i {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        /* Admin Dashboard Styles */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .admin-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--light-gray);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Review and Rating Styles */
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+            margin: 10px 0;
+        }
+
+        .rating-star {
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .rating-star.active {
+            color: var(--warning);
+        }
+
+        .review-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid var(--light-gray);
+            box-shadow: var(--shadow);
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-links, .auth-buttons {
@@ -1004,6 +1080,10 @@
 
             .tracking-steps::before {
                 display: none;
+            }
+
+            .payment-methods {
+                flex-direction: column;
             }
         }
     </style>
@@ -1161,6 +1241,8 @@
                         <a class="dashboard-nav-link" onclick="showCustomerSection('products')"><span id="shop-products-nav">Shop Products</span></a>
                         <a class="dashboard-nav-link" onclick="showCustomerSection('orders')"><span id="my-orders-nav">My Orders</span></a>
                         <a class="dashboard-nav-link" onclick="showCustomerSection('cart')"><span id="cart-nav">Cart</span> (<span id="cart-count">0</span>)</a>
+                        <a class="dashboard-nav-link" onclick="showCustomerSection('profile')"><span id="profile-nav">Profile</span></a>
+                        <a class="dashboard-nav-link" onclick="showCustomerSection('wishlist')"><span id="wishlist-nav">Wishlist</span></a>
                     </div>
                     
                     <!-- Dashboard Section -->
@@ -1270,6 +1352,72 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Profile Section -->
+                    <div id="customer-profile-section" class="customer-section">
+                        <div style="margin-bottom: 20px;">
+                            <h2>👤 <span id="profile-title">Your Profile</span></h2>
+                        </div>
+                        
+                        <div class="order-tracking">
+                            <div class="form-group">
+                                <label class="form-label">Profile Picture</label>
+                                <div class="image-upload-container" id="profile-image-upload" onclick="document.getElementById('profile-picture').click()">
+                                    <i class="fas fa-user-circle" style="font-size: 48px; color: var(--gray); margin-bottom: 10px;"></i>
+                                    <p>Click to upload profile picture</p>
+                                    <input type="file" id="profile-picture" accept="image/*" style="display: none;" onchange="handleProfileImageUpload(event)">
+                                </div>
+                                <div id="profile-image-preview" style="margin-top: 15px;"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profile-name" class="form-label">Full Name</label>
+                                <input type="text" id="profile-name" class="form-control" placeholder="Enter your full name">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profile-email" class="form-label">Email</label>
+                                <input type="email" id="profile-email" class="form-control" placeholder="Enter your email" readonly>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profile-phone" class="form-label">Phone Number</label>
+                                <input type="tel" id="profile-phone" class="form-control" placeholder="Enter your phone number">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="profile-address" class="form-label">Default Delivery Address</label>
+                                <textarea id="profile-address" class="form-control" placeholder="Enter your default delivery address" rows="3"></textarea>
+                            </div>
+                            
+                            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                <button class="btn btn-primary" onclick="updateProfile()">Update Profile</button>
+                                <button class="btn btn-outline" onclick="openChangePasswordModal()">Change Password</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Address Book -->
+                        <div style="margin-top: 40px;">
+                            <h3>📍 <span id="address-book-title">Address Book</span></h3>
+                            <div id="address-book-list" style="margin-top: 20px;">
+                                <!-- Addresses will load here -->
+                            </div>
+                            <button class="btn btn-primary" onclick="openAddAddressModal()" style="margin-top: 15px;">
+                                <i class="fas fa-plus"></i> Add New Address
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Wishlist Section -->
+                    <div id="customer-wishlist-section" class="customer-section">
+                        <div style="margin-bottom: 20px;">
+                            <h2>❤️ <span id="wishlist-title">Your Wishlist</span></h2>
+                        </div>
+                        
+                        <div class="products-grid" id="wishlist-products">
+                            <!-- Wishlist products will load here -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1306,6 +1454,7 @@
                         <a class="dashboard-nav-link" onclick="showSellerSection('products')"><span id="products-nav">Products</span></a>
                         <a class="dashboard-nav-link" onclick="showSellerSection('orders')"><span id="orders-nav">Orders</span></a>
                         <a class="dashboard-nav-link" onclick="showSellerSection('analytics')"><span id="analytics-nav">Analytics</span></a>
+                        <a class="dashboard-nav-link" onclick="showSellerSection('store')"><span id="store-nav">Store Settings</span></a>
                     </div>
                     
                     <!-- Dashboard Section -->
@@ -1339,9 +1488,14 @@
                     <div id="seller-products-section" class="seller-section">
                         <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                             <h2>📦 <span id="manage-products-title">Manage Products</span></h2>
-                            <button class="btn btn-primary" onclick="openAddProductModal()">
-                                <i class="fas fa-plus"></i> <span id="add-product-btn">Add New Product</span>
-                            </button>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-outline" onclick="openBulkImportModal()">
+                                    <i class="fas fa-file-import"></i> Bulk Import
+                                </button>
+                                <button class="btn btn-primary" onclick="openAddProductModal()">
+                                    <i class="fas fa-plus"></i> <span id="add-product-btn">Add New Product</span>
+                                </button>
+                            </div>
                         </div>
                         
                         <div class="products-grid" id="seller-products-list">
@@ -1387,6 +1541,78 @@
                                 <div class="stat-label" id="completion-rate-label">Order Completion</div>
                             </div>
                         </div>
+                        
+                        <!-- Sales Chart Placeholder -->
+                        <div class="order-tracking" style="margin-top: 30px;">
+                            <h3>Sales Overview</h3>
+                            <div id="sales-chart" style="height: 300px; background: var(--light-gray); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--gray);">
+                                Sales chart would be displayed here
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Store Settings Section -->
+                    <div id="seller-store-section" class="seller-section">
+                        <div style="margin-bottom: 20px;">
+                            <h2>🏪 <span id="store-settings-title">Store Settings</span></h2>
+                        </div>
+                        
+                        <div class="order-tracking">
+                            <div class="form-group">
+                                <label for="store-name" class="form-label">Store Name</label>
+                                <input type="text" id="store-name" class="form-control" placeholder="Enter your store name">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="store-description" class="form-label">Store Description</label>
+                                <textarea id="store-description" class="form-control" placeholder="Describe your store" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="store-logo" class="form-label">Store Logo</label>
+                                <div class="image-upload-container" id="store-logo-upload" onclick="document.getElementById('store-logo').click()">
+                                    <i class="fas fa-store" style="font-size: 36px; color: var(--gray); margin-bottom: 10px;"></i>
+                                    <p>Click to upload store logo</p>
+                                    <input type="file" id="store-logo" accept="image/*" style="display: none;" onchange="handleStoreLogoUpload(event)">
+                                </div>
+                                <div id="store-logo-preview" style="margin-top: 15px;"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="store-category" class="form-label">Store Category</label>
+                                <select id="store-category" class="form-control">
+                                    <option value="Food & Beverages">Food & Beverages</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Personal Care">Personal Care</option>
+                                    <option value="Fashion">Fashion</option>
+                                    <option value="Home & Garden">Home & Garden</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Business Hours</label>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                                    <select id="business-hours-start" class="form-control">
+                                        <option value="06:00">6:00 AM</option>
+                                        <option value="07:00">7:00 AM</option>
+                                        <option value="08:00">8:00 AM</option>
+                                        <option value="09:00">9:00 AM</option>
+                                        <option value="10:00">10:00 AM</option>
+                                    </select>
+                                    <span style="text-align: center; line-height: 48px;">to</span>
+                                    <select id="business-hours-end" class="form-control">
+                                        <option value="17:00">5:00 PM</option>
+                                        <option value="18:00">6:00 PM</option>
+                                        <option value="19:00">7:00 PM</option>
+                                        <option value="20:00">8:00 PM</option>
+                                        <option value="21:00">9:00 PM</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="saveStoreSettings()">Save Store Settings</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1431,6 +1657,7 @@
                         <a class="dashboard-nav-link" onclick="showRiderSection('deliveries')"><span id="available-deliveries-nav">Available Deliveries</span></a>
                         <a class="dashboard-nav-link" onclick="showRiderSection('active')"><span id="my-deliveries-nav">My Deliveries</span></a>
                         <a class="dashboard-nav-link" onclick="showRiderSection('earnings')"><span id="earnings-nav">Earnings</span></a>
+                        <a class="dashboard-nav-link" onclick="showRiderSection('schedule')"><span id="schedule-nav">Schedule</span></a>
                     </div>
                     
                     <!-- Dashboard Section -->
@@ -1536,6 +1763,296 @@
                                 <div class="stat-label" id="total-deliveries-label">Total Deliveries</div>
                             </div>
                         </div>
+                        
+                        <!-- Withdrawal Section -->
+                        <div class="order-tracking" style="margin-top: 30px;">
+                            <h3>💰 <span id="withdraw-earnings-title">Withdraw Earnings</span></h3>
+                            <p style="margin: 15px 0;">Available balance: <strong id="available-balance">KSh 0</strong></p>
+                            
+                            <div class="form-group">
+                                <label for="withdraw-amount" class="form-label">Amount to Withdraw</label>
+                                <input type="number" id="withdraw-amount" class="form-control" placeholder="Enter amount">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="withdraw-method" class="form-label">Withdrawal Method</label>
+                                <select id="withdraw-method" class="form-control">
+                                    <option value="mpesa">M-Pesa</option>
+                                    <option value="bank">Bank Transfer</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" id="mpesa-details" style="display: none;">
+                                <label for="mpesa-phone" class="form-label">M-Pesa Phone Number</label>
+                                <input type="tel" id="mpesa-phone" class="form-control" placeholder="Enter M-Pesa phone number">
+                            </div>
+                            
+                            <div class="form-group" id="bank-details">
+                                <label for="bank-name" class="form-label">Bank Name</label>
+                                <input type="text" id="bank-name" class="form-control" placeholder="Enter bank name">
+                                
+                                <label for="account-number" class="form-label" style="margin-top: 15px;">Account Number</label>
+                                <input type="text" id="account-number" class="form-control" placeholder="Enter account number">
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="requestWithdrawal()">Request Withdrawal</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Schedule Section -->
+                    <div id="rider-schedule-section" class="rider-section">
+                        <div style="margin-bottom: 20px;">
+                            <h2>📅 <span id="schedule-title">Delivery Schedule</span></h2>
+                        </div>
+                        
+                        <div class="order-tracking">
+                            <h3>Set Your Availability</h3>
+                            <div id="rider-schedule-calendar" style="margin: 20px 0;">
+                                <!-- Calendar would be implemented here -->
+                                <div style="text-align: center; padding: 40px; color: var(--gray);">
+                                    <i class="fas fa-calendar-alt" style="font-size: 48px; margin-bottom: 20px;"></i>
+                                    <p>Calendar interface for setting availability would appear here</p>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary">Save Schedule</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="page">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <div class="container">
+                    <div class="dashboard-nav">
+                        <div class="logo" onclick="showPage('landing-page')">
+                            <i class="fas fa-truck-fast logo-icon"></i>
+                            <div class="logo-text">IPATE<span>Deliveries</span></div>
+                        </div>
+                        <div class="user-info">
+                            <div class="user-avatar large" id="admin-avatar">AD</div>
+                            <span id="admin-name">Admin User</span>
+                            <button class="btn btn-outline" onclick="showPage('landing-page')">
+                                <i class="fas fa-home"></i> Home
+                            </button>
+                            <button class="btn btn-outline" onclick="logout()">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="container">
+                    <h2 style="margin-bottom: 20px;">👑 <span id="admin-dashboard-title">Admin Dashboard</span></h2>
+                    
+                    <div class="dashboard-nav-links">
+                        <a class="dashboard-nav-link active" onclick="showAdminSection('overview')">Overview</a>
+                        <a class="dashboard-nav-link" onclick="showAdminSection('users')">User Management</a>
+                        <a class="dashboard-nav-link" onclick="showAdminSection('orders')">Order Management</a>
+                        <a class="dashboard-nav-link" onclick="showAdminSection('disputes')">Disputes</a>
+                        <a class="dashboard-nav-link" onclick="showAdminSection('analytics')">Analytics</a>
+                        <a class="dashboard-nav-link" onclick="showAdminSection('settings')">Platform Settings</a>
+                    </div>
+                    
+                    <!-- Overview Section -->
+                    <div id="admin-overview-section" class="admin-section active">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="total-users">0</div>
+                                <div class="stat-label">Total Users</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="total-orders-admin">0</div>
+                                <div class="stat-label">Total Orders</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="total-revenue-admin">KSh 0</div>
+                                <div class="stat-label">Platform Revenue</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="active-riders">0</div>
+                                <div class="stat-label">Active Riders</div>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-grid" style="margin-top: 30px;">
+                            <div class="admin-card">
+                                <h3>Recent Activity</h3>
+                                <div id="admin-recent-activity" style="margin-top: 15px;">
+                                    <!-- Recent activity will load here -->
+                                </div>
+                            </div>
+                            <div class="admin-card">
+                                <h3>Platform Health</h3>
+                                <div style="margin-top: 15px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                        <span>System Uptime</span>
+                                        <span>99.8%</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                        <span>Active Sessions</span>
+                                        <span id="active-sessions">0</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                        <span>API Response Time</span>
+                                        <span>120ms</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Management Section -->
+                    <div id="admin-users-section" class="admin-section">
+                        <div style="margin-bottom: 20px;">
+                            <h2>👥 User Management</h2>
+                            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                                <input type="text" id="user-search" placeholder="Search users..." class="form-control" style="width: auto;">
+                                <select id="user-role-filter" class="form-control" style="width: auto;">
+                                    <option value="all">All Roles</option>
+                                    <option value="customer">Customers</option>
+                                    <option value="seller">Sellers</option>
+                                    <option value="rider">Riders</option>
+                                </select>
+                                <select id="user-status-filter" class="form-control" style="width: auto;">
+                                    <option value="all">All Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="suspended">Suspended</option>
+                                    <option value="pending">Pending Verification</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div id="admin-users-list">
+                            <!-- Users will load here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Order Management Section -->
+                    <div id="admin-orders-section" class="admin-section">
+                        <div style="margin-bottom: 20px;">
+                            <h2>📦 Order Management</h2>
+                            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                                <input type="text" id="order-search" placeholder="Search orders..." class="form-control" style="width: auto;">
+                                <select id="order-status-filter-admin" class="form-control" style="width: auto;">
+                                    <option value="all">All Status</option>
+                                    <option value="created">Created</option>
+                                    <option value="paid">Paid</option>
+                                    <option value="accepted">Accepted</option>
+                                    <option value="ready">Ready</option>
+                                    <option value="assigned">Assigned</option>
+                                    <option value="picked_up">Picked Up</option>
+                                    <option value="in_transit">In Transit</option>
+                                    <option value="delivered">Delivered</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div id="admin-orders-list">
+                            <!-- Orders will load here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Disputes Section -->
+                    <div id="admin-disputes-section" class="admin-section">
+                        <div style="margin-bottom: 20px;">
+                            <h2>⚖️ Dispute Resolution</h2>
+                        </div>
+                        
+                        <div id="admin-disputes-list">
+                            <!-- Disputes will load here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Analytics Section -->
+                    <div id="admin-analytics-section" class="admin-section">
+                        <div style="margin-bottom: 20px;">
+                            <h2>📊 Platform Analytics</h2>
+                        </div>
+                        
+                        <div class="admin-grid">
+                            <div class="admin-card">
+                                <h3>Revenue Trends</h3>
+                                <div id="revenue-chart" style="height: 250px; background: var(--light-gray); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--gray); margin-top: 15px;">
+                                    Revenue chart would be displayed here
+                                </div>
+                            </div>
+                            <div class="admin-card">
+                                <h3>User Growth</h3>
+                                <div id="user-growth-chart" style="height: 250px; background: var(--light-gray); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--gray); margin-top: 15px;">
+                                    User growth chart would be displayed here
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-grid" style="margin-top: 25px;">
+                            <div class="admin-card">
+                                <h3>Top Sellers</h3>
+                                <div id="top-sellers-list" style="margin-top: 15px;">
+                                    <!-- Top sellers will load here -->
+                                </div>
+                            </div>
+                            <div class="admin-card">
+                                <h3>Top Riders</h3>
+                                <div id="top-riders-list" style="margin-top: 15px;">
+                                    <!-- Top riders will load here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Platform Settings Section -->
+                    <div id="admin-settings-section" class="admin-section">
+                        <div style="margin-bottom: 20px;">
+                            <h2>⚙️ Platform Settings</h2>
+                        </div>
+                        
+                        <div class="order-tracking">
+                            <h3>Commission Rates</h3>
+                            <div class="form-group">
+                                <label for="seller-commission" class="form-label">Seller Commission (%)</label>
+                                <input type="number" id="seller-commission" class="form-control" value="15" min="0" max="50">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="rider-commission" class="form-label">Rider Commission (%)</label>
+                                <input type="number" id="rider-commission" class="form-control" value="20" min="0" max="50">
+                            </div>
+                            
+                            <h3 style="margin-top: 30px;">Delivery Fees</h3>
+                            <div class="form-group">
+                                <label for="base-delivery-fee" class="form-label">Base Delivery Fee (KSh)</label>
+                                <input type="number" id="base-delivery-fee" class="form-control" value="150" min="0">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="distance-rate" class="form-label">Distance Rate (KSh per km)</label>
+                                <input type="number" id="distance-rate" class="form-control" value="20" min="0">
+                            </div>
+                            
+                            <h3 style="margin-top: 30px;">Platform Configuration</h3>
+                            <div class="form-group">
+                                <label for="platform-name" class="form-label">Platform Name</label>
+                                <input type="text" id="platform-name" class="form-control" value="IPATE Deliveries">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="support-email" class="form-label">Support Email</label>
+                                <input type="email" id="support-email" class="form-control" value="support@ipatedeliveries.com">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="support-phone" class="form-label">Support Phone</label>
+                                <input type="tel" id="support-phone" class="form-control" value="+254 748 894 671">
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="savePlatformSettings()">Save Settings</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1565,7 +2082,7 @@
                 </div>
                 <button type="button" class="btn btn-primary btn-block" onclick="login()" id="login-btn">Login</button>
                 <p style="text-align: center; margin-top: 15px;">
-                    <a href="#" style="color: var(--primary);" id="forgot-password-link">Forgot your password?</a>
+                    <a href="#" style="color: var(--primary);" id="forgot-password-link" onclick="openForgotPasswordModal()">Forgot your password?</a>
                 </p>
             </form>
             
@@ -1615,6 +2132,16 @@
                 <textarea id="delivery-instructions" class="form-control" placeholder="Any special instructions for the rider?" rows="2"></textarea>
             </div>
             
+            <div class="form-group">
+                <label for="delivery-time" class="form-label">Preferred Delivery Time</label>
+                <select id="delivery-time" class="form-control">
+                    <option value="asap">As soon as possible</option>
+                    <option value="morning">Morning (8AM - 12PM)</option>
+                    <option value="afternoon">Afternoon (12PM - 5PM)</option>
+                    <option value="evening">Evening (5PM - 9PM)</option>
+                </select>
+            </div>
+            
             <div class="order-tracking" style="margin: 20px 0;">
                 <div class="delivery-header">
                     <h3 id="order-summary-title-2">Order Summary</h3>
@@ -1627,7 +2154,51 @@
                 </div>
             </div>
             
-            <button class="btn btn-primary btn-block" onclick="placeOrder()" id="place-order-btn">Place Order</button>
+            <div class="form-group">
+                <label class="form-label">Payment Method</label>
+                <div class="payment-methods">
+                    <div class="payment-method" onclick="selectPaymentMethod('mpesa')">
+                        <i class="fas fa-mobile-alt"></i>
+                        <p>M-Pesa</p>
+                    </div>
+                    <div class="payment-method" onclick="selectPaymentMethod('card')">
+                        <i class="fas fa-credit-card"></i>
+                        <p>Credit/Debit Card</p>
+                    </div>
+                    <div class="payment-method" onclick="selectPaymentMethod('cash')">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <p>Cash on Delivery</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="mpesa-payment-details" style="display: none;">
+                <div class="form-group">
+                    <label for="mpesa-phone-checkout" class="form-label">M-Pesa Phone Number</label>
+                    <input type="tel" id="mpesa-phone-checkout" class="form-control" placeholder="Enter your M-Pesa phone number">
+                </div>
+                <button class="btn btn-primary btn-block" onclick="processMpesaPayment()">Pay with M-Pesa</button>
+            </div>
+            
+            <div id="card-payment-details" style="display: none;">
+                <div class="form-group">
+                    <label for="card-number" class="form-label">Card Number</label>
+                    <input type="text" id="card-number" class="form-control" placeholder="1234 5678 9012 3456">
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="card-expiry" class="form-label">Expiry Date</label>
+                        <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="card-cvc" class="form-label">CVC</label>
+                        <input type="text" id="card-cvc" class="form-control" placeholder="123">
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-block" onclick="processCardPayment()">Pay with Card</button>
+            </div>
+            
+            <button class="btn btn-primary btn-block" id="place-order-cash-btn" onclick="placeOrderWithCash()" style="display: none;">Place Order (Cash on Delivery)</button>
         </div>
     </div>
 
@@ -1683,6 +2254,193 @@
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button class="btn btn-outline btn-block" onclick="saveProductAsDraft()" id="save-draft-btn">Save as Draft</button>
                 <button class="btn btn-primary btn-block" onclick="publishProduct()" id="publish-product-btn">Publish Product</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal" id="forgot-password-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeForgotPasswordModal()">&times;</span>
+            <h2 style="margin-bottom: 20px;">Reset Password</h2>
+            
+            <div class="form-group">
+                <label for="reset-email" class="form-label">Email Address</label>
+                <input type="email" id="reset-email" class="form-control" placeholder="Enter your email address">
+            </div>
+            
+            <button class="btn btn-primary btn-block" onclick="sendPasswordReset()">Send Reset Link</button>
+            
+            <p style="text-align: center; margin-top: 15px;">
+                <a href="#" style="color: var(--primary);" onclick="closeForgotPasswordModal(); openAuthModal();">Back to Login</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal" id="change-password-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeChangePasswordModal()">&times;</span>
+            <h2 style="margin-bottom: 20px;">Change Password</h2>
+            
+            <div class="form-group">
+                <label for="current-password" class="form-label">Current Password</label>
+                <input type="password" id="current-password" class="form-control" placeholder="Enter your current password">
+            </div>
+            
+            <div class="form-group">
+                <label for="new-password" class="form-label">New Password</label>
+                <input type="password" id="new-password" class="form-control" placeholder="Enter your new password">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm-password" class="form-label">Confirm New Password</label>
+                <input type="password" id="confirm-password" class="form-control" placeholder="Confirm your new password">
+            </div>
+            
+            <button class="btn btn-primary btn-block" onclick="changePassword()">Change Password</button>
+        </div>
+    </div>
+
+    <!-- Add Address Modal -->
+    <div class="modal" id="add-address-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAddAddressModal()">&times;</span>
+            <h2 style="margin-bottom: 20px;">Add New Address</h2>
+            
+            <div class="form-group">
+                <label for="address-label" class="form-label">Address Label</label>
+                <input type="text" id="address-label" class="form-control" placeholder="e.g., Home, Work">
+            </div>
+            
+            <div class="form-group">
+                <label for="address-line1" class="form-label">Address Line 1</label>
+                <input type="text" id="address-line1" class="form-control" placeholder="Street address">
+            </div>
+            
+            <div class="form-group">
+                <label for="address-line2" class="form-label">Address Line 2 (Optional)</label>
+                <input type="text" id="address-line2" class="form-control" placeholder="Apartment, suite, unit, etc.">
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="address-city" class="form-label">City</label>
+                    <input type="text" id="address-city" class="form-control" placeholder="City">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="address-postal" class="form-label">Postal Code</label>
+                    <input type="text" id="address-postal" class="form-control" placeholder="Postal code">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Set as Default Address</label>
+                <label class="toggle-switch" style="margin-left: 15px;">
+                    <input type="checkbox" id="default-address">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            
+            <button class="btn btn-primary btn-block" onclick="saveAddress()">Save Address</button>
+        </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div class="modal" id="rating-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeRatingModal()">&times;</span>
+            <h2 style="margin-bottom: 20px;">Rate Your Experience</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Overall Rating</label>
+                <div class="rating-stars" id="rating-stars">
+                    <i class="fas fa-star rating-star" data-rating="1"></i>
+                    <i class="fas fa-star rating-star" data-rating="2"></i>
+                    <i class="fas fa-star rating-star" data-rating="3"></i>
+                    <i class="fas fa-star rating-star" data-rating="4"></i>
+                    <i class="fas fa-star rating-star" data-rating="5"></i>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="rating-comment" class="form-label">Comments (Optional)</label>
+                <textarea id="rating-comment" class="form-control" placeholder="Share your experience..." rows="3"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Add Photos</label>
+                <div class="image-upload-container" id="rating-image-upload" onclick="document.getElementById('rating-images').click()">
+                    <i class="fas fa-camera" style="font-size: 24px; color: var(--gray); margin-bottom: 10px;"></i>
+                    <p>Add photos to your review</p>
+                    <input type="file" id="rating-images" accept="image/*" multiple style="display: none;" onchange="handleRatingImageUpload(event)">
+                </div>
+                <div class="image-preview-grid" id="rating-image-preview"></div>
+            </div>
+            
+            <button class="btn btn-primary btn-block" onclick="submitRating()">Submit Review</button>
+        </div>
+    </div>
+
+    <!-- Bulk Import Modal -->
+    <div class="modal" id="bulk-import-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeBulkImportModal()">&times;</span>
+            <h2 style="margin-bottom: 20px;">Bulk Product Import</h2>
+            
+            <div class="form-group">
+                <label class="form-label">Import Method</label>
+                <div style="display: flex; gap: 15px;">
+                    <div class="payment-method" onclick="selectImportMethod('csv')">
+                        <i class="fas fa-file-csv"></i>
+                        <p>CSV File</p>
+                    </div>
+                    <div class="payment-method" onclick="selectImportMethod('excel')">
+                        <i class="fas fa-file-excel"></i>
+                        <p>Excel File</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Upload File</label>
+                <div class="image-upload-container" id="import-file-upload" onclick="document.getElementById('import-file').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 36px; color: var(--gray); margin-bottom: 10px;"></i>
+                    <p>Click to upload your product file</p>
+                    <p style="font-size: 12px; color: var(--gray);">CSV or Excel format</p>
+                    <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="display: none;" onchange="handleImportFileUpload(event)">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Import Options</label>
+                <div style="display: flex; gap: 15px; margin-top: 10px;">
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="radio" name="import-option" value="add" checked>
+                        <span>Add new products only</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="radio" name="import-option" value="update">
+                        <span>Update existing products</span>
+                    </label>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary btn-block" onclick="processBulkImport()">Import Products</button>
+            
+            <div style="margin-top: 20px; padding: 15px; background: var(--light); border-radius: var(--radius);">
+                <h4>File Format Requirements</h4>
+                <p style="font-size: 14px; margin-top: 10px;">Your file should include these columns:</p>
+                <ul style="font-size: 14px; margin-top: 10px; padding-left: 20px;">
+                    <li>Product Name (required)</li>
+                    <li>Description (required)</li>
+                    <li>Price (required)</li>
+                    <li>Category</li>
+                    <li>Stock Quantity</li>
+                </ul>
+                <p style="font-size: 12px; margin-top: 10px; color: var(--gray);">
+                    <a href="#" style="color: var(--primary);">Download template file</a>
+                </p>
             </div>
         </div>
     </div>
@@ -1771,6 +2529,11 @@
             
             static validatePrice(price) {
                 return !isNaN(price) && price > 0;
+            }
+            
+            static validatePhone(phone) {
+                const phoneRegex = /^\+?[\d\s-()]{10,}$/;
+                return phoneRegex.test(phone);
             }
         }
 
@@ -1866,6 +2629,8 @@
                     'shop-products-nav': 'Shop Products',
                     'my-orders-nav': 'My Orders',
                     'cart-nav': 'Cart',
+                    'profile-nav': 'Profile',
+                    'wishlist-nav': 'Wishlist',
                     'total-orders-label': 'Total Orders',
                     'pending-orders-label': 'Pending Orders',
                     'delivered-orders-label': 'Delivered Orders',
@@ -1896,12 +2661,16 @@
                     'clear-cart-btn': 'Clear Cart',
                     'proceed-checkout-btn': 'Proceed to Checkout',
                     'home-btn': 'Home',
+                    'profile-title': 'Your Profile',
+                    'address-book-title': 'Address Book',
+                    'wishlist-title': 'Your Wishlist',
                     
                     // Seller dashboard
                     'seller-dashboard-title': 'Seller Dashboard',
                     'products-nav': 'Products',
                     'orders-nav': 'Orders',
                     'analytics-nav': 'Analytics',
+                    'store-nav': 'Store Settings',
                     'total-revenue-label': 'Total Revenue',
                     'this-week-label': 'This Week',
                     'today-label': 'Today',
@@ -1916,12 +2685,14 @@
                     'avg-rating-label': 'Average Rating',
                     'completion-rate-label': 'Order Completion',
                     'home-btn-2': 'Home',
+                    'store-settings-title': 'Store Settings',
                     
                     // Rider dashboard
                     'rider-dashboard-title': 'Rider Dashboard',
                     'available-deliveries-nav': 'Available Deliveries',
                     'my-deliveries-nav': 'My Deliveries',
                     'earnings-nav': 'Earnings',
+                    'schedule-nav': 'Schedule',
                     'available-for-deliveries-title': 'Available for Deliveries',
                     'receive-requests-text': 'You will receive new delivery requests',
                     'your-rating-label-2': 'Your Rating',
@@ -1940,6 +2711,11 @@
                     'today-label-2': 'Today',
                     'total-deliveries-label': 'Total Deliveries',
                     'home-btn-3': 'Home',
+                    'withdraw-earnings-title': 'Withdraw Earnings',
+                    'schedule-title': 'Delivery Schedule',
+                    
+                    // Admin dashboard
+                    'admin-dashboard-title': 'Admin Dashboard',
                     
                     // Auth modal
                     'welcome-title': 'Welcome to IPATE Deliveries',
@@ -2030,6 +2806,8 @@
                     'shop-products-nav': 'Nunua Bidhaa',
                     'my-orders-nav': 'Oda Zangu',
                     'cart-nav': 'Mkokoteni',
+                    'profile-nav': 'Wasifu',
+                    'wishlist-nav': 'Orodha ya Matamanio',
                     'total-orders-label': 'Jumla ya Oda',
                     'pending-orders-label': 'Oda Zinazosubiri',
                     'delivered-orders-label': 'Oda Zilizofika',
@@ -2060,12 +2838,16 @@
                     'clear-cart-btn': 'Futa Mkokoteni',
                     'proceed-checkout-btn': 'Endelea Kwenye Malipo',
                     'home-btn': 'Nyumbani',
+                    'profile-title': 'Wasifu Wako',
+                    'address-book-title': 'Kitabu cha Anwani',
+                    'wishlist-title': 'Orodha Yako ya Matamanio',
                     
                     // Seller dashboard
                     'seller-dashboard-title': 'Dashibodi ya Mwuza',
                     'products-nav': 'Bidhaa',
                     'orders-nav': 'Oda',
                     'analytics-nav': 'Takwimu',
+                    'store-nav': 'Mipangilio ya Duka',
                     'total-revenue-label': 'Mapato Yote',
                     'this-week-label': 'Wiki Hii',
                     'today-label': 'Leo',
@@ -2080,12 +2862,14 @@
                     'avg-rating-label': 'Wastani wa Ukadiriaji',
                     'completion-rate-label': 'Kiwango cha Kukamilika kwa Oda',
                     'home-btn-2': 'Nyumbani',
+                    'store-settings-title': 'Mipangilio ya Duka',
                     
                     // Rider dashboard
                     'rider-dashboard-title': 'Dashibodi ya Mpakuzi',
                     'available-deliveries-nav': 'Ufikiaji Unaopatikana',
                     'my-deliveries-nav': 'Ufikiaji Wangu',
                     'earnings-nav': 'Mapato',
+                    'schedule-nav': 'Ratiba',
                     'available-for-deliveries-title': 'Inapatikana kwa Ufikiaji',
                     'receive-requests-text': 'Utapokea maombi mapya ya ufikiaji',
                     'your-rating-label-2': 'Ukadiriaji Wako',
@@ -2104,6 +2888,11 @@
                     'today-label-2': 'Leo',
                     'total-deliveries-label': 'Jumla ya Ufikiaji',
                     'home-btn-3': 'Nyumbani',
+                    'withdraw-earnings-title': 'Toa Mapato',
+                    'schedule-title': 'Ratiba ya Ufikiaji',
+                    
+                    // Admin dashboard
+                    'admin-dashboard-title': 'Dashibodi ya Msimamizi',
                     
                     // Auth modal
                     'welcome-title': 'Karibu kwenye IPATE Deliveries',
@@ -2619,6 +3408,10 @@
                         showPage('rider-dashboard');
                         RiderDashboard.initialize();
                         break;
+                    case 'admin':
+                        showPage('admin-dashboard');
+                        AdminDashboard.initialize();
+                        break;
                     case 'customer':
                     default:
                         showPage('customer-dashboard');
@@ -2742,6 +3535,56 @@
                     UIHelper.hideLoading();
                     console.error('Logout error:', error);
                     UIHelper.showNotification('Error logging out', 'error');
+                }
+            }
+
+            static async sendPasswordReset(email) {
+                try {
+                    if (!ValidationHelper.validateEmail(email)) {
+                        UIHelper.showNotification('Please enter a valid email address', 'error');
+                        return;
+                    }
+                    
+                    UIHelper.showLoading();
+                    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                        redirectTo: `${window.location.origin}/reset-password`,
+                    });
+                    
+                    if (error) throw error;
+                    
+                    UIHelper.hideLoading();
+                    UIHelper.showNotification('Password reset link sent to your email', 'success');
+                    closeForgotPasswordModal();
+                } catch (error) {
+                    UIHelper.hideLoading();
+                    console.error('Password reset error:', error);
+                    UIHelper.showNotification('Error sending reset link', 'error');
+                }
+            }
+
+            static async changePassword(currentPassword, newPassword) {
+                try {
+                    if (!ValidationHelper.validatePassword(newPassword)) {
+                        UIHelper.showNotification('New password must be at least 6 characters long', 'error');
+                        return;
+                    }
+                    
+                    // In a real app, you would verify the current password first
+                    // For this demo, we'll just update the password
+                    UIHelper.showLoading();
+                    const { error } = await supabase.auth.updateUser({
+                        password: newPassword
+                    });
+                    
+                    if (error) throw error;
+                    
+                    UIHelper.hideLoading();
+                    UIHelper.showNotification('Password changed successfully', 'success');
+                    closeChangePasswordModal();
+                } catch (error) {
+                    UIHelper.hideLoading();
+                    console.error('Password change error:', error);
+                    UIHelper.showNotification('Error changing password', 'error');
                 }
             }
 
@@ -3025,11 +3868,157 @@
                     throw error;
                 }
             }
+
+            // NEW: Get users for admin dashboard
+            static async getUsers(filters = {}) {
+                try {
+                    let query = supabase
+                        .from('profiles')
+                        .select('*');
+
+                    if (filters.role && filters.role !== 'all') {
+                        query = query.eq('role', filters.role);
+                    }
+
+                    if (filters.search) {
+                        query = query.or(`name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`);
+                    }
+
+                    const { data, error } = await query.order('created_at', { ascending: false });
+
+                    if (error) throw error;
+                    return data || [];
+                } catch (error) {
+                    console.error('Error fetching users:', error);
+                    throw error;
+                }
+            }
+
+            // NEW: Update user status
+            static async updateUserStatus(userId, status) {
+                try {
+                    const { data, error } = await supabase
+                        .from('profiles')
+                        .update({ status })
+                        .eq('id', userId)
+                        .select()
+                        .single();
+
+                    if (error) throw error;
+                    return data;
+                } catch (error) {
+                    console.error('Error updating user status:', error);
+                    throw error;
+                }
+            }
+        }
+
+        // ========== PAYMENT SYSTEM ==========
+        class PaymentSystem {
+            static selectedMethod = null;
+
+            static selectPaymentMethod(method) {
+                this.selectedMethod = method;
+                
+                // Update UI
+                document.querySelectorAll('.payment-method').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                event.target.closest('.payment-method').classList.add('selected');
+                
+                // Show appropriate payment details
+                document.getElementById('mpesa-payment-details').style.display = 'none';
+                document.getElementById('card-payment-details').style.display = 'none';
+                document.getElementById('place-order-cash-btn').style.display = 'none';
+                
+                if (method === 'mpesa') {
+                    document.getElementById('mpesa-payment-details').style.display = 'block';
+                } else if (method === 'card') {
+                    document.getElementById('card-payment-details').style.display = 'block';
+                } else if (method === 'cash') {
+                    document.getElementById('place-order-cash-btn').style.display = 'block';
+                }
+            }
+
+            static async processMpesaPayment() {
+                const phone = document.getElementById('mpesa-phone-checkout').value;
+                
+                if (!ValidationHelper.validatePhone(phone)) {
+                    UIHelper.showNotification('Please enter a valid phone number', 'error');
+                    return;
+                }
+                
+                if (!window.currentUser) {
+                    UIHelper.showNotification('Please log in to make a payment', 'error');
+                    return;
+                }
+                
+                UIHelper.showLoading();
+                
+                try {
+                    // Simulate M-Pesa API call
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    
+                    // In a real implementation, you would call the M-Pesa API here
+                    // For demo purposes, we'll just simulate a successful payment
+                    
+                    UIHelper.hideLoading();
+                    UIHelper.showNotification('M-Pesa payment initiated. Please check your phone to complete the payment.', 'success');
+                    
+                    // After payment is confirmed, place the order
+                    setTimeout(() => {
+                        CustomerDashboard.placeOrder('mpesa');
+                    }, 2000);
+                    
+                } catch (error) {
+                    UIHelper.hideLoading();
+                    console.error('M-Pesa payment error:', error);
+                    UIHelper.showNotification('Error processing M-Pesa payment', 'error');
+                }
+            }
+
+            static async processCardPayment() {
+                const cardNumber = document.getElementById('card-number').value;
+                const cardExpiry = document.getElementById('card-expiry').value;
+                const cardCvc = document.getElementById('card-cvc').value;
+                
+                if (!cardNumber || !cardExpiry || !cardCvc) {
+                    UIHelper.showNotification('Please fill in all card details', 'error');
+                    return;
+                }
+                
+                if (!window.currentUser) {
+                    UIHelper.showNotification('Please log in to make a payment', 'error');
+                    return;
+                }
+                
+                UIHelper.showLoading();
+                
+                try {
+                    // Simulate Stripe API call
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    
+                    // In a real implementation, you would call the Stripe API here
+                    // For demo purposes, we'll just simulate a successful payment
+                    
+                    UIHelper.hideLoading();
+                    UIHelper.showNotification('Card payment processed successfully', 'success');
+                    
+                    // Place the order
+                    CustomerDashboard.placeOrder('card');
+                    
+                } catch (error) {
+                    UIHelper.hideLoading();
+                    console.error('Card payment error:', error);
+                    UIHelper.showNotification('Error processing card payment', 'error');
+                }
+            }
         }
 
         // ========== CUSTOMER DASHBOARD ==========
         class CustomerDashboard {
             static cart = window.customerCart;
+            static wishlist = JSON.parse(localStorage.getItem('customerWishlist') || '[]');
 
             static initialize() {
                 if (!AuthManager.requireAuth()) return;
@@ -3045,6 +4034,8 @@
                 this.loadProducts();
                 this.loadOrders();
                 this.updateCartDisplay();
+                this.loadProfile();
+                this.loadWishlist();
             }
 
             static async loadDashboardData() {
@@ -3142,6 +4133,7 @@
                         }
                         
                         const mainImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60';
+                        const isInWishlist = this.wishlist.some(item => item.productId === product.id);
                         
                         productCard.innerHTML = `
                             ${badge}
@@ -3175,6 +4167,9 @@
                                     </button>
                                     <button class="btn btn-outline" onclick="CustomerDashboard.viewProduct('${product.id}')">
                                         <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn ${isInWishlist ? 'btn-warning' : 'btn-outline'}" onclick="CustomerDashboard.toggleWishlist('${product.id}')">
+                                        <i class="fas ${isInWishlist ? 'fa-heart' : 'fa-heart'}"></i>
                                     </button>
                                 </div>
                             </div>
@@ -3281,6 +4276,11 @@
                                 ${['assigned', 'picked_up', 'in_transit'].includes(order.status) ? `
                                     <button class="btn btn-primary btn-sm" onclick="CustomerDashboard.trackOrder('${order.id}')">
                                         <i class="fas fa-map-marker-alt"></i> Track
+                                    </button>
+                                ` : ''}
+                                ${order.status === 'delivered' ? `
+                                    <button class="btn btn-success btn-sm" onclick="CustomerDashboard.rateOrder('${order.id}')">
+                                        <i class="fas fa-star"></i> Rate
                                     </button>
                                 ` : ''}
                             </div>
@@ -3496,9 +4496,10 @@
             }
 
             // FIXED: Place order with better error handling
-            static async placeOrder() {
+            static async placeOrder(paymentMethod = 'cash') {
                 const deliveryAddress = document.getElementById('delivery-address').value;
                 const deliveryInstructions = document.getElementById('delivery-instructions').value;
+                const deliveryTime = document.getElementById('delivery-time').value;
                 
                 if (!deliveryAddress) {
                     UIHelper.showNotification('Please enter a delivery address', 'error');
@@ -3554,11 +4555,12 @@
                             total: orderTotal,
                             subtotal: sellerOrder.subtotal,
                             delivery_fee: deliveryFee,
-                            status: 'created',
-                            payment_method: 'cash',
-                            payment_status: 'pending',
+                            status: paymentMethod === 'cash' ? 'created' : 'paid',
+                            payment_method: paymentMethod,
+                            payment_status: paymentMethod === 'cash' ? 'pending' : 'completed',
                             shipping_address: deliveryAddress,
                             delivery_instructions: deliveryInstructions || '',
+                            delivery_time: deliveryTime,
                             order_number: 'ORD' + Date.now() + Math.random().toString(36).substr(2, 5)
                         };
                         
@@ -3605,6 +4607,10 @@
                 }
             }
 
+            static placeOrderWithCash() {
+                this.placeOrder('cash');
+            }
+
             static async viewOrderDetails(orderId) {
                 try {
                     const orders = await ApiClient.getOrders({ customerId: window.currentUser.id });
@@ -3639,6 +4645,12 @@
                 alert(`Tracking Order\n\nLive tracking would be displayed here with a map showing rider location and estimated delivery time.`);
             }
 
+            static rateOrder(orderId) {
+                // Store the order ID for the rating
+                window.currentRatingOrderId = orderId;
+                document.getElementById('rating-modal').style.display = 'flex';
+            }
+
             static async cancelOrder(orderId) {
                 if (!confirm('Are you sure you want to cancel this order?')) return;
                 
@@ -3660,6 +4672,242 @@
             static filterOrders() {
                 this.loadOrders();
             }
+
+            static async loadProfile() {
+                if (!window.currentUser) return;
+                
+                const user = window.currentUser;
+                
+                document.getElementById('profile-name').value = user.profile.name || '';
+                document.getElementById('profile-email').value = user.email || '';
+                document.getElementById('profile-phone').value = user.profile.phone || '';
+                document.getElementById('profile-address').value = user.profile.default_address || '';
+                
+                // Load addresses
+                this.loadAddresses();
+            }
+
+            static async loadAddresses() {
+                // In a real app, this would fetch from the database
+                // For demo, we'll use localStorage
+                const addresses = JSON.parse(localStorage.getItem('customerAddresses') || '[]');
+                const container = document.getElementById('address-book-list');
+                
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                if (addresses.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: var(--gray);">
+                            <p>No addresses saved yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                addresses.forEach((address, index) => {
+                    const addressCard = document.createElement('div');
+                    addressCard.className = 'delivery-card';
+                    addressCard.style.marginBottom = '10px';
+                    
+                    addressCard.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h4>${address.label}</h4>
+                                <p>${address.line1}</p>
+                                ${address.line2 ? `<p>${address.line2}</p>` : ''}
+                                <p>${address.city}, ${address.postalCode}</p>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                ${address.isDefault ? '<span class="delivery-status status-ready">Default</span>' : ''}
+                                <button class="btn btn-sm btn-outline" onclick="CustomerDashboard.setDefaultAddress(${index})">
+                                    Set Default
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="CustomerDashboard.deleteAddress(${index})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(addressCard);
+                });
+            }
+
+            static async updateProfile() {
+                const name = document.getElementById('profile-name').value;
+                const phone = document.getElementById('profile-phone').value;
+                const address = document.getElementById('profile-address').value;
+                
+                if (!name) {
+                    UIHelper.showNotification('Please enter your name', 'error');
+                    return;
+                }
+                
+                if (phone && !ValidationHelper.validatePhone(phone)) {
+                    UIHelper.showNotification('Please enter a valid phone number', 'error');
+                    return;
+                }
+                
+                UIHelper.showLoading();
+                
+                try {
+                    // Update profile in database
+                    const { error } = await supabase
+                        .from('profiles')
+                        .update({
+                            name: ValidationHelper.sanitizeInput(name),
+                            phone: ValidationHelper.sanitizeInput(phone),
+                            default_address: ValidationHelper.sanitizeInput(address)
+                        })
+                        .eq('id', window.currentUser.id);
+                    
+                    if (error) throw error;
+                    
+                    // Update local user data
+                    window.currentUser.profile.name = name;
+                    window.currentUser.profile.phone = phone;
+                    window.currentUser.profile.default_address = address;
+                    DataStore.saveUserData(window.currentUser);
+                    
+                    // Update header
+                    AuthManager.renderHeader();
+                    
+                    UIHelper.hideLoading();
+                    UIHelper.showNotification('Profile updated successfully', 'success');
+                } catch (error) {
+                    UIHelper.hideLoading();
+                    console.error('Error updating profile:', error);
+                    UIHelper.showNotification('Error updating profile', 'error');
+                }
+            }
+
+            static saveAddress() {
+                const label = document.getElementById('address-label').value;
+                const line1 = document.getElementById('address-line1').value;
+                const line2 = document.getElementById('address-line2').value;
+                const city = document.getElementById('address-city').value;
+                const postalCode = document.getElementById('address-postal').value;
+                const isDefault = document.getElementById('default-address').checked;
+                
+                if (!label || !line1 || !city) {
+                    UIHelper.showNotification('Please fill in all required fields', 'error');
+                    return;
+                }
+                
+                const addresses = JSON.parse(localStorage.getItem('customerAddresses') || '[]');
+                
+                const newAddress = {
+                    label,
+                    line1,
+                    line2,
+                    city,
+                    postalCode,
+                    isDefault
+                };
+                
+                // If this is set as default, remove default from others
+                if (isDefault) {
+                    addresses.forEach(addr => addr.isDefault = false);
+                }
+                
+                addresses.push(newAddress);
+                localStorage.setItem('customerAddresses', JSON.stringify(addresses));
+                
+                closeAddAddressModal();
+                UIHelper.showNotification('Address saved successfully', 'success');
+                this.loadAddresses();
+            }
+
+            static setDefaultAddress(index) {
+                const addresses = JSON.parse(localStorage.getItem('customerAddresses') || '[]');
+                
+                addresses.forEach(addr => addr.isDefault = false);
+                addresses[index].isDefault = true;
+                
+                localStorage.setItem('customerAddresses', JSON.stringify(addresses));
+                UIHelper.showNotification('Default address updated', 'success');
+                this.loadAddresses();
+            }
+
+            static deleteAddress(index) {
+                if (!confirm('Are you sure you want to delete this address?')) return;
+                
+                const addresses = JSON.parse(localStorage.getItem('customerAddresses') || '[]');
+                addresses.splice(index, 1);
+                
+                localStorage.setItem('customerAddresses', JSON.stringify(addresses));
+                UIHelper.showNotification('Address deleted', 'success');
+                this.loadAddresses();
+            }
+
+            static toggleWishlist(productId) {
+                const products = JSON.parse(localStorage.getItem('customerWishlist') || '[]');
+                const existingIndex = products.findIndex(p => p.productId === productId);
+                
+                if (existingIndex >= 0) {
+                    // Remove from wishlist
+                    products.splice(existingIndex, 1);
+                    UIHelper.showNotification('Removed from wishlist', 'success');
+                } else {
+                    // Add to wishlist
+                    // In a real app, we would fetch the product details
+                    products.push({
+                        productId,
+                        name: 'Product ' + productId,
+                        price: 1000,
+                        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60'
+                    });
+                    UIHelper.showNotification('Added to wishlist', 'success');
+                }
+                
+                localStorage.setItem('customerWishlist', JSON.stringify(products));
+                this.wishlist = products;
+                this.loadProducts(); // Refresh to update wishlist button state
+                this.loadWishlist();
+            }
+
+            static loadWishlist() {
+                const container = document.getElementById('wishlist-products');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                if (this.wishlist.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                            <i class="fas fa-heart" style="font-size: 48px; color: var(--gray); margin-bottom: 20px;"></i>
+                            <h3 style="color: var(--gray);">Your wishlist is empty</h3>
+                            <p style="color: var(--gray);">Add products you love to your wishlist</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                this.wishlist.forEach(item => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    
+                    productCard.innerHTML = `
+                        <div class="product-image" style="background-image: url('${item.image}')"></div>
+                        <div class="product-info">
+                            <h4>${item.name}</h4>
+                            <div class="product-price">${UIHelper.formatPrice(item.price)}</div>
+                            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                <button class="btn btn-primary" onclick="CustomerDashboard.addToCart('${item.productId}')">
+                                    <i class="fas fa-cart-plus"></i> Add to Cart
+                                </button>
+                                <button class="btn btn-warning" onclick="CustomerDashboard.toggleWishlist('${item.productId}')">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(productCard);
+                });
+            }
         }
 
         // ========== SELLER DASHBOARD ==========
@@ -3679,6 +4927,7 @@
                 this.loadSellerOverview();
                 this.loadProducts();
                 this.loadOrders();
+                this.loadStoreSettings();
                 
                 // Set up real-time updates for new orders
                 this.setupRealTimeUpdates();
@@ -4140,6 +5389,42 @@
                     UIHelper.showNotification('Error saving product', 'error');
                 }
             }
+
+            static async loadStoreSettings() {
+                // In a real app, this would fetch from the database
+                // For demo, we'll use localStorage
+                const storeSettings = JSON.parse(localStorage.getItem('sellerStoreSettings') || '{}');
+                
+                document.getElementById('store-name').value = storeSettings.name || '';
+                document.getElementById('store-description').value = storeSettings.description || '';
+                document.getElementById('store-category').value = storeSettings.category || 'Food & Beverages';
+                document.getElementById('business-hours-start').value = storeSettings.businessHoursStart || '08:00';
+                document.getElementById('business-hours-end').value = storeSettings.businessHoursEnd || '18:00';
+            }
+
+            static async saveStoreSettings() {
+                const name = document.getElementById('store-name').value;
+                const description = document.getElementById('store-description').value;
+                const category = document.getElementById('store-category').value;
+                const businessHoursStart = document.getElementById('business-hours-start').value;
+                const businessHoursEnd = document.getElementById('business-hours-end').value;
+                
+                if (!name) {
+                    UIHelper.showNotification('Please enter a store name', 'error');
+                    return;
+                }
+                
+                const storeSettings = {
+                    name,
+                    description,
+                    category,
+                    businessHoursStart,
+                    businessHoursEnd
+                };
+                
+                localStorage.setItem('sellerStoreSettings', JSON.stringify(storeSettings));
+                UIHelper.showNotification('Store settings saved successfully', 'success');
+            }
         }
 
         // ========== RIDER DASHBOARD ==========
@@ -4568,6 +5853,9 @@
                     document.getElementById('weekly-earnings').textContent = UIHelper.formatPrice(weeklyEarnings);
                     document.getElementById('today-earnings').textContent = UIHelper.formatPrice(todayEarnings);
                     document.getElementById('total-deliveries').textContent = completedDeliveries.length;
+                    
+                    // Update available balance
+                    document.getElementById('available-balance').textContent = UIHelper.formatPrice(totalEarnings);
                 } catch (error) {
                     console.error('Error loading rider earnings:', error);
                 }
@@ -4641,6 +5929,353 @@
                     alert(`Delivery Details\n\nFull delivery details would be shown here with customer contact information and delivery timeline.`);
                 }
             }
+
+            static async requestWithdrawal() {
+                const amount = parseFloat(document.getElementById('withdraw-amount').value);
+                const method = document.getElementById('withdraw-method').value;
+                
+                if (!amount || amount <= 0) {
+                    UIHelper.showNotification('Please enter a valid amount', 'error');
+                    return;
+                }
+                
+                // In a real app, you would check if the rider has enough balance
+                // For demo, we'll just simulate the withdrawal request
+                
+                UIHelper.showLoading();
+                
+                try {
+                    // Simulate API call
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    UIHelper.hideLoading();
+                    UIHelper.showNotification('Withdrawal request submitted successfully', 'success');
+                    
+                    // Reset form
+                    document.getElementById('withdraw-amount').value = '';
+                } catch (error) {
+                    UIHelper.hideLoading();
+                    console.error('Error requesting withdrawal:', error);
+                    UIHelper.showNotification('Error processing withdrawal request', 'error');
+                }
+            }
+        }
+
+        // ========== ADMIN DASHBOARD ==========
+        class AdminDashboard {
+            static initialize() {
+                if (!AuthManager.requireAuth()) return;
+                
+                const user = window.currentUser;
+                
+                // Update UI with user data
+                document.getElementById('admin-name').textContent = user.profile.name;
+                document.getElementById('admin-avatar').textContent = user.profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                // Load admin data
+                this.loadAdminOverview();
+                this.loadUsers();
+                this.loadOrders();
+                this.loadPlatformSettings();
+            }
+
+            static async loadAdminOverview() {
+                try {
+                    const users = await ApiClient.getUsers();
+                    const orders = await ApiClient.getOrders();
+                    
+                    // Calculate stats
+                    const totalRevenue = orders
+                        .filter(order => order.status === 'delivered')
+                        .reduce((sum, order) => sum + order.total, 0);
+                    
+                    const activeRiders = users.filter(user => user.role === 'rider' && user.status === 'active').length;
+                    
+                    // Update stats
+                    document.getElementById('total-users').textContent = users.length;
+                    document.getElementById('total-orders-admin').textContent = orders.length;
+                    document.getElementById('total-revenue-admin').textContent = UIHelper.formatPrice(totalRevenue);
+                    document.getElementById('active-riders').textContent = activeRiders;
+                    document.getElementById('active-sessions').textContent = Math.floor(Math.random() * 100) + 50; // Mock data
+                    
+                } catch (error) {
+                    console.error('Error loading admin overview:', error);
+                }
+            }
+
+            static async loadUsers() {
+                try {
+                    const search = document.getElementById('user-search').value;
+                    const role = document.getElementById('user-role-filter').value;
+                    const status = document.getElementById('user-status-filter').value;
+                    
+                    const filters = {};
+                    if (search) filters.search = search;
+                    if (role !== 'all') filters.role = role;
+                    // Note: status filter would be implemented in a real app
+                    
+                    const users = await ApiClient.getUsers(filters);
+                    const container = document.getElementById('admin-users-list');
+                    
+                    if (!container) return;
+                    
+                    container.innerHTML = '';
+                    
+                    if (users.length === 0) {
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 40px; color: var(--gray);">
+                                <i class="fas fa-users" style="font-size: 48px; margin-bottom: 20px;"></i>
+                                <h3>No users found</h3>
+                                <p>Try adjusting your search filters</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    users.forEach(user => {
+                        const userCard = document.createElement('div');
+                        userCard.className = 'delivery-card';
+                        
+                        userCard.innerHTML = `
+                            <div class="delivery-header">
+                                <div>
+                                    <h4>${user.name}</h4>
+                                    <div style="color: var(--gray); font-size: 14px; margin-top: 5px;">
+                                        ${user.email} • ${user.role} • ${user.status || 'active'}
+                                    </div>
+                                </div>
+                                <span class="delivery-status ${user.status === 'suspended' ? 'status-cancelled' : 'status-delivered'}">
+                                    ${user.status === 'suspended' ? 'Suspended' : 'Active'}
+                                </span>
+                            </div>
+                            
+                            <div style="margin: 15px 0;">
+                                <p><strong>Joined:</strong> ${UIHelper.formatDate(user.created_at)}</p>
+                                <p><strong>Last Active:</strong> ${UIHelper.formatDate(user.updated_at || user.created_at)}</p>
+                            </div>
+                            
+                            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                ${user.status !== 'suspended' ? `
+                                    <button class="btn btn-danger btn-sm" onclick="AdminDashboard.suspendUser('${user.id}')">
+                                        <i class="fas fa-ban"></i> Suspend
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-success btn-sm" onclick="AdminDashboard.activateUser('${user.id}')">
+                                        <i class="fas fa-check"></i> Activate
+                                    </button>
+                                `}
+                                <button class="btn btn-outline btn-sm" onclick="AdminDashboard.viewUserDetails('${user.id}')">
+                                    <i class="fas fa-eye"></i> Details
+                                </button>
+                            </div>
+                        `;
+                        
+                        container.appendChild(userCard);
+                    });
+                } catch (error) {
+                    console.error('Error loading users:', error);
+                    UIHelper.showNotification('Error loading users', 'error');
+                }
+            }
+
+            static async loadOrders() {
+                try {
+                    const search = document.getElementById('order-search').value;
+                    const status = document.getElementById('order-status-filter-admin').value;
+                    
+                    const filters = {};
+                    if (status !== 'all') filters.status = status;
+                    // Note: search filter would be implemented in a real app
+                    
+                    const orders = await ApiClient.getOrders(filters);
+                    const container = document.getElementById('admin-orders-list');
+                    
+                    if (!container) return;
+                    
+                    container.innerHTML = '';
+                    
+                    if (orders.length === 0) {
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 40px; color: var(--gray);">
+                                <i class="fas fa-clipboard-list" style="font-size: 48px; margin-bottom: 20px;"></i>
+                                <h3>No orders found</h3>
+                                <p>Try adjusting your search filters</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    orders.forEach(order => {
+                        const orderCard = document.createElement('div');
+                        orderCard.className = 'delivery-card';
+                        
+                        const statusClass = `status-${order.status}`;
+                        const statusText = order.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                        
+                        orderCard.innerHTML = `
+                            <div class="delivery-header">
+                                <div>
+                                    <h4>Order #${order.order_number}</h4>
+                                    <div style="color: var(--gray); font-size: 14px; margin-top: 5px;">
+                                        ${UIHelper.formatDate(order.created_at)}
+                                        ${order.customer_name ? `<div style="margin-top: 5px;"><strong>Customer:</strong> ${order.customer_name}</div>` : ''}
+                                        ${order.seller_name ? `<div><strong>Seller:</strong> ${order.seller_name}</div>` : ''}
+                                    </div>
+                                </div>
+                                <span class="delivery-status ${statusClass}">${statusText}</span>
+                            </div>
+                            
+                            <div style="margin: 15px 0;">
+                                <p><strong>Total Amount:</strong> ${UIHelper.formatPrice(order.total)}</p>
+                                <p><strong>Payment Method:</strong> ${order.payment_method}</p>
+                                <p><strong>Payment Status:</strong> ${order.payment_status}</p>
+                            </div>
+                            
+                            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                <button class="btn btn-outline btn-sm" onclick="AdminDashboard.viewOrderDetails('${order.id}')">
+                                    <i class="fas fa-eye"></i> Details
+                                </button>
+                                ${order.status !== 'cancelled' && order.status !== 'delivered' ? `
+                                    <button class="btn btn-danger btn-sm" onclick="AdminDashboard.cancelOrder('${order.id}')">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                ` : ''}
+                            </div>
+                        `;
+                        
+                        container.appendChild(orderCard);
+                    });
+                } catch (error) {
+                    console.error('Error loading orders:', error);
+                    UIHelper.showNotification('Error loading orders', 'error');
+                }
+            }
+
+            static async suspendUser(userId) {
+                if (!confirm('Are you sure you want to suspend this user?')) return;
+                
+                try {
+                    await ApiClient.updateUserStatus(userId, 'suspended');
+                    UIHelper.showNotification('User suspended successfully', 'success');
+                    this.loadUsers();
+                } catch (error) {
+                    console.error('Error suspending user:', error);
+                    UIHelper.showNotification('Error suspending user', 'error');
+                }
+            }
+
+            static async activateUser(userId) {
+                try {
+                    await ApiClient.updateUserStatus(userId, 'active');
+                    UIHelper.showNotification('User activated successfully', 'success');
+                    this.loadUsers();
+                } catch (error) {
+                    console.error('Error activating user:', error);
+                    UIHelper.showNotification('Error activating user', 'error');
+                }
+            }
+
+            static async viewUserDetails(userId) {
+                try {
+                    const users = await ApiClient.getUsers();
+                    const user = users.find(u => u.id === userId);
+                    
+                    alert(`User Details\n\nName: ${user.name}\nEmail: ${user.email}\nRole: ${user.role}\nStatus: ${user.status || 'active'}\nJoined: ${UIHelper.formatDate(user.created_at)}`);
+                } catch (error) {
+                    console.error('Error fetching user details:', error);
+                    alert(`User Details\n\nFull user details would be shown here with activity history and statistics.`);
+                }
+            }
+
+            static async viewOrderDetails(orderId) {
+                try {
+                    const orders = await ApiClient.getOrders();
+                    const order = orders.find(o => o.id === orderId);
+                    
+                    const orderItems = await ApiClient.getOrderItems(orderId);
+                    
+                    let itemsHTML = '';
+                    if (orderItems && orderItems.length > 0) {
+                        itemsHTML = `
+                            <h4>Order Items:</h4>
+                            ${orderItems.map(item => `
+                                <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--light-gray);">
+                                    <div>
+                                        <strong>${item.product_name}</strong>
+                                        <div>Quantity: ${item.quantity}</div>
+                                    </div>
+                                    <div>${UIHelper.formatPrice(item.price * item.quantity)}</div>
+                                </div>
+                            `).join('')}
+                        `;
+                    }
+                    
+                    alert(`Order Details for #${order.order_number}\n\nStatus: ${order.status}\nTotal: ${UIHelper.formatPrice(order.total)}\nCustomer: ${order.customer_name}\nSeller: ${order.seller_name}\n\n${itemsHTML}`);
+                } catch (error) {
+                    console.error('Error fetching order details:', error);
+                    alert(`Order Details\n\nFull order details would be shown here with customer information and order timeline.`);
+                }
+            }
+
+            static async cancelOrder(orderId) {
+                if (!confirm('Are you sure you want to cancel this order?')) return;
+                
+                try {
+                    await ApiClient.updateOrderStatus(orderId, 'cancelled');
+                    UIHelper.showNotification('Order cancelled successfully', 'success');
+                    this.loadOrders();
+                } catch (error) {
+                    console.error('Error cancelling order:', error);
+                    UIHelper.showNotification('Error cancelling order', 'error');
+                }
+            }
+
+            static loadPlatformSettings() {
+                // In a real app, this would fetch from the database
+                // For demo, we'll use localStorage
+                const platformSettings = JSON.parse(localStorage.getItem('platformSettings') || '{}');
+                
+                document.getElementById('seller-commission').value = platformSettings.sellerCommission || 15;
+                document.getElementById('rider-commission').value = platformSettings.riderCommission || 20;
+                document.getElementById('base-delivery-fee').value = platformSettings.baseDeliveryFee || 150;
+                document.getElementById('distance-rate').value = platformSettings.distanceRate || 20;
+                document.getElementById('platform-name').value = platformSettings.platformName || 'IPATE Deliveries';
+                document.getElementById('support-email').value = platformSettings.supportEmail || 'support@ipatedeliveries.com';
+                document.getElementById('support-phone').value = platformSettings.supportPhone || '+254 748 894 671';
+            }
+
+            static savePlatformSettings() {
+                const sellerCommission = parseInt(document.getElementById('seller-commission').value);
+                const riderCommission = parseInt(document.getElementById('rider-commission').value);
+                const baseDeliveryFee = parseInt(document.getElementById('base-delivery-fee').value);
+                const distanceRate = parseInt(document.getElementById('distance-rate').value);
+                const platformName = document.getElementById('platform-name').value;
+                const supportEmail = document.getElementById('support-email').value;
+                const supportPhone = document.getElementById('support-phone').value;
+                
+                if (!platformName) {
+                    UIHelper.showNotification('Please enter a platform name', 'error');
+                    return;
+                }
+                
+                if (!ValidationHelper.validateEmail(supportEmail)) {
+                    UIHelper.showNotification('Please enter a valid support email', 'error');
+                    return;
+                }
+                
+                const platformSettings = {
+                    sellerCommission,
+                    riderCommission,
+                    baseDeliveryFee,
+                    distanceRate,
+                    platformName,
+                    supportEmail,
+                    supportPhone
+                };
+                
+                localStorage.setItem('platformSettings', JSON.stringify(platformSettings));
+                UIHelper.showNotification('Platform settings saved successfully', 'success');
+            }
         }
 
         // ========== PAGE MANAGEMENT ==========
@@ -4705,6 +6340,22 @@
             event.target.classList.add('active');
         }
 
+        function showAdminSection(sectionId) {
+            // Hide all admin sections
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show the selected section
+            document.getElementById('admin-' + sectionId + '-section').classList.add('active');
+            
+            // Update navigation links
+            document.querySelectorAll('#admin-dashboard .dashboard-nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
         function updateNavigation() {
             // Update header based on current page
             const header = document.getElementById('header');
@@ -4747,6 +6398,43 @@
             document.getElementById('add-product-modal').style.display = 'none';
         }
 
+        function openForgotPasswordModal() {
+            document.getElementById('forgot-password-modal').style.display = 'flex';
+            closeAuthModal();
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('forgot-password-modal').style.display = 'none';
+        }
+
+        function openChangePasswordModal() {
+            document.getElementById('change-password-modal').style.display = 'flex';
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('change-password-modal').style.display = 'none';
+        }
+
+        function openAddAddressModal() {
+            document.getElementById('add-address-modal').style.display = 'flex';
+        }
+
+        function closeAddAddressModal() {
+            document.getElementById('add-address-modal').style.display = 'none';
+        }
+
+        function closeRatingModal() {
+            document.getElementById('rating-modal').style.display = 'none';
+        }
+
+        function openBulkImportModal() {
+            document.getElementById('bulk-import-modal').style.display = 'flex';
+        }
+
+        function closeBulkImportModal() {
+            document.getElementById('bulk-import-modal').style.display = 'none';
+        }
+
         // Auth modal tab switching
         document.getElementById('loginTab').addEventListener('click', function() {
             document.getElementById('login-form').style.display = 'block';
@@ -4764,6 +6452,32 @@
             this.style.color = 'var(--primary)';
             document.getElementById('loginTab').style.borderBottomColor = 'transparent';
             document.getElementById('loginTab').style.color = 'var(--dark)';
+        });
+
+        // Payment method selection
+        document.getElementById('withdraw-method').addEventListener('change', function() {
+            const method = this.value;
+            document.getElementById('mpesa-details').style.display = method === 'mpesa' ? 'block' : 'none';
+            document.getElementById('bank-details').style.display = method === 'bank' ? 'block' : 'none';
+        });
+
+        // Rating stars
+        document.querySelectorAll('.rating-star').forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.dataset.rating);
+                
+                // Update stars
+                document.querySelectorAll('.rating-star').forEach(s => {
+                    if (parseInt(s.dataset.rating) <= rating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+                });
+                
+                // Store rating
+                window.currentRating = rating;
+            });
         });
 
         // ========== AUTH FUNCTIONS ==========
@@ -4795,6 +6509,41 @@
             await AuthManager.logout();
         }
 
+        async function sendPasswordReset() {
+            const email = document.getElementById('reset-email').value;
+            await AuthManager.sendPasswordReset(email);
+        }
+
+        async function changePassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (newPassword !== confirmPassword) {
+                UIHelper.showNotification('New passwords do not match', 'error');
+                return;
+            }
+            
+            await AuthManager.changePassword(currentPassword, newPassword);
+        }
+
+        // ========== PAYMENT FUNCTIONS ==========
+        function selectPaymentMethod(method) {
+            PaymentSystem.selectPaymentMethod(method);
+        }
+
+        function processMpesaPayment() {
+            PaymentSystem.processMpesaPayment();
+        }
+
+        function processCardPayment() {
+            PaymentSystem.processCardPayment();
+        }
+
+        function placeOrderWithCash() {
+            CustomerDashboard.placeOrderWithCash();
+        }
+
         // ========== ORDER FUNCTIONS ==========
         function placeOrder() {
             CustomerDashboard.placeOrder();
@@ -4809,12 +6558,132 @@
             SellerDashboard.handleImageUpload(event);
         }
 
+        function handleProfileImageUpload(event) {
+            // In a real app, this would upload the image
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('profile-image-preview');
+                    preview.innerHTML = `
+                        <div class="image-preview">
+                            <img src="${e.target.result}" alt="Profile Preview">
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleStoreLogoUpload(event) {
+            // In a real app, this would upload the image
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('store-logo-preview');
+                    preview.innerHTML = `
+                        <div class="image-preview">
+                            <img src="${e.target.result}" alt="Store Logo Preview">
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleRatingImageUpload(event) {
+            const files = event.target.files;
+            const previewGrid = document.getElementById('rating-image-preview');
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                if (!file.type.match('image.*')) {
+                    UIHelper.showNotification('Please select only image files', 'error');
+                    continue;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imagePreview = document.createElement('div');
+                    imagePreview.className = 'image-preview';
+                    imagePreview.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview">
+                        <div class="image-preview-actions">
+                            <button class="btn btn-sm btn-danger" onclick="this.parentElement.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                    previewGrid.appendChild(imagePreview);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleImportFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const container = document.getElementById('import-file-upload');
+                container.innerHTML = `
+                    <i class="fas fa-file" style="font-size: 36px; color: var(--primary); margin-bottom: 10px;"></i>
+                    <p>${file.name}</p>
+                    <p style="font-size: 12px; color: var(--gray);">${(file.size / 1024).toFixed(2)} KB</p>
+                `;
+            }
+        }
+
+        function selectImportMethod(method) {
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.target.closest('.payment-method').classList.add('selected');
+        }
+
+        function processBulkImport() {
+            UIHelper.showLoading();
+            
+            // Simulate import process
+            setTimeout(() => {
+                UIHelper.hideLoading();
+                UIHelper.showNotification('Products imported successfully', 'success');
+                closeBulkImportModal();
+                SellerDashboard.loadProducts();
+            }, 3000);
+        }
+
         function saveProductAsDraft() {
             SellerDashboard.saveProductAsDraft();
         }
 
         function publishProduct() {
             SellerDashboard.publishProduct();
+        }
+
+        function saveStoreSettings() {
+            SellerDashboard.saveStoreSettings();
+        }
+
+        function saveAddress() {
+            CustomerDashboard.saveAddress();
+        }
+
+        function submitRating() {
+            const comment = document.getElementById('rating-comment').value;
+            
+            if (!window.currentRating) {
+                UIHelper.showNotification('Please select a rating', 'error');
+                return;
+            }
+            
+            // In a real app, this would save the rating to the database
+            UIHelper.showNotification('Thank you for your review!', 'success');
+            closeRatingModal();
+        }
+
+        function savePlatformSettings() {
+            AdminDashboard.savePlatformSettings();
         }
 
         // ========== LANGUAGE FUNCTIONS ==========
@@ -4858,6 +6727,43 @@
             if (orderStatusFilter) {
                 orderStatusFilter.addEventListener('change', () => {
                     CustomerDashboard.filterOrders();
+                });
+            }
+            
+            // Admin user search and filter
+            const userSearch = document.getElementById('user-search');
+            if (userSearch) {
+                userSearch.addEventListener('input', PerformanceHelper.debounce(() => {
+                    AdminDashboard.loadUsers();
+                }, 500));
+            }
+            
+            const userRoleFilter = document.getElementById('user-role-filter');
+            if (userRoleFilter) {
+                userRoleFilter.addEventListener('change', () => {
+                    AdminDashboard.loadUsers();
+                });
+            }
+            
+            const userStatusFilter = document.getElementById('user-status-filter');
+            if (userStatusFilter) {
+                userStatusFilter.addEventListener('change', () => {
+                    AdminDashboard.loadUsers();
+                });
+            }
+            
+            // Admin order search and filter
+            const orderSearch = document.getElementById('order-search');
+            if (orderSearch) {
+                orderSearch.addEventListener('input', PerformanceHelper.debounce(() => {
+                    AdminDashboard.loadOrders();
+                }, 500));
+            }
+            
+            const orderStatusFilterAdmin = document.getElementById('order-status-filter-admin');
+            if (orderStatusFilterAdmin) {
+                orderStatusFilterAdmin.addEventListener('change', () => {
+                    AdminDashboard.loadOrders();
                 });
             }
             
