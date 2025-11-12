@@ -6446,5 +6446,210 @@
             }
         });
     </script>
+    <script>
+/* ============================================================
+   IPATE DELIVERIES SECURITY SYSTEM
+   Roles: Customer | Seller | Rider | Admin
+   Features: Role Enforcement, Verification, SOS Alerts, Audit Logs
+   ============================================================ */
+
+const SecuritySystem = {
+    async initSecurity(user) {
+        if (!user) return;
+
+        // Load profile info
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+        if (!profile) return;
+
+        // Store locally
+        localStorage.setItem('userRole', profile.role);
+        localStorage.setItem('isVerified', profile.is_verified);
+
+        // Role routing
+        this.enforceRole(profile);
+        this.logLogin(profile);
+
+        // Initialize listeners
+        if (profile.role === 'rider') RiderSecurity.initSOSButton();
+        if (profile.role === 'admin') AdminSecurity.initRealtimeAlerts();
+    },
+
+    enforceRole(profile) {
+        const role = profile.role;
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+        if (role === 'seller') showPage('seller-dashboard');
+        else if (role === 'rider') showPage('rider-dashboard');
+        else if (role === 'admin') showPage('admin-dashboard');
+        else showPage('customer-dashboard');
+    },
+
+    async logLogin(profile) {
+        try {
+            const device = navigator.userAgent;
+            const ipRes = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipRes.json();
+            await supabase.from('login_logs').insert({
+                user_id: profile.id,
+                role: profile.role,
+                device,
+                ip: ipData.ip
+            });
+        } catch (e) {
+            console.warn('Login logging failed:', e.message);
+        }
+    }
+};
+
+/* ===========================
+   VERIFICATION SYSTEM
+   =========================== */
+const VerificationSystem = {
+    async requestVerification(documentFile) {
+        try {
+            const user = (await supabase.auth.getUser()).data.user;
+            const fileName = `${user.id}_${Date.now()}`;
+            const { data, error } = await supabase.storage
+                .from('verifications')
+                .upload(fileName, documentFile);
+            if (error) throw error;
+
+            const { data: publicUrlData } = supabase
+                .storage
+                .from('verifications')
+                .getPublicUrl(fileName);
+
+            await supabase.from('verification_requests').insert({
+                user_id: user.id,
+                document_url: publicUrlData.publicUrl,
+                status: 'pending'
+            });
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Verification Submitted',
+                text: 'Your verification request has been sent to the admin team.'
+            });
+        } catch (error) {
+            console.error('Verification upload failed:', error);
+            Swal.fire('Error', 'Failed to submit verification.', 'error');
+        }
+    }
+};
+
+/* ===========================
+   RIDER SECURITY (SOS)
+   =========================== */
+const RiderSecurity = {
+    sosButton: null,
+
+    initSOSButton() {
+        const container = document.querySelector('#rider-dashboard .dashboard-content .container');
+        if (!container || document.getElementById('rider-sos-btn')) return;
+
+        this.sosButton = document.createElement('button');
+        this.sosButton.id = 'rider-sos-btn';
+        this.sosButton.className = 'btn btn-danger btn-large';
+        this.sosButton.innerHTML = '🚨 SOS Emergency';
+        this.sosButton.onclick = () => this.triggerSOS();
+        container.prepend(this.sosButton);
+    },
+
+    async triggerSOS() {
+        try {
+            const user = (await supabase.auth.getUser()).data.user;
+            const location = await this.getLocation();
+            const { data, error } = await supabase
+                .from('incident_reports')
+                .insert({
+                    rider_id: user.id,
+                    type: 'SOS',
+                    location: location || 'Unknown',
+                    status: 'active'
+                });
+            if (error) throw error;
+            Swal.fire('SOS Triggered', 'Your alert has been sent to administrators!', 'success');
+        } catch (e) {
+            console.error('SOS failed:', e);
+            Swal.fire('Error', 'Could not send SOS alert.', 'error');
+        }
+    },
+
+    async getLocation() {
+        return new Promise((resolve) => {
+            if (!navigator.geolocation) return resolve('Unavailable');
+            navigator.geolocation.getCurrentPosition(
+                pos => resolve(`${pos.coords.latitude},${pos.coords.longitude}`),
+                () => resolve('Denied')
+            );
+        });
+    }
+};
+
+/* ===========================
+   ADMIN SECURITY DASHBOARD
+   =========================== */
+const AdminSecurity = {
+    channel: null,
+
+    initRealtimeAlerts() {
+        this.channel = supabase.channel('incident_alerts')
+            .on('postgres_changes', {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'incident_reports'
+            }, payload => this.showIncident(payload.new))
+            .subscribe();
+    },
+
+    showIncident(incident) {
+        Swal.fire({
+            icon: 'warning',
+            title: '🚨 Rider SOS Alert',
+            html: `
+                <p><b>Rider ID:</b> ${incident.rider_id}</p>
+                <p><b>Location:</b> ${incident.location}</p>
+                <p><b>Status:</b> ${incident.status}</p>
+            `,
+            confirmButtonText: 'Acknowledge'
+        });
+    }
+};
+
+/* ===========================
+   AUDIT LOGGING
+   =========================== */
+async function logAction(action, table, targetId, details = {}) {
+    try {
+        const user = (await supabase.auth.getUser()).data.user;
+        await supabase.from('audit_logs').insert({
+            user_id: user.id,
+            action,
+            target_table: table,
+            target_id: targetId,
+            details
+        });
+    } catch (e) {
+        console.warn('Audit log failed:', e.message);
+    }
+}
+
+/* ===========================
+   AUTO INIT
+   =========================== */
+supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN') {
+        const user = session?.user;
+        await SecuritySystem.initSecurity(user);
+    }
+});
+</script>
+
 </body>
 </html>
+
