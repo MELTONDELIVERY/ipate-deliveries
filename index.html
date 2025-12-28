@@ -3579,11 +3579,10 @@
                 await waitForSupabase();
                 
                 // Step 2: Initialize Supabase client
-                debug('Initializing Supabase client...');
-                window.supabase = window.supabase.createClient('https://uzqsmjpcadjpezwzbnxw.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6cXNtanBjYWRqcGV6d3pibnh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4OTA5MDMsImV4cCI6MjA4MjQ2NjkwM30.Ii1eCf_IUiCeXm0TF7QuCSBQEUTmuZuNhHNbjldodys', {
-                    auth: { persistSession: true }
-                });
-                
+               debug('Initializing Supabase client...');
+window.supabase = window.supabase.createClient('https://uzqsmjpcadjpezwzbnxw.supabase.co', 'sb_publishable_foCw5FjLWKbkDBlvwYnsxw_yBGs2VPw', {
+    auth: { persistSession: true }
+});
                 // Step 3: Test connection
                 debug('Testing Supabase connection...');
                 const isConnected = await testSupabaseConnection();
