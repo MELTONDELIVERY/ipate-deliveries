@@ -3570,24 +3570,33 @@
         }
 
         // ========== INITIALIZATION ==========
-        async function initializeApp() {
-            try {
-                debug('Starting app initialization...');
-                UIHelper.showLoading();
+      async function initializeApp() {
+    try {
+        debug('Starting app initialization...');
+        UIHelper.showLoading();
 
-                // Step 1: Wait for Supabase library to load
-                debug('Waiting for Supabase library...');
-                await waitForSupabase();
-                
-                // Step 2: Initialize Supabase client
-              debug('Initializing Supabase client...');
-window.supabase = window.supabase.createClient(
-    'https://uzqsmjpcadjpezwzbnxw.supabase.co',
-    'sb_publishable_foCw5FjLWKbkDBlvwYnsxw_yBGs2VPw',
-    {
-        auth: { persistSession: true }
-    }
-);
+        // Step 1: Load Supabase with retry
+        debug('Loading Supabase library...');
+        const supabaseLoaded = await loadSupabaseWithRetry();
+        
+        if (!supabaseLoaded) {
+            throw new Error('Could not load Supabase library');
+        }
+        
+        // Step 2: Initialize client... (rest of your code)
+        debug('Initializing Supabase client...');
+        window.supabase = window.supabase.createClient(
+            'https://uzqsmjpcadjpezwzbnxw.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6cXNtanBjYWRqcGV6d3pibnh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4OTA5MDMsImV4cCI6MjA4MjQ2NjkwM30.Ii1eCf_IUiCeXm0TF7QuCSBQEUTmuZuNhHNbjldodys',
+            {
+                auth: { 
+                    persistSession: true,
+                    autoRefreshToken: true,
+                    detectSessionInUrl: true
+                }
+            }
+        );
+        
                 // Step 3: Test connection
                 debug('Testing Supabase connection...');
                 const isConnected = await testSupabaseConnection();
