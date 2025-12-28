@@ -2867,15 +2867,19 @@
     </footer>
 
     <script>
-        // ========== CONFIGURATION ==========
-        const SUPABASE_URL = 'https://mmityaeexkzfugpwqklo.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1taXR5YWVleGt6ZnVncHdxa2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0NDg4NzMsImV4cCI6MjA3ODAyNDg3M30.qVIuN142_IxI51DP1ishXKOT5R215n48ZG1rhLbt4i0';
+       // ========== CONFIGURATION ==========
+const SUPABASE_URL = 'https://mmityaeexkzfugpwqklo.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1taXR5YWVleGt6ZnVncHdxa2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0NDg4NzMsImV4cCI6MjA3ODAyNDg3M30.qVIuN142_IxI51DP1ishXKOT5R215n48ZG1rhLbt4i0';
 
-        // Initialize Supabase client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: { persistSession: true }
-        });
-
+// Initialize Supabase client (use window.supabase if it doesn't exist)
+let supabase;
+if (!window.supabaseClient) {
+    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+        auth: { persistSession: true }
+    });
+}
+supabase = window.supabaseClient;
+        
         // ========== ENHANCEMENTS ==========
         
         // 1. Security Enhancements
@@ -6640,4 +6644,5 @@
     </script>
 </body>
 </html>
+
 
