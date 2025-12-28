@@ -1395,11 +1395,11 @@
                     <div class="logo-text">IPATE<span>Deliveries</span></div>
                 </div>
                 <nav class="nav-links">
-                    <a onclick="showPage('landing-page')">Home</a>
-                    <a onclick="showPage('services-page')">Services</a>
-                    <a onclick="showPage('about-page')">About</a>
-                    <a onclick="showPage('team-page')">Our Team</a>
-                    <a onclick="showPage('contact-page')">Contact</a>
+                    <a href="javascript:void(0)" onclick="showPage('landing-page')">Home</a>
+                    <a href="javascript:void(0)" onclick="showPage('services-page')">Services</a>
+                    <a href="javascript:void(0)" onclick="showPage('about-page')">About</a>
+                    <a href="javascript:void(0)" onclick="showPage('team-page')">Our Team</a>
+                    <a href="javascript:void(0)" onclick="showPage('contact-page')">Contact</a>
                 </nav>
                 <div class="auth-buttons" id="authButtons">
                     <div class="language-selector">
@@ -1407,8 +1407,8 @@
                             <i class="fas fa-globe"></i> Language
                         </button>
                         <div class="language-dropdown">
-                            <a href="#" onclick="setLanguage('en')">English</a>
-                            <a href="#" onclick="setLanguage('sw')">Kiswahili</a>
+                            <a href="javascript:void(0)" onclick="setLanguage('en')">English</a>
+                            <a href="javascript:void(0)" onclick="setLanguage('sw')">Kiswahili</a>
                         </div>
                     </div>
                     <button class="btn btn-outline" onclick="openAuthModal()">Login</button>
@@ -1453,17 +1453,17 @@
             <div class="container">
                 <div class="showcase-header">
                     <h2 class="section-title">Featured Products</h2>
-                    <button class="btn btn-outline" onclick="showPage('customer-dashboard'); showCustomerSection('products')">
+                    <button class="btn btn-outline" onclick="showPage('customer-dashboard'); setTimeout(() => showCustomerSection('products'), 100)">
                         View All Products <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
                 
                 <div class="category-filters">
-                    <div class="category-filter active" onclick="filterProducts('all')">All</div>
-                    <div class="category-filter" onclick="filterProducts('Food')">Food</div>
-                    <div class="category-filter" onclick="filterProducts('Beverages')">Beverages</div>
-                    <div class="category-filter" onclick="filterProducts('Personal Care')">Personal Care</div>
-                    <div class="category-filter" onclick="filterProducts('Electronics')">Electronics</div>
+                    <div class="category-filter active" onclick="filterProducts('all', event)">All</div>
+                    <div class="category-filter" onclick="filterProducts('Food', event)">Food</div>
+                    <div class="category-filter" onclick="filterProducts('Beverages', event)">Beverages</div>
+                    <div class="category-filter" onclick="filterProducts('Personal Care', event)">Personal Care</div>
+                    <div class="category-filter" onclick="filterProducts('Electronics', event)">Electronics</div>
                 </div>
                 
                 <div class="products-grid" id="featured-products">
@@ -1713,8 +1713,8 @@
                         <div class="team-role">CEO & Founder</div>
                         <p>Visionary leader with 10+ years in logistics and technology.</p>
                         <div class="team-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="javascript:void(0)"><i class="fab fa-linkedin"></i></a>
+                            <a href="javascript:void(0)"><i class="fab fa-twitter"></i></a>
                         </div>
                     </div>
                     
@@ -1726,8 +1726,8 @@
                         <div class="team-role">CTO</div>
                         <p>Tech expert leading our platform development and innovation.</p>
                         <div class="team-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-github"></i></a>
+                            <a href="javascript:void(0)"><i class="fab fa-linkedin"></i></a>
+                            <a href="javascript:void(0)"><i class="fab fa-github"></i></a>
                         </div>
                     </div>
                     
@@ -1739,8 +1739,8 @@
                         <div class="team-role">Operations Manager</div>
                         <p>Ensures smooth delivery operations and rider coordination.</p>
                         <div class="team-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="javascript:void(0)"><i class="fab fa-linkedin"></i></a>
+                            <a href="javascript:void(0)"><i class="fab fa-twitter"></i></a>
                         </div>
                     </div>
                     
@@ -1752,8 +1752,8 @@
                         <div class="team-role">Customer Success</div>
                         <p>Dedicated to ensuring our customers have the best experience.</p>
                         <div class="team-social">
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
-                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="javascript:void(0)"><i class="fab fa-linkedin"></i></a>
+                            <a href="javascript:void(0)"><i class="fab fa-instagram"></i></a>
                         </div>
                     </div>
                 </div>
@@ -1927,12 +1927,12 @@
                     <h2 style="margin-bottom: 20px;">🛍️ <span id="customer-dashboard-title">Customer Dashboard</span></h2>
                     
                     <div class="dashboard-nav-links">
-                        <a class="dashboard-nav-link active" onclick="showCustomerSection('dashboard')"><span id="dashboard-nav">Dashboard</span></a>
-                        <a class="dashboard-nav-link" onclick="showCustomerSection('products')"><span id="shop-products-nav">Shop Products</span></a>
-                        <a class="dashboard-nav-link" onclick="showCustomerSection('orders')"><span id="my-orders-nav">My Orders</span></a>
-                        <a class="dashboard-nav-link" onclick="showCustomerSection('cart')"><span id="cart-nav">Cart</span> (<span id="cart-count">0</span>)</a>
-                        <a class="dashboard-nav-link" onclick="showCustomerSection('profile')"><span id="profile-nav">Profile</span></a>
-                        <a class="dashboard-nav-link" onclick="showCustomerSection('messages')"><span id="messages-nav">Messages</span></a>
+                        <a class="dashboard-nav-link active" onclick="showCustomerSection('dashboard', event)"><span id="dashboard-nav">Dashboard</span></a>
+                        <a class="dashboard-nav-link" onclick="showCustomerSection('products', event)"><span id="shop-products-nav">Shop Products</span></a>
+                        <a class="dashboard-nav-link" onclick="showCustomerSection('orders', event)"><span id="my-orders-nav">My Orders</span></a>
+                        <a class="dashboard-nav-link" onclick="showCustomerSection('cart', event)"><span id="cart-nav">Cart</span> (<span id="cart-count">0</span>)</a>
+                        <a class="dashboard-nav-link" onclick="showCustomerSection('profile', event)"><span id="profile-nav">Profile</span></a>
+                        <a class="dashboard-nav-link" onclick="showCustomerSection('messages', event)"><span id="messages-nav">Messages</span></a>
                     </div>
                     
                     <!-- Dashboard Section -->
@@ -2049,44 +2049,46 @@
                             <h2>👤 <span id="profile-title">Your Profile</span></h2>
                         </div>
                         
-                        <div class="order-tracking">
-                            <div class="form-group" style="text-align: center;">
-                                <label class="form-label">Profile Picture</label>
-                                <div class="profile-photo-upload" id="profile-photo-upload" onclick="document.getElementById('profile-picture').click()">
-                                    <div id="profile-photo-preview"></div>
-                                    <div class="upload-overlay">
-                                        <i class="fas fa-camera" style="color: white; font-size: 24px;"></i>
+                        <form id="profile-form" onsubmit="event.preventDefault(); updateProfile();">
+                            <div class="order-tracking">
+                                <div class="form-group" style="text-align: center;">
+                                    <label class="form-label">Profile Picture</label>
+                                    <div class="profile-photo-upload" id="profile-photo-upload" onclick="document.getElementById('profile-picture').click()">
+                                        <div id="profile-photo-preview"></div>
+                                        <div class="upload-overlay">
+                                            <i class="fas fa-camera" style="color: white; font-size: 24px;"></i>
+                                        </div>
                                     </div>
+                                    <input type="file" id="profile-picture" accept="image/*" style="display: none;" onchange="handleProfileImageUpload(event)">
+                                    <p style="color: var(--gray); font-size: 14px; margin-top: 10px;">Click to upload profile picture</p>
                                 </div>
-                                <input type="file" id="profile-picture" accept="image/*" style="display: none;" onchange="handleProfileImageUpload(event)">
-                                <p style="color: var(--gray); font-size: 14px; margin-top: 10px;">Click to upload profile picture</p>
+                                
+                                <div class="form-group">
+                                    <label for="profile-name" class="form-label">Full Name</label>
+                                    <input type="text" id="profile-name" class="form-control" placeholder="Enter your full name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="profile-email" class="form-label">Email</label>
+                                    <input type="email" id="profile-email" class="form-control" placeholder="Enter your email" readonly>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="profile-phone" class="form-label">Phone Number</label>
+                                    <input type="tel" id="profile-phone" class="form-control" placeholder="Enter your phone number">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="profile-address" class="form-label">Default Delivery Address</label>
+                                    <textarea id="profile-address" class="form-control" placeholder="Enter your default delivery address" rows="3"></textarea>
+                                </div>
+                                
+                                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                                    <button type="button" class="btn btn-outline" onclick="openChangePasswordModal()">Change Password</button>
+                                </div>
                             </div>
-                            
-                            <div class="form-group">
-                                <label for="profile-name" class="form-label">Full Name</label>
-                                <input type="text" id="profile-name" class="form-control" placeholder="Enter your full name">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="profile-email" class="form-label">Email</label>
-                                <input type="email" id="profile-email" class="form-control" placeholder="Enter your email" readonly>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="profile-phone" class="form-label">Phone Number</label>
-                                <input type="tel" id="profile-phone" class="form-control" placeholder="Enter your phone number">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="profile-address" class="form-label">Default Delivery Address</label>
-                                <textarea id="profile-address" class="form-control" placeholder="Enter your default delivery address" rows="3"></textarea>
-                            </div>
-                            
-                            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                                <button class="btn btn-primary" onclick="updateProfile()">Update Profile</button>
-                                <button class="btn btn-outline" onclick="openChangePasswordModal()">Change Password</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                     
                     <!-- Messages Section -->
@@ -2137,11 +2139,11 @@
                     <h2 style="margin-bottom: 20px;">🏪 <span id="seller-dashboard-title">Seller Dashboard</span></h2>
                     
                     <div class="dashboard-nav-links">
-                        <a class="dashboard-nav-link active" onclick="showSellerSection('dashboard')"><span id="dashboard-nav-2">Dashboard</span></a>
-                        <a class="dashboard-nav-link" onclick="showSellerSection('products')"><span id="products-nav">Products</span></a>
-                        <a class="dashboard-nav-link" onclick="showSellerSection('orders')"><span id="orders-nav">Orders</span></a>
-                        <a class="dashboard-nav-link" onclick="showSellerSection('messages')"><span id="messages-nav-2">Messages</span></a>
-                        <a class="dashboard-nav-link" onclick="showSellerSection('profile')"><span id="profile-nav-2">Profile</span></a>
+                        <a class="dashboard-nav-link active" onclick="showSellerSection('dashboard', event)"><span id="dashboard-nav-2">Dashboard</span></a>
+                        <a class="dashboard-nav-link" onclick="showSellerSection('products', event)"><span id="products-nav">Products</span></a>
+                        <a class="dashboard-nav-link" onclick="showSellerSection('orders', event)"><span id="orders-nav">Orders</span></a>
+                        <a class="dashboard-nav-link" onclick="showSellerSection('messages', event)"><span id="messages-nav-2">Messages</span></a>
+                        <a class="dashboard-nav-link" onclick="showSellerSection('profile', event)"><span id="profile-nav-2">Profile</span></a>
                     </div>
                     
                     <!-- Dashboard Section -->
@@ -2227,49 +2229,51 @@
                             <h2>👤 <span id="profile-title-2">Your Profile</span></h2>
                         </div>
                         
-                        <div class="order-tracking">
-                            <div class="form-group" style="text-align: center;">
-                                <label class="form-label">Profile Picture</label>
-                                <div class="profile-photo-upload" id="seller-profile-photo-upload" onclick="document.getElementById('seller-profile-picture').click()">
-                                    <div id="seller-profile-photo-preview"></div>
-                                    <div class="upload-overlay">
-                                        <i class="fas fa-camera" style="color: white; font-size: 24px;"></i>
+                        <form id="seller-profile-form" onsubmit="event.preventDefault(); updateSellerProfile();">
+                            <div class="order-tracking">
+                                <div class="form-group" style="text-align: center;">
+                                    <label class="form-label">Profile Picture</label>
+                                    <div class="profile-photo-upload" id="seller-profile-photo-upload" onclick="document.getElementById('seller-profile-picture').click()">
+                                        <div id="seller-profile-photo-preview"></div>
+                                        <div class="upload-overlay">
+                                            <i class="fas fa-camera" style="color: white; font-size: 24px;"></i>
+                                        </div>
                                     </div>
+                                    <input type="file" id="seller-profile-picture" accept="image/*" style="display: none;" onchange="handleSellerProfileImageUpload(event)">
+                                    <p style="color: var(--gray); font-size: 14px; margin-top: 10px;">Click to upload profile picture</p>
                                 </div>
-                                <input type="file" id="seller-profile-picture" accept="image/*" style="display: none;" onchange="handleSellerProfileImageUpload(event)">
-                                <p style="color: var(--gray); font-size: 14px; margin-top: 10px;">Click to upload profile picture</p>
+                                
+                                <div class="form-group">
+                                    <label for="seller-profile-name" class="form-label">Full Name</label>
+                                    <input type="text" id="seller-profile-name" class="form-control" placeholder="Enter your full name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="seller-profile-email" class="form-label">Email</label>
+                                    <input type="email" id="seller-profile-email" class="form-control" placeholder="Enter your email" readonly>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="seller-profile-phone" class="form-label">Phone Number</label>
+                                    <input type="tel" id="seller-profile-phone" class="form-control" placeholder="Enter your phone number">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="seller-store-name" class="form-label">Store Name</label>
+                                    <input type="text" id="seller-store-name" class="form-control" placeholder="Enter your store name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="seller-store-description" class="form-label">Store Description</label>
+                                    <textarea id="seller-store-description" class="form-control" placeholder="Describe your store" rows="3"></textarea>
+                                </div>
+                                
+                                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                                    <button type="button" class="btn btn-outline" onclick="openChangePasswordModal()">Change Password</button>
+                                </div>
                             </div>
-                            
-                            <div class="form-group">
-                                <label for="seller-profile-name" class="form-label">Full Name</label>
-                                <input type="text" id="seller-profile-name" class="form-control" placeholder="Enter your full name">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="seller-profile-email" class="form-label">Email</label>
-                                <input type="email" id="seller-profile-email" class="form-control" placeholder="Enter your email" readonly>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="seller-profile-phone" class="form-label">Phone Number</label>
-                                <input type="tel" id="seller-profile-phone" class="form-control" placeholder="Enter your phone number">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="seller-store-name" class="form-label">Store Name</label>
-                                <input type="text" id="seller-store-name" class="form-control" placeholder="Enter your store name">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="seller-store-description" class="form-label">Store Description</label>
-                                <textarea id="seller-store-description" class="form-control" placeholder="Describe your store" rows="3"></textarea>
-                            </div>
-                            
-                            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                                <button class="btn btn-primary" onclick="updateSellerProfile()">Update Profile</button>
-                                <button class="btn btn-outline" onclick="openChangePasswordModal()">Change Password</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -2310,11 +2314,11 @@
                     </div>
                     
                     <div class="dashboard-nav-links">
-                        <a class="dashboard-nav-link active" onclick="showRiderSection('dashboard')"><span id="dashboard-nav-3">Dashboard</span></a>
-                        <a class="dashboard-nav-link" onclick="showRiderSection('deliveries')"><span id="available-deliveries-nav">Available Deliveries</span></a>
-                        <a class="dashboard-nav-link" onclick="showRiderSection('active')"><span id="my-deliveries-nav">My Deliveries</span></a>
-                        <a class="dashboard-nav-link" onclick="showRiderSection('messages')"><span id="messages-nav-3">Messages</span></a>
-                        <a class="dashboard-nav-link" onclick="showRiderSection('profile')"><span id="profile-nav-3">Profile</span></a>
+                        <a class="dashboard-nav-link active" onclick="showRiderSection('dashboard', event)"><span id="dashboard-nav-3">Dashboard</span></a>
+                        <a class="dashboard-nav-link" onclick="showRiderSection('deliveries', event)"><span id="available-deliveries-nav">Available Deliveries</span></a>
+                        <a class="dashboard-nav-link" onclick="showRiderSection('active', event)"><span id="my-deliveries-nav">My Deliveries</span></a>
+                        <a class="dashboard-nav-link" onclick="showRiderSection('messages', event)"><span id="messages-nav-3">Messages</span></a>
+                        <a class="dashboard-nav-link" onclick="showRiderSection('profile', event)"><span id="profile-nav-3">Profile</span></a>
                     </div>
                     
                     <!-- Dashboard Section -->
@@ -2419,53 +2423,55 @@
                             <h2>👤 <span id="profile-title-3">Your Profile</span></h2>
                         </div>
                         
-                        <div class="order-tracking">
-                            <div class="form-group" style="text-align: center;">
-                                <label class="form-label">Profile Picture</label>
-                                <div class="profile-photo-upload" id="rider-profile-photo-upload" onclick="document.getElementById('rider-profile-picture').click()">
-                                    <div id="rider-profile-photo-preview"></div>
-                                    <div class="upload-overlay">
-                                        <i class="fas fa-camera" style="color: white; font-size: 24px;"></i>
+                        <form id="rider-profile-form" onsubmit="event.preventDefault(); updateRiderProfile();">
+                            <div class="order-tracking">
+                                <div class="form-group" style="text-align: center;">
+                                    <label class="form-label">Profile Picture</label>
+                                    <div class="profile-photo-upload" id="rider-profile-photo-upload" onclick="document.getElementById('rider-profile-picture').click()">
+                                        <div id="rider-profile-photo-preview"></div>
+                                        <div class="upload-overlay">
+                                            <i class="fas fa-camera" style="color: white; font-size: 24px;"></i>
+                                        </div>
                                     </div>
+                                    <input type="file" id="rider-profile-picture" accept="image/*" style="display: none;" onchange="handleRiderProfileImageUpload(event)">
+                                    <p style="color: var(--gray); font-size: 14px; margin-top: 10px;">Click to upload profile picture</p>
                                 </div>
-                                <input type="file" id="rider-profile-picture" accept="image/*" style="display: none;" onchange="handleRiderProfileImageUpload(event)">
-                                <p style="color: var(--gray); font-size: 14px; margin-top: 10px;">Click to upload profile picture</p>
+                                
+                                <div class="form-group">
+                                    <label for="rider-profile-name" class="form-label">Full Name</label>
+                                    <input type="text" id="rider-profile-name" class="form-control" placeholder="Enter your full name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="rider-profile-email" class="form-label">Email</label>
+                                    <input type="email" id="rider-profile-email" class="form-control" placeholder="Enter your email" readonly>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="rider-profile-phone" class="form-label">Phone Number</label>
+                                    <input type="tel" id="rider-profile-phone" class="form-control" placeholder="Enter your phone number">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="rider-vehicle-type" class="form-label">Vehicle Type</label>
+                                    <select id="rider-vehicle-type" class="form-control">
+                                        <option value="motorcycle">Motorcycle</option>
+                                        <option value="bicycle">Bicycle</option>
+                                        <option value="car">Car</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="rider-license-number" class="form-label">License Number</label>
+                                    <input type="text" id="rider-license-number" class="form-control" placeholder="Enter your license number">
+                                </div>
+                                
+                                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                                    <button type="button" class="btn btn-outline" onclick="openChangePasswordModal()">Change Password</button>
+                                </div>
                             </div>
-                            
-                            <div class="form-group">
-                                <label for="rider-profile-name" class="form-label">Full Name</label>
-                                <input type="text" id="rider-profile-name" class="form-control" placeholder="Enter your full name">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="rider-profile-email" class="form-label">Email</label>
-                                <input type="email" id="rider-profile-email" class="form-control" placeholder="Enter your email" readonly>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="rider-profile-phone" class="form-label">Phone Number</label>
-                                <input type="tel" id="rider-profile-phone" class="form-control" placeholder="Enter your phone number">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="rider-vehicle-type" class="form-label">Vehicle Type</label>
-                                <select id="rider-vehicle-type" class="form-control">
-                                    <option value="motorcycle">Motorcycle</option>
-                                    <option value="bicycle">Bicycle</option>
-                                    <option value="car">Car</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="rider-license-number" class="form-label">License Number</label>
-                                <input type="text" id="rider-license-number" class="form-control" placeholder="Enter your license number">
-                            </div>
-                            
-                            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                                <button class="btn btn-primary" onclick="updateRiderProfile()">Update Profile</button>
-                                <button class="btn btn-outline" onclick="openChangePasswordModal()">Change Password</button>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -2484,46 +2490,46 @@
             </div>
             
             <!-- Login Form -->
-            <form id="login-form">
+            <form id="login-form" onsubmit="event.preventDefault(); login();">
                 <div class="form-group">
                     <label for="login-email" class="form-label" id="email-label">Email</label>
-                    <input type="email" id="login-email" class="form-control" placeholder="Enter your email" autocomplete="email">
+                    <input type="email" id="login-email" class="form-control" placeholder="Enter your email" autocomplete="email" required>
                 </div>
                 <div class="form-group">
                     <label for="login-password" class="form-label" id="password-label">Password</label>
-                    <input type="password" id="login-password" class="form-control" placeholder="Enter your password" autocomplete="current-password">
+                    <input type="password" id="login-password" class="form-control" placeholder="Enter your password" autocomplete="current-password" required>
                 </div>
-                <button type="button" class="btn btn-primary btn-block" onclick="login()" id="login-btn">Login</button>
+                <button type="submit" class="btn btn-primary btn-block" id="login-btn">Login</button>
                 <p style="text-align: center; margin-top: 15px;">
-                    <a href="#" style="color: var(--primary);" id="forgot-password-link" onclick="openForgotPasswordModal()">Forgot your password?</a>
+                    <a href="javascript:void(0)" style="color: var(--primary);" id="forgot-password-link" onclick="openForgotPasswordModal()">Forgot your password?</a>
                 </p>
             </form>
             
             <!-- Signup Form -->
-            <form id="signup-form" style="display: none;">
+            <form id="signup-form" onsubmit="event.preventDefault(); signup();" style="display: none;">
                 <div class="form-group">
                     <label for="signup-name" class="form-label" id="full-name-label">Full Name</label>
-                    <input type="text" id="signup-name" class="form-control" placeholder="Enter your full name" autocomplete="name">
+                    <input type="text" id="signup-name" class="form-control" placeholder="Enter your full name" autocomplete="name" required>
                 </div>
                 <div class="form-group">
                     <label for="signup-email" class="form-label" id="email-label-2">Email</label>
-                    <input type="email" id="signup-email" class="form-control" placeholder="Enter your email" autocomplete="email">
+                    <input type="email" id="signup-email" class="form-control" placeholder="Enter your email" autocomplete="email" required>
                 </div>
                 <div class="form-group">
                     <label for="signup-password" class="form-label" id="password-label-2">Password</label>
-                    <input type="password" id="signup-password" class="form-control" placeholder="Create a password" autocomplete="new-password">
+                    <input type="password" id="signup-password" class="form-control" placeholder="Create a password" autocomplete="new-password" required minlength="6">
                 </div>
                 <div class="form-group">
                     <label for="signup-role" class="form-label" id="i-want-to-label">I want to:</label>
-                    <select id="signup-role" class="form-control">
+                    <select id="signup-role" class="form-control" required>
                         <option value="customer" id="shop-order-option">Shop & Order</option>
                         <option value="seller" id="sell-products-option">Sell Products</option>
                         <option value="rider" id="deliver-orders-option">Deliver Orders</option>
                     </select>
                 </div>
-                <button type="button" class="btn btn-primary btn-block" onclick="signup()" id="create-account-btn">Create Account</button>
+                <button type="submit" class="btn btn-primary btn-block" id="create-account-btn">Create Account</button>
                 <p style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--gray);">
-                    <span id="terms-text">By creating an account, you agree to our</span> <a href="#" onclick="showPage('terms-page')" style="color: var(--primary);" id="terms-link">Terms of Service</a> <span id="and-text">and</span> <a href="#" onclick="showPage('privacy-page')" style="color: var(--primary);" id="privacy-link">Privacy Policy</a>.
+                    <span id="terms-text">By creating an account, you agree to our</span> <a href="javascript:void(0)" onclick="showPage('terms-page')" style="color: var(--primary);" id="terms-link">Terms of Service</a> <span id="and-text">and</span> <a href="javascript:void(0)" onclick="showPage('privacy-page')" style="color: var(--primary);" id="privacy-link">Privacy Policy</a>.
                 </p>
             </form>
         </div>
@@ -2535,83 +2541,85 @@
             <span class="close-modal" onclick="closeCheckoutModal()">&times;</span>
             <h2 style="margin-bottom: 20px;" id="checkout-title">Checkout</h2>
             
-            <div class="form-group">
-                <label for="delivery-address" class="form-label" id="delivery-address-label">Delivery Address</label>
-                <textarea id="delivery-address" class="form-control" placeholder="Enter your complete delivery address" rows="3"></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="delivery-instructions" class="form-label" id="delivery-instructions-label">Delivery Instructions (Optional)</label>
-                <textarea id="delivery-instructions" class="form-control" placeholder="Any special instructions for the rider?" rows="2"></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="delivery-time" class="form-label">Preferred Delivery Time</label>
-                <select id="delivery-time" class="form-control">
-                    <option value="asap">As soon as possible</option>
-                    <option value="morning">Morning (8AM - 12PM)</option>
-                    <option value="afternoon">Afternoon (12PM - 5PM)</option>
-                    <option value="evening">Evening (5PM - 9PM)</option>
-                </select>
-            </div>
-            
-            <div class="order-tracking" style="margin: 20px 0;">
-                <div class="delivery-header">
-                    <h3 id="order-summary-title-2">Order Summary</h3>
-                </div>
-                <div style="margin: 15px 0;" id="checkout-items">
-                    <!-- Checkout items will load here -->
-                </div>
-                <div class="cart-total">
-                    <span id="total-label-2">Total:</span> <span id="checkout-total">KSh 0</span>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Payment Method</label>
-                <div class="payment-methods">
-                    <div class="payment-method" onclick="selectPaymentMethod('mpesa')">
-                        <i class="fas fa-mobile-alt"></i>
-                        <p>M-Pesa</p>
-                    </div>
-                    <div class="payment-method" onclick="selectPaymentMethod('card')">
-                        <i class="fas fa-credit-card"></i>
-                        <p>Credit/Debit Card</p>
-                    </div>
-                    <div class="payment-method" onclick="selectPaymentMethod('cash')">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <p>Cash on Delivery</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div id="mpesa-payment-details" style="display: none;">
+            <form id="checkout-form" onsubmit="event.preventDefault(); placeOrderWithCash();">
                 <div class="form-group">
-                    <label for="mpesa-phone-checkout" class="form-label">M-Pesa Phone Number</label>
-                    <input type="tel" id="mpesa-phone-checkout" class="form-control" placeholder="Enter your M-Pesa phone number">
+                    <label for="delivery-address" class="form-label" id="delivery-address-label">Delivery Address</label>
+                    <textarea id="delivery-address" class="form-control" placeholder="Enter your complete delivery address" rows="3" required></textarea>
                 </div>
-                <button class="btn btn-primary btn-block" onclick="processMpesaPayment()">Pay with M-Pesa</button>
-            </div>
-            
-            <div id="card-payment-details" style="display: none;">
+                
                 <div class="form-group">
-                    <label for="card-number" class="form-label">Card Number</label>
-                    <input type="text" id="card-number" class="form-control" placeholder="1234 5678 9012 3456">
+                    <label for="delivery-instructions" class="form-label" id="delivery-instructions-label">Delivery Instructions (Optional)</label>
+                    <textarea id="delivery-instructions" class="form-control" placeholder="Any special instructions for the rider?" rows="2"></textarea>
                 </div>
-                <div style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label for="card-expiry" class="form-label">Expiry Date</label>
-                        <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY">
+                
+                <div class="form-group">
+                    <label for="delivery-time" class="form-label">Preferred Delivery Time</label>
+                    <select id="delivery-time" class="form-control">
+                        <option value="asap">As soon as possible</option>
+                        <option value="morning">Morning (8AM - 12PM)</option>
+                        <option value="afternoon">Afternoon (12PM - 5PM)</option>
+                        <option value="evening">Evening (5PM - 9PM)</option>
+                    </select>
+                </div>
+                
+                <div class="order-tracking" style="margin: 20px 0;">
+                    <div class="delivery-header">
+                        <h3 id="order-summary-title-2">Order Summary</h3>
                     </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label for="card-cvc" class="form-label">CVC</label>
-                        <input type="text" id="card-cvc" class="form-control" placeholder="123">
+                    <div style="margin: 15px 0;" id="checkout-items">
+                        <!-- Checkout items will load here -->
+                    </div>
+                    <div class="cart-total">
+                        <span id="total-label-2">Total:</span> <span id="checkout-total">KSh 0</span>
                     </div>
                 </div>
-                <button class="btn btn-primary btn-block" onclick="processCardPayment()">Pay with Card</button>
-            </div>
-            
-            <button class="btn btn-primary btn-block" id="place-order-cash-btn" onclick="placeOrderWithCash()" style="display: none;">Place Order (Cash on Delivery)</button>
+                
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <div class="payment-methods">
+                        <div class="payment-method" onclick="selectPaymentMethod('mpesa', event)">
+                            <i class="fas fa-mobile-alt"></i>
+                            <p>M-Pesa</p>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('card', event)">
+                            <i class="fas fa-credit-card"></i>
+                            <p>Credit/Debit Card</p>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('cash', event)">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <p>Cash on Delivery</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="mpesa-payment-details" style="display: none;">
+                    <div class="form-group">
+                        <label for="mpesa-phone-checkout" class="form-label">M-Pesa Phone Number</label>
+                        <input type="tel" id="mpesa-phone-checkout" class="form-control" placeholder="Enter your M-Pesa phone number">
+                    </div>
+                    <button type="button" class="btn btn-primary btn-block" onclick="processMpesaPayment()">Pay with M-Pesa</button>
+                </div>
+                
+                <div id="card-payment-details" style="display: none;">
+                    <div class="form-group">
+                        <label for="card-number" class="form-label">Card Number</label>
+                        <input type="text" id="card-number" class="form-control" placeholder="1234 5678 9012 3456">
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="card-expiry" class="form-label">Expiry Date</label>
+                            <input type="text" id="card-expiry" class="form-control" placeholder="MM/YY">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="card-cvc" class="form-label">CVC</label>
+                            <input type="text" id="card-cvc" class="form-control" placeholder="123">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-block" onclick="processCardPayment()">Pay with Card</button>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block" id="place-order-cash-btn" style="display: none;">Place Order (Cash on Delivery)</button>
+            </form>
         </div>
     </div>
 
@@ -2621,53 +2629,55 @@
             <span class="close-modal" onclick="closeAddProductModal()">&times;</span>
             <h2 style="margin-bottom: 20px;" id="add-product-title">Add New Product</h2>
             
-            <div class="form-group">
-                <label for="product-name" class="form-label" id="product-name-label">Product Name</label>
-                <input type="text" id="product-name" class="form-control" placeholder="Enter product name">
-            </div>
-            
-            <div class="form-group">
-                <label for="product-description" class="form-label" id="description-label">Description</label>
-                <textarea id="product-description" class="form-control" placeholder="Enter product description" rows="3"></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="product-price" class="form-label" id="price-label">Price (KSh)</label>
-                <input type="number" id="product-price" class="form-control" placeholder="Enter price">
-            </div>
-            
-            <div class="form-group">
-                <label for="product-category" class="form-label" id="category-label">Category</label>
-                <select id="product-category" class="form-control">
-                    <option value="Food" id="food-option">Food</option>
-                    <option value="Beverages" id="beverages-option">Beverages</option>
-                    <option value="Personal Care" id="personal-care-option">Personal Care</option>
-                    <option value="Electronics" id="electronics-option">Electronics</option>
-                    <option value="Other" id="other-option">Other</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="product-stock" class="form-label" id="stock-label">Stock Quantity</label>
-                <input type="number" id="product-stock" class="form-control" placeholder="Enter stock quantity">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label" id="product-images-label">Product Images</label>
-                <div class="image-upload-container" id="image-upload-container" onclick="document.getElementById('product-images').click()">
-                    <i class="fas fa-cloud-upload-alt" style="font-size: 36px; color: var(--gray); margin-bottom: 10px;"></i>
-                    <p id="click-to-upload-text">Click to upload product images</p>
-                    <p style="font-size: 12px; color: var(--gray);" id="file-types-text">PNG, JPG, JPEG up to 5MB each</p>
-                    <p style="font-size: 12px; color: var(--primary); margin-top: 10px;" id="upload-limit-text">You can upload 1-12 images</p>
+            <form id="add-product-form" onsubmit="event.preventDefault(); publishProduct();">
+                <div class="form-group">
+                    <label for="product-name" class="form-label" id="product-name-label">Product Name</label>
+                    <input type="text" id="product-name" class="form-control" placeholder="Enter product name" required>
                 </div>
-                <input type="file" id="product-images" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
-                <div class="image-preview-grid" id="image-preview-grid"></div>
-            </div>
-            
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="btn btn-outline btn-block" onclick="saveProductAsDraft()" id="save-draft-btn">Save as Draft</button>
-                <button class="btn btn-primary btn-block" onclick="publishProduct()" id="publish-product-btn">Publish Product</button>
-            </div>
+                
+                <div class="form-group">
+                    <label for="product-description" class="form-label" id="description-label">Description</label>
+                    <textarea id="product-description" class="form-control" placeholder="Enter product description" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-price" class="form-label" id="price-label">Price (KSh)</label>
+                    <input type="number" id="product-price" class="form-control" placeholder="Enter price" required min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-category" class="form-label" id="category-label">Category</label>
+                    <select id="product-category" class="form-control" required>
+                        <option value="Food" id="food-option">Food</option>
+                        <option value="Beverages" id="beverages-option">Beverages</option>
+                        <option value="Personal Care" id="personal-care-option">Personal Care</option>
+                        <option value="Electronics" id="electronics-option">Electronics</option>
+                        <option value="Other" id="other-option">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-stock" class="form-label" id="stock-label">Stock Quantity</label>
+                    <input type="number" id="product-stock" class="form-control" placeholder="Enter stock quantity" required min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" id="product-images-label">Product Images</label>
+                    <div class="image-upload-container" id="image-upload-container" onclick="document.getElementById('product-images').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 36px; color: var(--gray); margin-bottom: 10px;"></i>
+                        <p id="click-to-upload-text">Click to upload product images</p>
+                        <p style="font-size: 12px; color: var(--gray);" id="file-types-text">PNG, JPG, JPEG up to 5MB each</p>
+                        <p style="font-size: 12px; color: var(--primary); margin-top: 10px;" id="upload-limit-text">You can upload 1-12 images</p>
+                    </div>
+                    <input type="file" id="product-images" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
+                    <div class="image-preview-grid" id="image-preview-grid"></div>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn btn-outline btn-block" onclick="saveProductAsDraft()" id="save-draft-btn">Save as Draft</button>
+                    <button type="submit" class="btn btn-primary btn-block" id="publish-product-btn">Publish Product</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -2677,16 +2687,18 @@
             <span class="close-modal" onclick="closeForgotPasswordModal()">&times;</span>
             <h2 style="margin-bottom: 20px;">Reset Password</h2>
             
-            <div class="form-group">
-                <label for="reset-email" class="form-label">Email Address</label>
-                <input type="email" id="reset-email" class="form-control" placeholder="Enter your email address">
-            </div>
-            
-            <button class="btn btn-primary btn-block" onclick="sendPasswordReset()">Send Reset Link</button>
-            
-            <p style="text-align: center; margin-top: 15px;">
-                <a href="#" style="color: var(--primary);" onclick="closeForgotPasswordModal(); openAuthModal();">Back to Login</a>
-            </p>
+            <form id="forgot-password-form" onsubmit="event.preventDefault(); sendPasswordReset();">
+                <div class="form-group">
+                    <label for="reset-email" class="form-label">Email Address</label>
+                    <input type="email" id="reset-email" class="form-control" placeholder="Enter your email address" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Send Reset Link</button>
+                
+                <p style="text-align: center; margin-top: 15px;">
+                    <a href="javascript:void(0)" style="color: var(--primary);" onclick="closeForgotPasswordModal(); openAuthModal();">Back to Login</a>
+                </p>
+            </form>
         </div>
     </div>
 
@@ -2696,22 +2708,24 @@
             <span class="close-modal" onclick="closeChangePasswordModal()">&times;</span>
             <h2 style="margin-bottom: 20px;">Change Password</h2>
             
-            <div class="form-group">
-                <label for="current-password" class="form-label">Current Password</label>
-                <input type="password" id="current-password" class="form-control" placeholder="Enter your current password">
-            </div>
-            
-            <div class="form-group">
-                <label for="new-password" class="form-label">New Password</label>
-                <input type="password" id="new-password" class="form-control" placeholder="Enter your new password">
-            </div>
-            
-            <div class="form-group">
-                <label for="confirm-password" class="form-label">Confirm New Password</label>
-                <input type="password" id="confirm-password" class="form-control" placeholder="Confirm your new password">
-            </div>
-            
-            <button class="btn btn-primary btn-block" onclick="changePassword()">Change Password</button>
+            <form id="change-password-form" onsubmit="event.preventDefault(); changePassword();">
+                <div class="form-group">
+                    <label for="current-password" class="form-label">Current Password</label>
+                    <input type="password" id="current-password" class="form-control" placeholder="Enter your current password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="new-password" class="form-label">New Password</label>
+                    <input type="password" id="new-password" class="form-control" placeholder="Enter your new password" required minlength="6">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password" class="form-label">Confirm New Password</label>
+                    <input type="password" id="confirm-password" class="form-control" placeholder="Confirm your new password" required minlength="6">
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Change Password</button>
+            </form>
         </div>
     </div>
 
@@ -2721,33 +2735,35 @@
             <span class="close-modal" onclick="closeRatingModal()">&times;</span>
             <h2 style="margin-bottom: 20px;">Rate Your Experience</h2>
             
-            <div class="form-group">
-                <label class="form-label">Overall Rating</label>
-                <div class="rating-stars" id="rating-stars">
-                    <i class="fas fa-star rating-star" data-rating="1"></i>
-                    <i class="fas fa-star rating-star" data-rating="2"></i>
-                    <i class="fas fa-star rating-star" data-rating="3"></i>
-                    <i class="fas fa-star rating-star" data-rating="4"></i>
-                    <i class="fas fa-star rating-star" data-rating="5"></i>
+            <form id="rating-form" onsubmit="event.preventDefault(); submitRating();">
+                <div class="form-group">
+                    <label class="form-label">Overall Rating</label>
+                    <div class="rating-stars" id="rating-stars">
+                        <i class="fas fa-star rating-star" data-rating="1"></i>
+                        <i class="fas fa-star rating-star" data-rating="2"></i>
+                        <i class="fas fa-star rating-star" data-rating="3"></i>
+                        <i class="fas fa-star rating-star" data-rating="4"></i>
+                        <i class="fas fa-star rating-star" data-rating="5"></i>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="rating-comment" class="form-label">Comments (Optional)</label>
-                <textarea id="rating-comment" class="form-control" placeholder="Share your experience..." rows="3"></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Add Photos</label>
-                <div class="image-upload-container" id="rating-image-upload" onclick="document.getElementById('rating-images').click()">
-                    <i class="fas fa-camera" style="font-size: 24px; color: var(--gray); margin-bottom: 10px;"></i>
-                    <p>Add photos to your review</p>
-                    <input type="file" id="rating-images" accept="image/*" multiple style="display: none;" onchange="handleRatingImageUpload(event)">
+                
+                <div class="form-group">
+                    <label for="rating-comment" class="form-label">Comments (Optional)</label>
+                    <textarea id="rating-comment" class="form-control" placeholder="Share your experience..." rows="3"></textarea>
                 </div>
-                <div class="image-preview-grid" id="rating-image-preview"></div>
-            </div>
-            
-            <button class="btn btn-primary btn-block" onclick="submitRating()">Submit Review</button>
+                
+                <div class="form-group">
+                    <label class="form-label">Add Photos</label>
+                    <div class="image-upload-container" id="rating-image-upload" onclick="document.getElementById('rating-images').click()">
+                        <i class="fas fa-camera" style="font-size: 24px; color: var(--gray); margin-bottom: 10px;"></i>
+                        <p>Add photos to your review</p>
+                        <input type="file" id="rating-images" accept="image/*" multiple style="display: none;" onchange="handleRatingImageUpload(event)">
+                    </div>
+                    <div class="image-preview-grid" id="rating-image-preview"></div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Submit Review</button>
+            </form>
         </div>
     </div>
 
@@ -2757,45 +2773,47 @@
             <span class="close-modal" onclick="closeBulkImportModal()">&times;</span>
             <h2 style="margin-bottom: 20px;">Bulk Product Import</h2>
             
-            <div class="form-group">
-                <label class="form-label">Import Method</label>
-                <div style="display: flex; gap: 15px;">
-                    <div class="payment-method" onclick="selectImportMethod('csv')">
-                        <i class="fas fa-file-csv"></i>
-                        <p>CSV File</p>
+            <form id="bulk-import-form" onsubmit="event.preventDefault(); processBulkImport();">
+                <div class="form-group">
+                    <label class="form-label">Import Method</label>
+                    <div style="display: flex; gap: 15px;">
+                        <div class="payment-method" onclick="selectImportMethod('csv', event)">
+                            <i class="fas fa-file-csv"></i>
+                            <p>CSV File</p>
+                        </div>
+                        <div class="payment-method" onclick="selectImportMethod('excel', event)">
+                            <i class="fas fa-file-excel"></i>
+                            <p>Excel File</p>
+                        </div>
                     </div>
-                    <div class="payment-method" onclick="selectImportMethod('excel')">
-                        <i class="fas fa-file-excel"></i>
-                        <p>Excel File</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Upload File</label>
+                    <div class="image-upload-container" id="import-file-upload" onclick="document.getElementById('import-file').click()">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 36px; color: var(--gray); margin-bottom: 10px;"></i>
+                        <p>Click to upload your product file</p>
+                        <p style="font-size: 12px; color: var(--gray);">CSV or Excel format</p>
+                        <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="display: none;" onchange="handleImportFileUpload(event)">
                     </div>
                 </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Upload File</label>
-                <div class="image-upload-container" id="import-file-upload" onclick="document.getElementById('import-file').click()">
-                    <i class="fas fa-cloud-upload-alt" style="font-size: 36px; color: var(--gray); margin-bottom: 10px;"></i>
-                    <p>Click to upload your product file</p>
-                    <p style="font-size: 12px; color: var(--gray);">CSV or Excel format</p>
-                    <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="display: none;" onchange="handleImportFileUpload(event)">
+                
+                <div class="form-group">
+                    <label class="form-label">Import Options</label>
+                    <div style="display: flex; gap: 15px; margin-top: 10px;">
+                        <label style="display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="import-option" value="add" checked>
+                            <span>Add new products only</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="import-option" value="update">
+                            <span>Update existing products</span>
+                        </label>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Import Options</label>
-                <div style="display: flex; gap: 15px; margin-top: 10px;">
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="radio" name="import-option" value="add" checked>
-                        <span>Add new products only</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="radio" name="import-option" value="update">
-                        <span>Update existing products</span>
-                    </label>
-                </div>
-            </div>
-            
-            <button class="btn btn-primary btn-block" onclick="processBulkImport()">Import Products</button>
+                
+                <button type="submit" class="btn btn-primary btn-block">Import Products</button>
+            </form>
             
             <div style="margin-top: 20px; padding: 15px; background: var(--light); border-radius: var(--radius);">
                 <h4>File Format Requirements</h4>
@@ -2808,7 +2826,7 @@
                     <li>Stock Quantity</li>
                 </ul>
                 <p style="font-size: 12px; margin-top: 10px; color: var(--gray);">
-                    <a href="#" style="color: var(--primary);">Download template file</a>
+                    <a href="javascript:void(0)" style="color: var(--primary);">Download template file</a>
                 </p>
             </div>
         </div>
@@ -2824,29 +2842,29 @@
                     </div>
                     <p id="footer-description">Fast and reliable delivery services across Nairobi. Connecting customers, sellers, and riders for seamless deliveries.</p>
                     <div style="display: flex; gap: 15px; margin-top: 20px;">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="javascript:void(0)" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="javascript:void(0)" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="javascript:void(0)" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="javascript:void(0)" class="social-link"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
                 <div class="feature-card">
                     <h4 id="quick-links-title">Quick Links</h4>
                     <ul style="list-style: none; padding: 0;">
-                        <li><a href="#" onclick="showPage('landing-page')" id="home-link">Home</a></li>
-                        <li><a href="#" onclick="showPage('services-page')" id="services-link">Services</a></li>
-                        <li><a href="#" onclick="showPage('about-page')" id="about-link">About</a></li>
-                        <li><a href="#" onclick="showPage('team-page')" id="team-link">Our Team</a></li>
-                        <li><a href="#" onclick="showPage('contact-page')" id="contact-link">Contact</a></li>
+                        <li><a href="javascript:void(0)" onclick="showPage('landing-page')" id="home-link">Home</a></li>
+                        <li><a href="javascript:void(0)" onclick="showPage('services-page')" id="services-link">Services</a></li>
+                        <li><a href="javascript:void(0)" onclick="showPage('about-page')" id="about-link">About</a></li>
+                        <li><a href="javascript:void(0)" onclick="showPage('team-page')" id="team-link">Our Team</a></li>
+                        <li><a href="javascript:void(0)" onclick="showPage('contact-page')" id="contact-link">Contact</a></li>
                     </ul>
                 </div>
                 <div class="feature-card">
                     <h4 id="services-title">Services</h4>
                     <ul style="list-style: none; padding: 0;">
-                        <li><a href="#" onclick="showPage('services-page')" id="food-delivery-link">Food Delivery</a></li>
-                        <li><a href="#" onclick="showPage('services-page')" id="grocery-delivery-link">Grocery Delivery</a></li>
-                        <li><a href="#" onclick="showPage('services-page')" id="package-delivery-link">Package Delivery</a></li>
-                        <li><a href="#" onclick="showPage('services-page')" id="express-delivery-link">Express Delivery</a></li>
+                        <li><a href="javascript:void(0)" onclick="showPage('services-page')" id="food-delivery-link">Food Delivery</a></li>
+                        <li><a href="javascript:void(0)" onclick="showPage('services-page')" id="grocery-delivery-link">Grocery Delivery</a></li>
+                        <li><a href="javascript:void(0)" onclick="showPage('services-page')" id="package-delivery-link">Package Delivery</a></li>
+                        <li><a href="javascript:void(0)" onclick="showPage('services-page')" id="express-delivery-link">Express Delivery</a></li>
                     </ul>
                 </div>
                 <div class="feature-card">
@@ -2860,177 +2878,638 @@
             </div>
             <div style="text-align: center; padding-top: 20px; border-top: 1px solid var(--light-gray); color: var(--gray);">
                 <p>&copy; 2024 IPATE Deliveries. <span id="rights-text">All rights reserved.</span> | 
-                <a href="#" onclick="showPage('privacy-page')" style="color: var(--primary);">Privacy Policy</a> | 
-                <a href="#" onclick="showPage('terms-page')" style="color: var(--primary);">Terms of Service</a></p>
+                <a href="javascript:void(0)" onclick="showPage('privacy-page')" style="color: var(--primary);">Privacy Policy</a> | 
+                <a href="javascript:void(0)" onclick="showPage('terms-page')" style="color: var(--primary);">Terms of Service</a></p>
             </div>
         </div>
     </footer>
 
     <script>
-          // ========== CONFIGURATION ==========
-        const SUPABASE_URL = 'https://uzqsmjpcadjpezwzbnxw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6cXNtanBjYWRqcGV6d3pibnh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4OTA5MDMsImV4cCI6MjA4MjQ2NjkwM30.Ii1eCf_IUiCeXm0TF7QuCSBQEUTmuZuNhHNbjldodys';
-        
-        // Global variables
-        let supabase = null;
+        // ========== GLOBAL DECLARATIONS ==========
+        window.supabase = null;
         window.currentUser = null;
         window.customerCart = JSON.parse(localStorage.getItem('customerCart') || '[]');
         window.currentEditingProduct = null;
+        window.currentRatingOrderId = null;
 
         // ========== DEBUG HELPERS ==========
         function debug(message, data = null) {
             console.log(`[DEBUG] ${message}`, data || '');
         }
 
-        // ========== INITIALIZATION ==========
-        async function initializeApp() {
-            try {
-                debug('Starting app initialization...');
-                UIHelper.showLoading();
-
-                // Step 1: Wait for Supabase library to load
-                debug('Waiting for Supabase library...');
-                await waitForSupabase();
-                
-                // Step 2: Initialize Supabase client
-                debug('Initializing Supabase client...');
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-                    auth: { persistSession: true }
-                });
-                
-                // Step 3: Test connection
-                debug('Testing Supabase connection...');
-                const isConnected = await testSupabaseConnection();
-                if (!isConnected) {
-                    throw new Error('Failed to connect to Supabase');
-                }
-                
-                // Step 4: Initialize database schema
-                debug('Setting up database...');
-                await DatabaseSetup.initializeDatabase();
-                
-                // Step 5: Initialize auth
-                debug('Initializing authentication...');
-                await AuthManager.initAuth();
-                
-                // Step 6: Initialize other components
-                debug('Initializing other components...');
-                LanguageManager.init();
-                NotificationManager.init();
-                ErrorHandler.init();
-                
-                // Step 7: Setup event listeners
-                debug('Setting up event listeners...');
-                setupEventListeners();
-                
-                // Step 8: Load featured products
-                debug('Loading featured products...');
-                await loadFeaturedProducts();
-                
-                UIHelper.hideLoading();
-                debug('✅ App initialized successfully');
-                
-            } catch (error) {
-                UIHelper.hideLoading();
-                console.error('❌ App initialization failed:', error);
-                UIHelper.showNotification('App initialization failed. Running in offline mode.', 'warning');
-                debug('Running in offline mode');
-                
-                // Initialize UI anyway for offline mode
-                setupEventListeners();
-                await loadFeaturedProducts();
-            }
-        }
-
-        async function waitForSupabase() {
-            return new Promise((resolve, reject) => {
-                let attempts = 0;
-                const maxAttempts = 20;
-                
-                const checkSupabase = setInterval(() => {
-                    attempts++;
-                    
-                    if (window.supabase) {
-                        clearInterval(checkSupabase);
-                        resolve();
-                    } else if (attempts >= maxAttempts) {
-                        clearInterval(checkSupabase);
-                        reject(new Error('Supabase library failed to load'));
-                    }
-                }, 500);
+        // ========== PAGE NAVIGATION ==========
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
             });
+            
+            // Show the selected page
+            const pageToShow = document.getElementById(pageId);
+            if (pageToShow) {
+                pageToShow.classList.add('active');
+                window.scrollTo(0, 0);
+            }
+            
+            // Close mobile menu if open
+            closeMobileMenu();
         }
 
-        async function testSupabaseConnection() {
-            try {
-                const { data, error } = await supabase.auth.getSession();
-                if (error) throw error;
-                debug('✅ Supabase connection test passed');
-                return true;
-            } catch (error) {
-                debug('❌ Supabase connection test failed:', error);
-                return false;
-            }
+        // ========== MODAL FUNCTIONS ==========
+        function openAuthModal() {
+            document.getElementById('auth-modal').style.display = 'flex';
+            switchAuthTab('login');
         }
 
-        function setupEventListeners() {
-            // Mobile menu toggle
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
-            }
+        function closeAuthModal() {
+            document.getElementById('auth-modal').style.display = 'none';
+        }
 
-            // Auth modal tabs
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
             const loginTab = document.getElementById('loginTab');
             const registerTab = document.getElementById('registerTab');
-            if (loginTab && registerTab) {
-                loginTab.addEventListener('click', () => switchAuthTab('login'));
-                registerTab.addEventListener('click', () => switchAuthTab('register'));
+            
+            if (tab === 'login') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                loginTab.style.borderBottomColor = 'var(--primary)';
+                loginTab.style.color = 'var(--primary)';
+                registerTab.style.borderBottomColor = 'transparent';
+                registerTab.style.color = 'var(--dark)';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                registerTab.style.borderBottomColor = 'var(--primary)';
+                registerTab.style.color = 'var(--primary)';
+                loginTab.style.borderBottomColor = 'transparent';
+                loginTab.style.color = 'var(--dark)';
             }
+        }
 
-            // Header scroll effect
-            window.addEventListener('scroll', handleHeaderScroll);
+        function openForgotPasswordModal() {
+            closeAuthModal();
+            document.getElementById('forgot-password-modal').style.display = 'flex';
+        }
 
-            // Product search with debounce
-            const searchProducts = document.getElementById('searchProducts');
-            if (searchProducts) {
-                searchProducts.addEventListener('input', debounce(() => {
-                    CustomerDashboard.loadProducts();
-                }, 500));
+        function closeForgotPasswordModal() {
+            document.getElementById('forgot-password-modal').style.display = 'none';
+        }
+
+        function openChangePasswordModal() {
+            document.getElementById('change-password-modal').style.display = 'flex';
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('change-password-modal').style.display = 'none';
+        }
+
+        function openCheckoutModal() {
+            CustomerDashboard.openCheckoutModal();
+        }
+
+        function closeCheckoutModal() {
+            CustomerDashboard.closeCheckoutModal();
+        }
+
+        function openAddProductModal() {
+            document.getElementById('add-product-modal').style.display = 'flex';
+            // Clear form if not editing
+            if (!window.currentEditingProduct) {
+                document.getElementById('product-name').value = '';
+                document.getElementById('product-description').value = '';
+                document.getElementById('product-price').value = '';
+                document.getElementById('product-category').value = 'Food';
+                document.getElementById('product-stock').value = '';
+                document.getElementById('image-preview-grid').innerHTML = '';
             }
+        }
 
-            // Category filter
-            const categoryFilter = document.getElementById('categoryFilter');
-            if (categoryFilter) {
-                categoryFilter.addEventListener('change', () => {
-                    CustomerDashboard.loadProducts();
-                });
+        function closeAddProductModal() {
+            document.getElementById('add-product-modal').style.display = 'none';
+            window.currentEditingProduct = null;
+        }
+
+        function openBulkImportModal() {
+            document.getElementById('bulk-import-modal').style.display = 'flex';
+        }
+
+        function closeBulkImportModal() {
+            document.getElementById('bulk-import-modal').style.display = 'none';
+        }
+
+        function closeRatingModal() {
+            document.getElementById('rating-modal').style.display = 'none';
+            window.currentRatingOrderId = null;
+        }
+
+        // ========== MOBILE MENU ==========
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const authButtons = document.querySelector('.auth-buttons');
+            
+            if (navLinks.style.display === 'flex') {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
             }
+        }
 
-            // Order status filter
-            const orderStatusFilter = document.getElementById('orderStatusFilter');
-            if (orderStatusFilter) {
-                orderStatusFilter.addEventListener('change', () => {
-                    CustomerDashboard.loadOrders();
-                });
+        function openMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const authButtons = document.querySelector('.auth-buttons');
+            
+            navLinks.style.display = 'flex';
+            authButtons.style.display = 'flex';
+            navLinks.style.flexDirection = 'column';
+            navLinks.style.position = 'fixed';
+            navLinks.style.top = '80px';
+            navLinks.style.left = '0';
+            navLinks.style.right = '0';
+            navLinks.style.background = 'var(--white)';
+            navLinks.style.padding = '20px';
+            navLinks.style.boxShadow = 'var(--shadow-lg)';
+            navLinks.style.zIndex = '1000';
+            
+            authButtons.style.flexDirection = 'column';
+            authButtons.style.position = 'fixed';
+            authButtons.style.top = '200px';
+            authButtons.style.left = '0';
+            authButtons.style.right = '0';
+            authButtons.style.background = 'var(--white)';
+            authButtons.style.padding = '20px';
+            authButtons.style.boxShadow = 'var(--shadow)';
+            authButtons.style.zIndex = '1000';
+        }
+
+        function closeMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const authButtons = document.querySelector('.auth-buttons');
+            
+            navLinks.style.display = 'none';
+            authButtons.style.display = 'none';
+        }
+
+        // ========== AUTH FUNCTIONS ==========
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            await AuthManager.login(email, password);
+        }
+
+        async function signup() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const name = document.getElementById('signup-name').value;
+            const role = document.getElementById('signup-role').value;
+            
+            await AuthManager.signup(email, password, name, role);
+        }
+
+        async function logout() {
+            await AuthManager.logout();
+        }
+
+        async function sendPasswordReset() {
+            const email = document.getElementById('reset-email').value;
+            await AuthManager.sendPasswordReset(email);
+        }
+
+        async function changePassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (newPassword !== confirmPassword) {
+                UIHelper.showNotification('New passwords do not match', 'error');
+                return;
             }
+            
+            await AuthManager.changePassword(currentPassword, newPassword);
+        }
 
-            // Chat input enter key
-            const chatInputs = ['customer-chat-input', 'seller-chat-input', 'rider-chat-input'];
-            chatInputs.forEach(id => {
-                const input = document.getElementById(id);
-                if (input) {
-                    input.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') {
-                            if (id === 'customer-chat-input') sendCustomerMessage();
-                            if (id === 'seller-chat-input') sendSellerMessage();
-                            if (id === 'rider-chat-input') sendRiderMessage();
-                        }
-                    });
-                }
+        // ========== PAYMENT FUNCTIONS ==========
+        function selectPaymentMethod(method, event) {
+            if (!event) event = window.event;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
             });
+            event.target.closest('.payment-method').classList.add('selected');
+            
+            // Show appropriate payment details
+            document.getElementById('mpesa-payment-details').style.display = 'none';
+            document.getElementById('card-payment-details').style.display = 'none';
+            document.getElementById('place-order-cash-btn').style.display = 'none';
+            
+            if (method === 'mpesa') {
+                document.getElementById('mpesa-payment-details').style.display = 'block';
+            } else if (method === 'card') {
+                document.getElementById('card-payment-details').style.display = 'block';
+            } else if (method === 'cash') {
+                document.getElementById('place-order-cash-btn').style.display = 'block';
+            }
+        }
 
-            debug('Event listeners setup complete');
+        async function processMpesaPayment() {
+            const phone = document.getElementById('mpesa-phone-checkout').value;
+            
+            if (!phone) {
+                UIHelper.showNotification('Please enter your M-Pesa phone number', 'error');
+                return;
+            }
+            
+            UIHelper.showLoading();
+            
+            try {
+                // Simulate M-Pesa API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                UIHelper.hideLoading();
+                UIHelper.showNotification('M-Pesa payment initiated. Please check your phone to complete the payment.', 'success');
+                
+                // After payment is confirmed, place the order
+                setTimeout(() => {
+                    CustomerDashboard.placeOrder('mpesa');
+                }, 2000);
+                
+            } catch (error) {
+                UIHelper.hideLoading();
+                UIHelper.showNotification('Error processing M-Pesa payment', 'error');
+            }
+        }
+
+        async function processCardPayment() {
+            const cardNumber = document.getElementById('card-number').value;
+            const cardExpiry = document.getElementById('card-expiry').value;
+            const cardCvc = document.getElementById('card-cvc').value;
+            
+            if (!cardNumber || !cardExpiry || !cardCvc) {
+                UIHelper.showNotification('Please fill in all card details', 'error');
+                return;
+            }
+            
+            UIHelper.showLoading();
+            
+            try {
+                // Simulate Stripe API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                UIHelper.hideLoading();
+                UIHelper.showNotification('Card payment processed successfully', 'success');
+                
+                // Place the order
+                CustomerDashboard.placeOrder('card');
+                
+            } catch (error) {
+                UIHelper.hideLoading();
+                UIHelper.showNotification('Error processing card payment', 'error');
+            }
+        }
+
+        function placeOrderWithCash() {
+            CustomerDashboard.placeOrderWithCash();
+        }
+
+        // ========== PRODUCT FUNCTIONS ==========
+        async function publishProduct() {
+            const name = document.getElementById('product-name').value;
+            const description = document.getElementById('product-description').value;
+            const price = document.getElementById('product-price').value;
+            const category = document.getElementById('product-category').value;
+            const stock = document.getElementById('product-stock').value;
+            
+            if (!name || !description || !price || !category || !stock) {
+                UIHelper.showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            if (!window.currentUser) {
+                UIHelper.showNotification('Please log in to add products', 'error');
+                return;
+            }
+            
+            UIHelper.showLoading();
+            
+            try {
+                const productData = {
+                    title: name,
+                    short_description: description.substring(0, 100) + '...',
+                    full_description: description,
+                    price: parseFloat(price),
+                    category: category,
+                    stock: parseInt(stock),
+                    status: 'published',
+                    seller_id: window.currentUser.id,
+                    seller_name: window.currentUser.profile.name,
+                    created_at: new Date().toISOString()
+                };
+                
+                const { data: product, error } = await window.supabase
+                    .from('products')
+                    .insert([productData])
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                UIHelper.hideLoading();
+                UIHelper.showNotification('Product published successfully!', 'success');
+                closeAddProductModal();
+                
+                // Refresh products list
+                SellerDashboard.loadProducts();
+                
+            } catch (error) {
+                UIHelper.hideLoading();
+                debug('Error publishing product:', error);
+                UIHelper.showNotification('Error publishing product: ' + error.message, 'error');
+            }
+        }
+
+        function saveProductAsDraft() {
+            UIHelper.showNotification('Draft saved (demo feature)', 'info');
+        }
+
+        // ========== OTHER FUNCTIONS ==========
+        function setLanguage(lang) {
+            UIHelper.showNotification(`Language changed to ${lang === 'en' ? 'English' : 'Kiswahili'}`, 'success');
+        }
+
+        function filterProducts(category, event) {
+            if (!event) event = window.event;
+            
+            // Update active filter
+            document.querySelectorAll('.category-filter').forEach(filter => {
+                filter.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // In a real implementation, you would filter the products
+            UIHelper.showNotification(`Filtered by: ${category}`, 'info');
+        }
+
+        function selectImportMethod(method, event) {
+            if (!event) event = window.event;
+            
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.target.closest('.payment-method').classList.add('selected');
+        }
+
+        function processBulkImport() {
+            UIHelper.showNotification('Bulk import feature (demo)', 'info');
+            closeBulkImportModal();
+        }
+
+        function submitRating() {
+            UIHelper.showNotification('Thank you for your rating!', 'success');
+            closeRatingModal();
+        }
+
+        function sendCustomerMessage() {
+            const input = document.getElementById('customer-chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const container = document.getElementById('customer-chat-messages');
+            
+            // Add message to UI
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message message-sent';
+            messageElement.innerHTML = `
+                <p>${message}</p>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px;">Just now</div>
+            `;
+            
+            container.appendChild(messageElement);
+            container.scrollTop = container.scrollHeight;
+            
+            // Clear input
+            input.value = '';
+            
+            // Simulate response
+            setTimeout(() => {
+                const responseElement = document.createElement('div');
+                responseElement.className = 'chat-message message-received';
+                responseElement.innerHTML = `
+                    <strong>IPATE Support</strong>
+                    <p>Thank you for your message. We'll get back to you shortly.</p>
+                    <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">Just now</div>
+                `;
+                
+                container.appendChild(responseElement);
+                container.scrollTop = container.scrollHeight;
+            }, 1000);
+        }
+
+        function sendSellerMessage() {
+            const input = document.getElementById('seller-chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const container = document.getElementById('seller-chat-messages');
+            
+            // Add message to UI
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message message-sent';
+            messageElement.innerHTML = `
+                <p>${message}</p>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px;">Just now</div>
+            `;
+            
+            container.appendChild(messageElement);
+            container.scrollTop = container.scrollHeight;
+            
+            // Clear input
+            input.value = '';
+            
+            // Simulate response
+            setTimeout(() => {
+                const responseElement = document.createElement('div');
+                responseElement.className = 'chat-message message-received';
+                responseElement.innerHTML = `
+                    <strong>Customer Support</strong>
+                    <p>Thank you for your message. We'll assist you shortly.</p>
+                    <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">Just now</div>
+                `;
+                
+                container.appendChild(responseElement);
+                container.scrollTop = container.scrollHeight;
+            }, 1000);
+        }
+
+        function sendRiderMessage() {
+            const input = document.getElementById('rider-chat-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const container = document.getElementById('rider-chat-messages');
+            
+            // Add message to UI
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message message-sent';
+            messageElement.innerHTML = `
+                <p>${message}</p>
+                <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px;">Just now</div>
+            `;
+            
+            container.appendChild(messageElement);
+            container.scrollTop = container.scrollHeight;
+            
+            // Clear input
+            input.value = '';
+            
+            // Simulate response
+            setTimeout(() => {
+                const responseElement = document.createElement('div');
+                responseElement.className = 'chat-message message-received';
+                responseElement.innerHTML = `
+                    <strong>Dispatch</strong>
+                    <p>Message received. Continue with your delivery.</p>
+                    <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">Just now</div>
+                `;
+                
+                container.appendChild(responseElement);
+                container.scrollTop = container.scrollHeight;
+            }, 1000);
+        }
+
+        // ========== IMAGE UPLOAD FUNCTIONS ==========
+        function handleImageUpload(event) {
+            UIHelper.showNotification('Image upload feature (demo)', 'info');
+        }
+
+        function handleProfileImageUpload(event) {
+            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
+        }
+
+        function handleSellerProfileImageUpload(event) {
+            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
+        }
+
+        function handleRiderProfileImageUpload(event) {
+            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
+        }
+
+        function handleRatingImageUpload(event) {
+            UIHelper.showNotification('Rating image upload feature (demo)', 'info');
+        }
+
+        function handleImportFileUpload(event) {
+            UIHelper.showNotification('File selected for import (demo)', 'info');
+        }
+
+        // ========== CUSTOMER DASHBOARD SECTION SWITCHING ==========
+        function showCustomerSection(section, event) {
+            if (!event) event = window.event;
+            
+            // Hide all sections
+            document.querySelectorAll('.customer-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show the selected section
+            const sectionToShow = document.getElementById(`customer-${section}-section`);
+            if (sectionToShow) {
+                sectionToShow.classList.add('active');
+            }
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+            
+            // Load data if needed
+            if (section === 'dashboard') {
+                CustomerDashboard.loadDashboardData();
+            } else if (section === 'products') {
+                CustomerDashboard.loadProducts();
+            } else if (section === 'orders') {
+                CustomerDashboard.loadOrders();
+            } else if (section === 'profile') {
+                CustomerDashboard.loadProfile();
+            }
+        }
+
+        // ========== SELLER DASHBOARD SECTION SWITCHING ==========
+        function showSellerSection(section, event) {
+            if (!event) event = window.event;
+            
+            // Hide all sections
+            document.querySelectorAll('.seller-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show the selected section
+            const sectionToShow = document.getElementById(`seller-${section}-section`);
+            if (sectionToShow) {
+                sectionToShow.classList.add('active');
+            }
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+            
+            // Load data if needed
+            if (section === 'dashboard') {
+                SellerDashboard.loadSellerOverview();
+            } else if (section === 'products') {
+                SellerDashboard.loadProducts();
+            } else if (section === 'orders') {
+                SellerDashboard.loadOrders();
+            } else if (section === 'profile') {
+                SellerDashboard.loadProfile();
+            }
+        }
+
+        // ========== RIDER DASHBOARD SECTION SWITCHING ==========
+        function showRiderSection(section, event) {
+            if (!event) event = window.event;
+            
+            // Hide all sections
+            document.querySelectorAll('.rider-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show the selected section
+            const sectionToShow = document.getElementById(`rider-${section}-section`);
+            if (sectionToShow) {
+                sectionToShow.classList.add('active');
+            }
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+            
+            // Load data if needed
+            if (section === 'dashboard') {
+                RiderDashboard.loadRiderOverview();
+            } else if (section === 'deliveries') {
+                RiderDashboard.loadAvailableDeliveries();
+            } else if (section === 'active') {
+                RiderDashboard.loadActiveDeliveries();
+            } else if (section === 'profile') {
+                RiderDashboard.loadProfile();
+            }
         }
 
         // ========== UI HELPERS ==========
@@ -3089,6 +3568,182 @@
             }
         }
 
+        // ========== INITIALIZATION ==========
+        async function initializeApp() {
+            try {
+                debug('Starting app initialization...');
+                UIHelper.showLoading();
+
+                // Step 1: Wait for Supabase library to load
+                debug('Waiting for Supabase library...');
+                await waitForSupabase();
+                
+                // Step 2: Initialize Supabase client
+                debug('Initializing Supabase client...');
+                window.supabase = window.supabase.createClient('https://uzqsmjpcadjpezwzbnxw.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6cXNtanBjYWRqcGV6d3pibnh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4OTA5MDMsImV4cCI6MjA4MjQ2NjkwM30.Ii1eCf_IUiCeXm0TF7QuCSBQEUTmuZuNhHNbjldodys', {
+                    auth: { persistSession: true }
+                });
+                
+                // Step 3: Test connection
+                debug('Testing Supabase connection...');
+                const isConnected = await testSupabaseConnection();
+                if (!isConnected) {
+                    throw new Error('Failed to connect to Supabase');
+                }
+                
+                // Step 4: Initialize database schema
+                debug('Setting up database...');
+                await DatabaseSetup.initializeDatabase();
+                
+                // Step 5: Initialize auth
+                debug('Initializing authentication...');
+                await AuthManager.initAuth();
+                
+                // Step 6: Setup event listeners
+                debug('Setting up event listeners...');
+                setupEventListeners();
+                
+                // Step 7: Load featured products
+                debug('Loading featured products...');
+                await loadFeaturedProducts();
+                
+                UIHelper.hideLoading();
+                debug('✅ App initialized successfully');
+                
+            } catch (error) {
+                UIHelper.hideLoading();
+                console.error('❌ App initialization failed:', error);
+                UIHelper.showNotification('App initialization failed. Running in offline mode.', 'warning');
+                debug('Running in offline mode');
+                
+                // Initialize UI anyway for offline mode
+                setupEventListeners();
+                await loadFeaturedProducts();
+            }
+        }
+
+        async function waitForSupabase() {
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+                const maxAttempts = 20;
+                
+                const checkSupabase = setInterval(() => {
+                    attempts++;
+                    
+                    if (window.supabase && window.supabase.createClient) {
+                        clearInterval(checkSupabase);
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(checkSupabase);
+                        reject(new Error('Supabase library failed to load'));
+                    }
+                }, 500);
+            });
+        }
+
+        async function testSupabaseConnection() {
+            try {
+                const { data, error } = await window.supabase.auth.getSession();
+                if (error) throw error;
+                debug('✅ Supabase connection test passed');
+                return true;
+            } catch (error) {
+                debug('❌ Supabase connection test failed:', error);
+                return false;
+            }
+        }
+
+        function setupEventListeners() {
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            }
+
+            // Auth modal tabs
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            if (loginTab && registerTab) {
+                loginTab.addEventListener('click', () => switchAuthTab('login'));
+                registerTab.addEventListener('click', () => switchAuthTab('register'));
+            }
+
+            // Header scroll effect
+            window.addEventListener('scroll', handleHeaderScroll);
+
+            // Product search with debounce
+            const searchProducts = document.getElementById('searchProducts');
+            if (searchProducts) {
+                searchProducts.addEventListener('input', debounce(() => {
+                    CustomerDashboard.loadProducts();
+                }, 500));
+            }
+
+            // Category filter
+            const categoryFilter = document.getElementById('categoryFilter');
+            if (categoryFilter) {
+                categoryFilter.addEventListener('change', () => {
+                    CustomerDashboard.loadProducts();
+                });
+            }
+
+            // Order status filter
+            const orderStatusFilter = document.getElementById('orderStatusFilter');
+            if (orderStatusFilter) {
+                orderStatusFilter.addEventListener('change', () => {
+                    CustomerDashboard.loadOrders();
+                });
+            }
+
+            // Chat input enter key
+            const chatInputs = ['customer-chat-input', 'seller-chat-input', 'rider-chat-input'];
+            chatInputs.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            if (id === 'customer-chat-input') sendCustomerMessage();
+                            if (id === 'seller-chat-input') sendSellerMessage();
+                            if (id === 'rider-chat-input') sendRiderMessage();
+                        }
+                    });
+                }
+            });
+
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+
+            debug('Event listeners setup complete');
+        }
+
+        function handleHeaderScroll() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         // ========== DATABASE SETUP ==========
         class DatabaseSetup {
             static async initializeDatabase() {
@@ -3108,14 +3763,13 @@
             static async createTables() {
                 // Check and create profiles table
                 try {
-                    const { error: profilesError } = await supabase
+                    const { error: profilesError } = await window.supabase
                         .from('profiles')
                         .select('*')
                         .limit(1);
                         
                     if (profilesError) {
                         debug('Profiles table might not exist, creating sample profile...');
-                        // Table will be created when we insert data
                     }
                 } catch (error) {
                     debug('Profiles table check:', error);
@@ -3123,15 +3777,14 @@
 
                 // Check and create products table
                 try {
-                    const { error: productsError } = await supabase
+                    const { error: productsError } = await window.supabase
                         .from('products')
                         .select('*')
                         .limit(1);
                         
                     if (productsError) {
                         debug('Products table might not exist, creating sample product...');
-                        // Create sample product to trigger table creation
-                        const { error: createError } = await supabase
+                        const { error: createError } = await window.supabase
                             .from('products')
                             .insert([
                                 {
@@ -3146,10 +3799,6 @@
                                     seller_name: 'Demo Seller'
                                 }
                             ]);
-                            
-                        if (createError) {
-                            debug('Sample product creation:', createError);
-                        }
                     }
                 } catch (error) {
                     debug('Products table check:', error);
@@ -3157,14 +3806,13 @@
 
                 // Check and create orders table
                 try {
-                    const { error: ordersError } = await supabase
+                    const { error: ordersError } = await window.supabase
                         .from('orders')
                         .select('*')
                         .limit(1);
                         
                     if (ordersError) {
                         debug('Orders table might not exist...');
-                        // Table will be created when we insert data
                     }
                 } catch (error) {
                     debug('Orders table check:', error);
@@ -3176,13 +3824,13 @@
         class AuthManager {
             static async initAuth() {
                 try {
-                    const { data: { session } } = await supabase.auth.getSession();
+                    const { data: { session } } = await window.supabase.auth.getSession();
                     if (session) {
                         await this.handleUserSession(session.user);
                     }
                     
                     // Listen for auth changes
-                    supabase.auth.onAuthStateChange(async (event, session) => {
+                    window.supabase.auth.onAuthStateChange(async (event, session) => {
                         debug('Auth state changed:', event);
                         if (event === 'SIGNED_IN' && session) {
                             await this.handleUserSession(session.user);
@@ -3198,7 +3846,7 @@
             static async handleUserSession(user) {
                 try {
                     // Get or create user profile
-                    let { data: profile, error } = await supabase
+                    let { data: profile, error } = await window.supabase
                         .from('profiles')
                         .select('*')
                         .eq('id', user.id)
@@ -3206,7 +3854,7 @@
 
                     if (error && error.code === 'PGRST116') {
                         // Profile doesn't exist, create one
-                        const { data: newProfile, error: createError } = await supabase
+                        const { data: newProfile, error: createError } = await window.supabase
                             .from('profiles')
                             .insert([
                                 {
@@ -3294,7 +3942,7 @@
                     }
                     
                     UIHelper.showLoading();
-                    const { data, error } = await supabase.auth.signInWithPassword({
+                    const { data, error } = await window.supabase.auth.signInWithPassword({
                         email: email.trim(),
                         password: password
                     });
@@ -3321,7 +3969,7 @@
                     }
                     
                     UIHelper.showLoading();
-                    const { data, error } = await supabase.auth.signUp({
+                    const { data, error } = await window.supabase.auth.signUp({
                         email: email.trim(),
                         password: password,
                         options: {
@@ -3349,7 +3997,7 @@
             static async logout() {
                 try {
                     UIHelper.showLoading();
-                    const { error } = await supabase.auth.signOut();
+                    const { error } = await window.supabase.auth.signOut();
                     if (error) throw error;
                     
                     UIHelper.hideLoading();
@@ -3370,7 +4018,7 @@
                     }
                     
                     UIHelper.showLoading();
-                    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                    const { error } = await window.supabase.auth.resetPasswordForEmail(email, {
                         redirectTo: `${window.location.origin}`,
                     });
                     
@@ -3394,7 +4042,7 @@
                     }
                     
                     UIHelper.showLoading();
-                    const { error } = await supabase.auth.updateUser({
+                    const { error } = await window.supabase.auth.updateUser({
                         password: newPassword
                     });
                     
@@ -3468,7 +4116,7 @@
                 if (!window.currentUser) return [];
                 
                 try {
-                    const { data, error } = await supabase
+                    const { data, error } = await window.supabase
                         .from('orders')
                         .select('*')
                         .eq('customer_id', window.currentUser.id)
@@ -3523,7 +4171,7 @@
 
             static async loadProducts() {
                 try {
-                    const { data: products, error } = await supabase
+                    const { data: products, error } = await window.supabase
                         .from('products')
                         .select('*')
                         .eq('status', 'published')
@@ -3684,7 +4332,6 @@
             static addToCart(productId) {
                 try {
                     // For now, we'll use mock data since we can't fetch single product
-                    // In production, you should fetch the product from Supabase
                     const mockProduct = {
                         id: productId,
                         title: `Product ${productId}`,
@@ -3724,7 +4371,7 @@
                 this.cart = this.cart.filter(item => item.productId !== productId);
                 this.saveCart();
                 this.updateCartDisplay();
-                this.loadProducts(); // Reload to update cart buttons
+                this.loadProducts();
                 UIHelper.showNotification('Item removed from cart', 'success');
             }
 
@@ -3819,7 +4466,7 @@
                     this.cart = [];
                     this.saveCart();
                     this.updateCartDisplay();
-                    this.loadProducts(); // Reload to update cart buttons
+                    this.loadProducts();
                     UIHelper.showNotification('Cart cleared successfully', 'success');
                 }
             }
@@ -3902,7 +4549,7 @@
                         order_number: orderNumber,
                         customer_id: window.currentUser.id,
                         customer_name: window.currentUser.profile.name,
-                        seller_id: 'demo-seller', // For now, use demo seller
+                        seller_id: 'demo-seller',
                         seller_name: 'Demo Seller',
                         total: total,
                         subtotal: subtotal,
@@ -3915,7 +4562,7 @@
                         created_at: new Date().toISOString()
                     };
                     
-                    const { data: order, error } = await supabase
+                    const { data: order, error } = await window.supabase
                         .from('orders')
                         .insert([orderData])
                         .select()
@@ -3927,7 +4574,7 @@
                     this.cart = [];
                     this.saveCart();
                     this.updateCartDisplay();
-                    this.loadProducts(); // Reload to update cart buttons
+                    this.loadProducts();
                     
                     this.closeCheckoutModal();
                     UIHelper.hideLoading();
@@ -3960,7 +4607,6 @@
             }
 
             static rateOrder(orderId) {
-                // Store the order ID for the rating
                 window.currentRatingOrderId = orderId;
                 document.getElementById('rating-modal').style.display = 'flex';
             }
@@ -3969,7 +4615,7 @@
                 if (!confirm('Are you sure you want to cancel this order?')) return;
                 
                 try {
-                    const { error } = await supabase
+                    const { error } = await window.supabase
                         .from('orders')
                         .update({ status: 'cancelled' })
                         .eq('id', orderId);
@@ -4013,7 +4659,7 @@
                 UIHelper.showLoading();
                 
                 try {
-                    const { error } = await supabase
+                    const { error } = await window.supabase
                         .from('profiles')
                         .update({
                             name: name,
@@ -4065,7 +4711,7 @@
                 if (!window.currentUser) return;
                 
                 try {
-                    const { data: orders, error } = await supabase
+                    const { data: orders, error } = await window.supabase
                         .from('orders')
                         .select('*')
                         .eq('seller_id', window.currentUser.id);
@@ -4130,7 +4776,7 @@
 
             static async loadProducts() {
                 try {
-                    const { data: products, error } = await supabase
+                    const { data: products, error } = await window.supabase
                         .from('products')
                         .select('*')
                         .eq('seller_id', window.currentUser.id)
@@ -4215,7 +4861,7 @@
                 if (!window.currentUser) return;
                 
                 try {
-                    const { data: orders, error } = await supabase
+                    const { data: orders, error } = await window.supabase
                         .from('orders')
                         .select('*')
                         .eq('seller_id', window.currentUser.id)
@@ -4294,7 +4940,7 @@
 
             static async updateOrderStatus(orderId, status) {
                 try {
-                    const { error } = await supabase
+                    const { error } = await window.supabase
                         .from('orders')
                         .update({ status: status })
                         .eq('id', orderId);
@@ -4325,7 +4971,7 @@
                 
                 try {
                     UIHelper.showLoading();
-                    const { error } = await supabase
+                    const { error } = await window.supabase
                         .from('products')
                         .delete()
                         .eq('id', productId);
@@ -4378,7 +5024,7 @@
                 UIHelper.showLoading();
                 
                 try {
-                    const { error } = await supabase
+                    const { error } = await window.supabase
                         .from('profiles')
                         .update({
                             name: name,
@@ -4431,7 +5077,7 @@
             static async loadRiderOverview() {
                 try {
                     // Get orders assigned to this rider
-                    const { data: orders, error } = await supabase
+                    const { data: orders, error } = await window.supabase
                         .from('orders')
                         .select('*')
                         .eq('rider_id', window.currentUser.id)
@@ -4444,12 +5090,12 @@
                         order.created_at && order.created_at.startsWith(today)
                     ).length;
                     
-                    const earningsToday = deliveriesToday * 300; // Mock earnings
+                    const earningsToday = deliveriesToday * 300;
                     
                     // Update stats
                     document.getElementById('deliveries-today').textContent = deliveriesToday;
                     document.getElementById('earnings-today').textContent = UIHelper.formatPrice(earningsToday);
-                    document.getElementById('deliveries-week').textContent = Math.floor(deliveriesToday * 3); // Mock weekly
+                    document.getElementById('deliveries-week').textContent = Math.floor(deliveriesToday * 3);
                     
                     // Load current delivery
                     const currentDelivery = (orders || []).find(order => 
@@ -4522,7 +5168,7 @@
             static async loadAvailableDeliveries() {
                 try {
                     // Get orders that are ready for delivery
-                    const { data: orders, error } = await supabase
+                    const { data: orders, error } = await window.supabase
                         .from('orders')
                         .select('*')
                         .eq('status', 'ready')
@@ -4585,7 +5231,7 @@
 
             static async loadActiveDeliveries() {
                 try {
-                    const { data: orders, error } = await supabase
+                    const { data: orders, error } = await window.supabase
                         .from('orders')
                         .select('*')
                         .eq('rider_id', window.currentUser.id)
@@ -4656,7 +5302,7 @@
 
             static async acceptDelivery(orderId) {
                 try {
-                    const { error } = await supabase
+                    const { error } = await window.supabase
                         .from('orders')
                         .update({ 
                             status: 'assigned',
@@ -4681,7 +5327,7 @@
 
             static async updateDeliveryStatus(orderId, status) {
                 try {
-                    const { error } = await supabase
+                    const { error } = await window.supabase
                         .from('orders')
                         .update({ status: status })
                         .eq('id', orderId);
@@ -4731,7 +5377,7 @@
                 UIHelper.showLoading();
                 
                 try {
-                    const { error } = await supabase
+                    const { error } = await window.supabase
                         .from('profiles')
                         .update({
                             name: name,
@@ -4766,7 +5412,7 @@
         // ========== FEATURED PRODUCTS ==========
         async function loadFeaturedProducts() {
             try {
-                const { data: products, error } = await supabase
+                const { data: products, error } = await window.supabase
                     .from('products')
                     .select('*')
                     .eq('status', 'published')
@@ -4808,7 +5454,7 @@
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
                                 <div class="product-price">${UIHelper.formatPrice(product.price)}</div>
-                                <button class="btn btn-primary" onclick="showPage('customer-dashboard'); showCustomerSection('products');">
+                                <button class="btn btn-primary" onclick="showPage('customer-dashboard'); setTimeout(() => showCustomerSection('products', event), 100)">
                                     <i class="fas fa-shopping-cart"></i> Shop Now
                                 </button>
                             </div>
@@ -4822,641 +5468,7 @@
             }
         }
 
-        // ========== UTILITY FUNCTIONS ==========
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        function toggleMobileMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            const authButtons = document.querySelector('.auth-buttons');
-            
-            if (navLinks.style.display === 'flex') {
-                navLinks.style.display = 'none';
-                authButtons.style.display = 'none';
-            } else {
-                navLinks.style.display = 'flex';
-                authButtons.style.display = 'flex';
-                navLinks.style.flexDirection = 'column';
-                navLinks.style.position = 'absolute';
-                navLinks.style.top = '100%';
-                navLinks.style.left = '0';
-                navLinks.style.right = '0';
-                navLinks.style.background = 'var(--white)';
-                navLinks.style.padding = '20px';
-                navLinks.style.boxShadow = 'var(--shadow)';
-                
-                authButtons.style.flexDirection = 'column';
-                authButtons.style.position = 'absolute';
-                authButtons.style.top = 'calc(100% + 200px)';
-                authButtons.style.left = '0';
-                authButtons.style.right = '0';
-                authButtons.style.background = 'var(--white)';
-                authButtons.style.padding = '20px';
-                authButtons.style.boxShadow = 'var(--shadow)';
-            }
-        }
-
-        function handleHeaderScroll() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('header-scrolled');
-            } else {
-                header.classList.remove('header-scrolled');
-            }
-        }
-
-        // ========== PAGE NAVIGATION ==========
-        function showPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // Show the selected page
-            const pageToShow = document.getElementById(pageId);
-            if (pageToShow) {
-                pageToShow.classList.add('active');
-                window.scrollTo(0, 0);
-            }
-        }
-
-        // Customer dashboard sections
-        function showCustomerSection(section) {
-            // Hide all sections
-            document.querySelectorAll('.customer-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav links
-            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Show the selected section
-            const sectionToShow = document.getElementById(`customer-${section}-section`);
-            if (sectionToShow) {
-                sectionToShow.classList.add('active');
-            }
-            
-            // Add active class to clicked nav link
-            event.target.classList.add('active');
-            
-            // Load data if needed
-            if (section === 'dashboard') {
-                CustomerDashboard.loadDashboardData();
-            } else if (section === 'products') {
-                CustomerDashboard.loadProducts();
-            } else if (section === 'orders') {
-                CustomerDashboard.loadOrders();
-            } else if (section === 'profile') {
-                CustomerDashboard.loadProfile();
-            }
-        }
-
-        // Seller dashboard sections
-        function showSellerSection(section) {
-            // Hide all sections
-            document.querySelectorAll('.seller-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav links
-            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Show the selected section
-            const sectionToShow = document.getElementById(`seller-${section}-section`);
-            if (sectionToShow) {
-                sectionToShow.classList.add('active');
-            }
-            
-            // Add active class to clicked nav link
-            event.target.classList.add('active');
-            
-            // Load data if needed
-            if (section === 'dashboard') {
-                SellerDashboard.loadSellerOverview();
-            } else if (section === 'products') {
-                SellerDashboard.loadProducts();
-            } else if (section === 'orders') {
-                SellerDashboard.loadOrders();
-            } else if (section === 'profile') {
-                SellerDashboard.loadProfile();
-            }
-        }
-
-        // Rider dashboard sections
-        function showRiderSection(section) {
-            // Hide all sections
-            document.querySelectorAll('.rider-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav links
-            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Show the selected section
-            const sectionToShow = document.getElementById(`rider-${section}-section`);
-            if (sectionToShow) {
-                sectionToShow.classList.add('active');
-            }
-            
-            // Add active class to clicked nav link
-            event.target.classList.add('active');
-            
-            // Load data if needed
-            if (section === 'dashboard') {
-                RiderDashboard.loadRiderOverview();
-            } else if (section === 'deliveries') {
-                RiderDashboard.loadAvailableDeliveries();
-            } else if (section === 'active') {
-                RiderDashboard.loadActiveDeliveries();
-            } else if (section === 'profile') {
-                RiderDashboard.loadProfile();
-            }
-        }
-
-        // ========== MODAL FUNCTIONS ==========
-        function openAuthModal() {
-            document.getElementById('auth-modal').style.display = 'flex';
-            switchAuthTab('login');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
-
-        function switchAuthTab(tab) {
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            const loginTab = document.getElementById('loginTab');
-            const registerTab = document.getElementById('registerTab');
-            
-            if (tab === 'login') {
-                loginForm.style.display = 'block';
-                signupForm.style.display = 'none';
-                loginTab.style.borderBottomColor = 'var(--primary)';
-                loginTab.style.color = 'var(--primary)';
-                registerTab.style.borderBottomColor = 'transparent';
-                registerTab.style.color = 'var(--dark)';
-            } else {
-                loginForm.style.display = 'none';
-                signupForm.style.display = 'block';
-                registerTab.style.borderBottomColor = 'var(--primary)';
-                registerTab.style.color = 'var(--primary)';
-                loginTab.style.borderBottomColor = 'transparent';
-                loginTab.style.color = 'var(--dark)';
-            }
-        }
-
-        function openForgotPasswordModal() {
-            closeAuthModal();
-            document.getElementById('forgot-password-modal').style.display = 'flex';
-        }
-
-        function closeForgotPasswordModal() {
-            document.getElementById('forgot-password-modal').style.display = 'none';
-        }
-
-        function openChangePasswordModal() {
-            document.getElementById('change-password-modal').style.display = 'flex';
-        }
-
-        function closeChangePasswordModal() {
-            document.getElementById('change-password-modal').style.display = 'none';
-        }
-
-        function openCheckoutModal() {
-            CustomerDashboard.openCheckoutModal();
-        }
-
-        function closeCheckoutModal() {
-            CustomerDashboard.closeCheckoutModal();
-        }
-
-        function openAddProductModal() {
-            document.getElementById('add-product-modal').style.display = 'flex';
-            // Clear form if not editing
-            if (!window.currentEditingProduct) {
-                document.getElementById('product-name').value = '';
-                document.getElementById('product-description').value = '';
-                document.getElementById('product-price').value = '';
-                document.getElementById('product-category').value = 'Food';
-                document.getElementById('product-stock').value = '';
-                document.getElementById('image-preview-grid').innerHTML = '';
-            }
-        }
-
-        function closeAddProductModal() {
-            document.getElementById('add-product-modal').style.display = 'none';
-            window.currentEditingProduct = null;
-        }
-
-        function openBulkImportModal() {
-            document.getElementById('bulk-import-modal').style.display = 'flex';
-        }
-
-        function closeBulkImportModal() {
-            document.getElementById('bulk-import-modal').style.display = 'none';
-        }
-
-        function closeRatingModal() {
-            document.getElementById('rating-modal').style.display = 'none';
-            window.currentRatingOrderId = null;
-        }
-
-        // ========== AUTH FUNCTIONS ==========
-        async function login() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            await AuthManager.login(email, password);
-        }
-
-        async function signup() {
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const name = document.getElementById('signup-name').value;
-            const role = document.getElementById('signup-role').value;
-            
-            await AuthManager.signup(email, password, name, role);
-        }
-
-        async function logout() {
-            await AuthManager.logout();
-        }
-
-        async function sendPasswordReset() {
-            const email = document.getElementById('reset-email').value;
-            await AuthManager.sendPasswordReset(email);
-        }
-
-        async function changePassword() {
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            
-            if (newPassword !== confirmPassword) {
-                UIHelper.showNotification('New passwords do not match', 'error');
-                return;
-            }
-            
-            await AuthManager.changePassword(currentPassword, newPassword);
-        }
-
-        // ========== PAYMENT FUNCTIONS ==========
-        function selectPaymentMethod(method) {
-            // Update UI
-            document.querySelectorAll('.payment-method').forEach(el => {
-                el.classList.remove('selected');
-            });
-            event.target.closest('.payment-method').classList.add('selected');
-            
-            // Show appropriate payment details
-            document.getElementById('mpesa-payment-details').style.display = 'none';
-            document.getElementById('card-payment-details').style.display = 'none';
-            document.getElementById('place-order-cash-btn').style.display = 'none';
-            
-            if (method === 'mpesa') {
-                document.getElementById('mpesa-payment-details').style.display = 'block';
-            } else if (method === 'card') {
-                document.getElementById('card-payment-details').style.display = 'block';
-            } else if (method === 'cash') {
-                document.getElementById('place-order-cash-btn').style.display = 'block';
-            }
-        }
-
-        async function processMpesaPayment() {
-            const phone = document.getElementById('mpesa-phone-checkout').value;
-            
-            if (!phone) {
-                UIHelper.showNotification('Please enter your M-Pesa phone number', 'error');
-                return;
-            }
-            
-            UIHelper.showLoading();
-            
-            try {
-                // Simulate M-Pesa API call
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                UIHelper.hideLoading();
-                UIHelper.showNotification('M-Pesa payment initiated. Please check your phone to complete the payment.', 'success');
-                
-                // After payment is confirmed, place the order
-                setTimeout(() => {
-                    CustomerDashboard.placeOrder('mpesa');
-                }, 2000);
-                
-            } catch (error) {
-                UIHelper.hideLoading();
-                UIHelper.showNotification('Error processing M-Pesa payment', 'error');
-            }
-        }
-
-        async function processCardPayment() {
-            const cardNumber = document.getElementById('card-number').value;
-            const cardExpiry = document.getElementById('card-expiry').value;
-            const cardCvc = document.getElementById('card-cvc').value;
-            
-            if (!cardNumber || !cardExpiry || !cardCvc) {
-                UIHelper.showNotification('Please fill in all card details', 'error');
-                return;
-            }
-            
-            UIHelper.showLoading();
-            
-            try {
-                // Simulate Stripe API call
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                UIHelper.hideLoading();
-                UIHelper.showNotification('Card payment processed successfully', 'success');
-                
-                // Place the order
-                CustomerDashboard.placeOrder('card');
-                
-            } catch (error) {
-                UIHelper.hideLoading();
-                UIHelper.showNotification('Error processing card payment', 'error');
-            }
-        }
-
-        function placeOrderWithCash() {
-            CustomerDashboard.placeOrderWithCash();
-        }
-
-        // ========== PRODUCT FUNCTIONS ==========
-        async function publishProduct() {
-            const name = document.getElementById('product-name').value;
-            const description = document.getElementById('product-description').value;
-            const price = document.getElementById('product-price').value;
-            const category = document.getElementById('product-category').value;
-            const stock = document.getElementById('product-stock').value;
-            
-            if (!name || !description || !price || !category || !stock) {
-                UIHelper.showNotification('Please fill in all required fields', 'error');
-                return;
-            }
-            
-            if (!window.currentUser) {
-                UIHelper.showNotification('Please log in to add products', 'error');
-                return;
-            }
-            
-            UIHelper.showLoading();
-            
-            try {
-                const productData = {
-                    title: name,
-                    short_description: description.substring(0, 100) + '...',
-                    full_description: description,
-                    price: parseFloat(price),
-                    category: category,
-                    stock: parseInt(stock),
-                    status: 'published',
-                    seller_id: window.currentUser.id,
-                    seller_name: window.currentUser.profile.name,
-                    created_at: new Date().toISOString()
-                };
-                
-                const { data: product, error } = await supabase
-                    .from('products')
-                    .insert([productData])
-                    .select()
-                    .single();
-                
-                if (error) throw error;
-                
-                UIHelper.hideLoading();
-                UIHelper.showNotification('Product published successfully!', 'success');
-                closeAddProductModal();
-                
-                // Refresh products list
-                SellerDashboard.loadProducts();
-                
-            } catch (error) {
-                UIHelper.hideLoading();
-                debug('Error publishing product:', error);
-                UIHelper.showNotification('Error publishing product: ' + error.message, 'error');
-            }
-        }
-
-        function saveProductAsDraft() {
-            UIHelper.showNotification('Draft saved (demo feature)', 'info');
-        }
-
-        // ========== OTHER FUNCTIONS ==========
-        function setLanguage(lang) {
-            UIHelper.showNotification(`Language changed to ${lang === 'en' ? 'English' : 'Kiswahili'}`, 'success');
-            // In a real implementation, you would update all text content
-        }
-
-        function filterProducts(category) {
-            // Update active filter
-            document.querySelectorAll('.category-filter').forEach(filter => {
-                filter.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // In a real implementation, you would filter the products
-            UIHelper.showNotification(`Filtered by: ${category}`, 'info');
-        }
-
-        function selectImportMethod(method) {
-            document.querySelectorAll('.payment-method').forEach(el => {
-                el.classList.remove('selected');
-            });
-            event.target.closest('.payment-method').classList.add('selected');
-        }
-
-        function processBulkImport() {
-            UIHelper.showNotification('Bulk import feature (demo)', 'info');
-            closeBulkImportModal();
-        }
-
-        function submitRating() {
-            UIHelper.showNotification('Thank you for your rating!', 'success');
-            closeRatingModal();
-        }
-
-        function sendCustomerMessage() {
-            const input = document.getElementById('customer-chat-input');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            const container = document.getElementById('customer-chat-messages');
-            
-            // Add message to UI
-            const messageElement = document.createElement('div');
-            messageElement.className = 'chat-message message-sent';
-            messageElement.innerHTML = `
-                <p>${message}</p>
-                <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px;">Just now</div>
-            `;
-            
-            container.appendChild(messageElement);
-            container.scrollTop = container.scrollHeight;
-            
-            // Clear input
-            input.value = '';
-            
-            // Simulate response
-            setTimeout(() => {
-                const responseElement = document.createElement('div');
-                responseElement.className = 'chat-message message-received';
-                responseElement.innerHTML = `
-                    <strong>IPATE Support</strong>
-                    <p>Thank you for your message. We'll get back to you shortly.</p>
-                    <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">Just now</div>
-                `;
-                
-                container.appendChild(responseElement);
-                container.scrollTop = container.scrollHeight;
-            }, 1000);
-        }
-
-        function sendSellerMessage() {
-            const input = document.getElementById('seller-chat-input');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            const container = document.getElementById('seller-chat-messages');
-            
-            // Add message to UI
-            const messageElement = document.createElement('div');
-            messageElement.className = 'chat-message message-sent';
-            messageElement.innerHTML = `
-                <p>${message}</p>
-                <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px;">Just now</div>
-            `;
-            
-            container.appendChild(messageElement);
-            container.scrollTop = container.scrollHeight;
-            
-            // Clear input
-            input.value = '';
-            
-            // Simulate response
-            setTimeout(() => {
-                const responseElement = document.createElement('div');
-                responseElement.className = 'chat-message message-received';
-                responseElement.innerHTML = `
-                    <strong>Customer Support</strong>
-                    <p>Thank you for your message. We'll assist you shortly.</p>
-                    <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">Just now</div>
-                `;
-                
-                container.appendChild(responseElement);
-                container.scrollTop = container.scrollHeight;
-            }, 1000);
-        }
-
-        function sendRiderMessage() {
-            const input = document.getElementById('rider-chat-input');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            const container = document.getElementById('rider-chat-messages');
-            
-            // Add message to UI
-            const messageElement = document.createElement('div');
-            messageElement.className = 'chat-message message-sent';
-            messageElement.innerHTML = `
-                <p>${message}</p>
-                <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px;">Just now</div>
-            `;
-            
-            container.appendChild(messageElement);
-            container.scrollTop = container.scrollHeight;
-            
-            // Clear input
-            input.value = '';
-            
-            // Simulate response
-            setTimeout(() => {
-                const responseElement = document.createElement('div');
-                responseElement.className = 'chat-message message-received';
-                responseElement.innerHTML = `
-                    <strong>Dispatch</strong>
-                    <p>Message received. Continue with your delivery.</p>
-                    <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">Just now</div>
-                `;
-                
-                container.appendChild(responseElement);
-                container.scrollTop = container.scrollHeight;
-            }, 1000);
-        }
-
-        // ========== IMAGE UPLOAD FUNCTIONS ==========
-        function handleImageUpload(event) {
-            // Demo function for image upload
-            UIHelper.showNotification('Image upload feature (demo)', 'info');
-        }
-
-        function handleProfileImageUpload(event) {
-            // Demo function for profile image upload
-            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
-        }
-
-        function handleSellerProfileImageUpload(event) {
-            // Demo function for seller profile image upload
-            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
-        }
-
-        function handleRiderProfileImageUpload(event) {
-            // Demo function for rider profile image upload
-            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
-        }
-
-        function handleRatingImageUpload(event) {
-            // Demo function for rating image upload
-            UIHelper.showNotification('Rating image upload feature (demo)', 'info');
-        }
-
-        function handleImportFileUpload(event) {
-            // Demo function for import file upload
-            UIHelper.showNotification('File selected for import (demo)', 'info');
-        }
-
-        // ========== ADDITIONAL CLASSES ==========
-        class LanguageManager {
-            static init() {
-                // Initialize language manager
-                debug('Language manager initialized');
-            }
-        }
-
-        class NotificationManager {
-            static init() {
-                // Initialize notification manager
-                debug('Notification manager initialized');
-            }
-        }
-
-        class ErrorHandler {
-            static init() {
-                // Initialize error handler
-                debug('Error handler initialized');
-            }
-        }
-
-        // ========== INITIALIZE APP ==========
+        // ========== START APPLICATION ==========
         document.addEventListener('DOMContentLoaded', () => {
             debug('DOM loaded, initializing app...');
             initializeApp();
@@ -5465,5 +5477,3 @@
     </script>
 </body>
 </html>
-
-
