@@ -3571,34 +3571,7 @@
         }
 
         // ========== INITIALIZATION ==========
-      async functionasync function loadSupabaseWithRetry() {
-    return new Promise((resolve) => {
-        // Check if Supabase is already loaded
-        if (window.supabase && window.supabase.createClient) {
-            resolve(true);
-            return;
-        }
-        
-        let attempts = 0;
-        const maxAttempts = 10;
-        
-        const checkSupabase = setInterval(() => {
-            attempts++;
-            console.log(`Supabase load attempt ${attempts}/${maxAttempts}`);
-            
-            if (window.supabase && window.supabase.createClient) {
-                clearInterval(checkSupabase);
-                console.log('✅ Supabase loaded successfully');
-                resolve(true);
-            } else if (attempts >= maxAttempts) {
-                clearInterval(checkSupabase);
-                console.log('❌ Supabase failed to load');
-                resolve(false);
-            }
-        }, 1000);
-    });
-}
-        initializeApp() {
+      async function initializeApp() {
     try {
         debug('Starting app initialization...');
         UIHelper.showLoading();
