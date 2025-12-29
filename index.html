@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/auth-ui-shared@0.1.0/dist/components/component.p.4f5913f4.js"></script>
     <style>
         :root {
             --primary: #2563eb;
@@ -2879,7 +2878,7 @@
                 </div>
             </div>
             <div style="text-align: center; padding-top: 20px; border-top: 1px solid var(--light-gray); color: var(--gray);">
-                <p>&copy; 2024 IPATE Deliveries. <span id="rights-text">All rights reserved.</span> | 
+                <p>&copy; 2025 IPATE Deliveries. <span id="rights-text">All rights reserved.</span> | 
                 <a href="javascript:void(0)" onclick="showPage('privacy-page')" style="color: var(--primary);">Privacy Policy</a> | 
                 <a href="javascript:void(0)" onclick="showPage('terms-page')" style="color: var(--primary);">Terms of Service</a></p>
             </div>
@@ -2887,634 +2886,74 @@
     </footer>
 
     <script>
-        // ========== GLOBAL DECLARATIONS ==========
+        // ========== CONFIGURATION ==========
+        const SUPABASE_URL = 'https://uzqsmjpcadjpezwzbnxw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6cXNtanBjYWRqcGV6d3pibnh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4OTA5MDMsImV4cCI6MjA4MjQ2NjkwM30.Ii1eCf_IUiCeXm0TF7QuCSBQEUTmuZuNhHNbjldodys';
+        
+        // ========== GLOBAL STATE ==========
         window.supabase = null;
         window.currentUser = null;
-        window.customerCart = JSON.parse(localStorage.getItem('customerCart') || '[]');
+        window.customerCart = JSON.parse(localStorage.getItem('ipate_cart') || '[]');
         window.currentEditingProduct = null;
         window.currentRatingOrderId = null;
-
-        // ========== DEBUG HELPERS ==========
+        window.appInitialized = false;
+        
+        // ========== DEBUG HELPER ==========
         function debug(message, data = null) {
-            console.log(`[DEBUG] ${message}`, data || '');
+            const timestamp = new Date().toLocaleTimeString();
+            console.log(`[IPATE ${timestamp}] ${message}`, data || '');
         }
-
-        // ========== PAGE NAVIGATION ==========
-        function showPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // Show the selected page
-            const pageToShow = document.getElementById(pageId);
-            if (pageToShow) {
-                pageToShow.classList.add('active');
-                window.scrollTo(0, 0);
-            }
-            
-            // Close mobile menu if open
-            closeMobileMenu();
-        }
-
-        // ========== MODAL FUNCTIONS ==========
-        function openAuthModal() {
-            document.getElementById('auth-modal').style.display = 'flex';
-            switchAuthTab('login');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
-
-        function switchAuthTab(tab) {
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            const loginTab = document.getElementById('loginTab');
-            const registerTab = document.getElementById('registerTab');
-            
-            if (tab === 'login') {
-                loginForm.style.display = 'block';
-                signupForm.style.display = 'none';
-                loginTab.style.borderBottomColor = 'var(--primary)';
-                loginTab.style.color = 'var(--primary)';
-                registerTab.style.borderBottomColor = 'transparent';
-                registerTab.style.color = 'var(--dark)';
-            } else {
-                loginForm.style.display = 'none';
-                signupForm.style.display = 'block';
-                registerTab.style.borderBottomColor = 'var(--primary)';
-                registerTab.style.color = 'var(--primary)';
-                loginTab.style.borderBottomColor = 'transparent';
-                loginTab.style.color = 'var(--dark)';
-            }
-        }
-
-        function openForgotPasswordModal() {
-            closeAuthModal();
-            document.getElementById('forgot-password-modal').style.display = 'flex';
-        }
-
-        function closeForgotPasswordModal() {
-            document.getElementById('forgot-password-modal').style.display = 'none';
-        }
-
-        function openChangePasswordModal() {
-            document.getElementById('change-password-modal').style.display = 'flex';
-        }
-
-        function closeChangePasswordModal() {
-            document.getElementById('change-password-modal').style.display = 'none';
-        }
-
-        function openCheckoutModal() {
-            CustomerDashboard.openCheckoutModal();
-        }
-
-        function closeCheckoutModal() {
-            CustomerDashboard.closeCheckoutModal();
-        }
-
-        function openAddProductModal() {
-            document.getElementById('add-product-modal').style.display = 'flex';
-            // Clear form if not editing
-            if (!window.currentEditingProduct) {
-                document.getElementById('product-name').value = '';
-                document.getElementById('product-description').value = '';
-                document.getElementById('product-price').value = '';
-                document.getElementById('product-category').value = 'Food';
-                document.getElementById('product-stock').value = '';
-                document.getElementById('image-preview-grid').innerHTML = '';
-            }
-        }
-
-        function closeAddProductModal() {
-            document.getElementById('add-product-modal').style.display = 'none';
-            window.currentEditingProduct = null;
-        }
-
-        function openBulkImportModal() {
-            document.getElementById('bulk-import-modal').style.display = 'flex';
-        }
-
-        function closeBulkImportModal() {
-            document.getElementById('bulk-import-modal').style.display = 'none';
-        }
-
-        function closeRatingModal() {
-            document.getElementById('rating-modal').style.display = 'none';
-            window.currentRatingOrderId = null;
-        }
-
-        // ========== MOBILE MENU ==========
-        function toggleMobileMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            const authButtons = document.querySelector('.auth-buttons');
-            
-            if (navLinks.style.display === 'flex') {
-                closeMobileMenu();
-            } else {
-                openMobileMenu();
-            }
-        }
-
-        function openMobileMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            const authButtons = document.querySelector('.auth-buttons');
-            
-            navLinks.style.display = 'flex';
-            authButtons.style.display = 'flex';
-            navLinks.style.flexDirection = 'column';
-            navLinks.style.position = 'fixed';
-            navLinks.style.top = '80px';
-            navLinks.style.left = '0';
-            navLinks.style.right = '0';
-            navLinks.style.background = 'var(--white)';
-            navLinks.style.padding = '20px';
-            navLinks.style.boxShadow = 'var(--shadow-lg)';
-            navLinks.style.zIndex = '1000';
-            
-            authButtons.style.flexDirection = 'column';
-            authButtons.style.position = 'fixed';
-            authButtons.style.top = '200px';
-            authButtons.style.left = '0';
-            authButtons.style.right = '0';
-            authButtons.style.background = 'var(--white)';
-            authButtons.style.padding = '20px';
-            authButtons.style.boxShadow = 'var(--shadow)';
-            authButtons.style.zIndex = '1000';
-        }
-
-        function closeMobileMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            const authButtons = document.querySelector('.auth-buttons');
-            
-            navLinks.style.display = 'none';
-            authButtons.style.display = 'none';
-        }
-
-        // ========== AUTH FUNCTIONS ==========
-        async function login() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            await AuthManager.login(email, password);
-        }
-
-        async function signup() {
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const name = document.getElementById('signup-name').value;
-            const role = document.getElementById('signup-role').value;
-            
-            await AuthManager.signup(email, password, name, role);
-        }
-
-        async function logout() {
-            await AuthManager.logout();
-        }
-
-        async function sendPasswordReset() {
-            const email = document.getElementById('reset-email').value;
-            await AuthManager.sendPasswordReset(email);
-        }
-
-        async function changePassword() {
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            
-            if (newPassword !== confirmPassword) {
-                UIHelper.showNotification('New passwords do not match', 'error');
-                return;
-            }
-            
-            await AuthManager.changePassword(currentPassword, newPassword);
-        }
-
-        // ========== PAYMENT FUNCTIONS ==========
-        function selectPaymentMethod(method, event) {
-            if (!event) event = window.event;
-            
-            // Update UI
-            document.querySelectorAll('.payment-method').forEach(el => {
-                el.classList.remove('selected');
-            });
-            event.target.closest('.payment-method').classList.add('selected');
-            
-            // Show appropriate payment details
-            document.getElementById('mpesa-payment-details').style.display = 'none';
-            document.getElementById('card-payment-details').style.display = 'none';
-            document.getElementById('place-order-cash-btn').style.display = 'none';
-            
-            if (method === 'mpesa') {
-                document.getElementById('mpesa-payment-details').style.display = 'block';
-            } else if (method === 'card') {
-                document.getElementById('card-payment-details').style.display = 'block';
-            } else if (method === 'cash') {
-                document.getElementById('place-order-cash-btn').style.display = 'block';
-            }
-        }
-
-        async function processMpesaPayment() {
-            const phone = document.getElementById('mpesa-phone-checkout').value;
-            
-            if (!phone) {
-                UIHelper.showNotification('Please enter your M-Pesa phone number', 'error');
-                return;
-            }
-            
-            UIHelper.showLoading();
-            
+        
+        // ========== INITIALIZE SUPABASE ==========
+        function initializeSupabase() {
             try {
-                // Simulate M-Pesa API call
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                debug('Initializing Supabase client...');
                 
-                UIHelper.hideLoading();
-                UIHelper.showNotification('M-Pesa payment initiated. Please check your phone to complete the payment.', 'success');
+                if (!window.supabase || !window.supabase.createClient) {
+                    debug('Supabase library not loaded yet, waiting...');
+                    return false;
+                }
                 
-                // After payment is confirmed, place the order
-                setTimeout(() => {
-                    CustomerDashboard.placeOrder('mpesa');
-                }, 2000);
+                window.supabase = window.supabase.createClient(
+                    SUPABASE_URL,
+                    SUPABASE_ANON_KEY,
+                    {
+                        auth: {
+                            persistSession: true,
+                            autoRefreshToken: true,
+                            detectSessionInUrl: true
+                        }
+                    }
+                );
                 
+                debug('✅ Supabase client initialized');
+                return true;
             } catch (error) {
-                UIHelper.hideLoading();
-                UIHelper.showNotification('Error processing M-Pesa payment', 'error');
+                debug('❌ Failed to initialize Supabase:', error);
+                return false;
             }
         }
-
-        async function processCardPayment() {
-            const cardNumber = document.getElementById('card-number').value;
-            const cardExpiry = document.getElementById('card-expiry').value;
-            const cardCvc = document.getElementById('card-cvc').value;
-            
-            if (!cardNumber || !cardExpiry || !cardCvc) {
-                UIHelper.showNotification('Please fill in all card details', 'error');
-                return;
-            }
-            
-            UIHelper.showLoading();
-            
+        
+        // ========== TEST CONNECTION ==========
+        async function testSupabaseConnection() {
             try {
-                // Simulate Stripe API call
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                debug('Testing Supabase connection...');
+                const { data, error } = await window.supabase.auth.getSession();
                 
-                UIHelper.hideLoading();
-                UIHelper.showNotification('Card payment processed successfully', 'success');
+                if (error) {
+                    debug('Connection test error:', error.message);
+                    return false;
+                }
                 
-                // Place the order
-                CustomerDashboard.placeOrder('card');
-                
+                debug('✅ Supabase connection successful');
+                return true;
             } catch (error) {
-                UIHelper.hideLoading();
-                UIHelper.showNotification('Error processing card payment', 'error');
+                debug('Connection test failed:', error.message);
+                return false;
             }
         }
-
-        function placeOrderWithCash() {
-            CustomerDashboard.placeOrderWithCash();
-        }
-
-        // ========== PRODUCT FUNCTIONS ==========
-        async function publishProduct() {
-            const name = document.getElementById('product-name').value;
-            const description = document.getElementById('product-description').value;
-            const price = document.getElementById('product-price').value;
-            const category = document.getElementById('product-category').value;
-            const stock = document.getElementById('product-stock').value;
-            
-            if (!name || !description || !price || !category || !stock) {
-                UIHelper.showNotification('Please fill in all required fields', 'error');
-                return;
-            }
-            
-            if (!window.currentUser) {
-                UIHelper.showNotification('Please log in to add products', 'error');
-                return;
-            }
-            
-            UIHelper.showLoading();
-            
-            try {
-                const productData = {
-                    title: name,
-                    short_description: description.substring(0, 100) + '...',
-                    full_description: description,
-                    price: parseFloat(price),
-                    category: category,
-                    stock: parseInt(stock),
-                    status: 'published',
-                    seller_id: window.currentUser.id,
-                    seller_name: window.currentUser.profile.name,
-                    created_at: new Date().toISOString()
-                };
-                
-                const { data: product, error } = await window.supabase
-                    .from('products')
-                    .insert([productData])
-                    .select()
-                    .single();
-                
-                if (error) throw error;
-                
-                UIHelper.hideLoading();
-                UIHelper.showNotification('Product published successfully!', 'success');
-                closeAddProductModal();
-                
-                // Refresh products list
-                SellerDashboard.loadProducts();
-                
-            } catch (error) {
-                UIHelper.hideLoading();
-                debug('Error publishing product:', error);
-                UIHelper.showNotification('Error publishing product: ' + error.message, 'error');
-            }
-        }
-
-        function saveProductAsDraft() {
-            UIHelper.showNotification('Draft saved (demo feature)', 'info');
-        }
-
-        // ========== OTHER FUNCTIONS ==========
-        function setLanguage(lang) {
-            UIHelper.showNotification(`Language changed to ${lang === 'en' ? 'English' : 'Kiswahili'}`, 'success');
-        }
-
-        function filterProducts(category, event) {
-            if (!event) event = window.event;
-            
-            // Update active filter
-            document.querySelectorAll('.category-filter').forEach(filter => {
-                filter.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // In a real implementation, you would filter the products
-            UIHelper.showNotification(`Filtered by: ${category}`, 'info');
-        }
-
-        function selectImportMethod(method, event) {
-            if (!event) event = window.event;
-            
-            document.querySelectorAll('.payment-method').forEach(el => {
-                el.classList.remove('selected');
-            });
-            event.target.closest('.payment-method').classList.add('selected');
-        }
-
-        function processBulkImport() {
-            UIHelper.showNotification('Bulk import feature (demo)', 'info');
-            closeBulkImportModal();
-        }
-
-        function submitRating() {
-            UIHelper.showNotification('Thank you for your rating!', 'success');
-            closeRatingModal();
-        }
-
-        function sendCustomerMessage() {
-            const input = document.getElementById('customer-chat-input');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            const container = document.getElementById('customer-chat-messages');
-            
-            // Add message to UI
-            const messageElement = document.createElement('div');
-            messageElement.className = 'chat-message message-sent';
-            messageElement.innerHTML = `
-                <p>${message}</p>
-                <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px;">Just now</div>
-            `;
-            
-            container.appendChild(messageElement);
-            container.scrollTop = container.scrollHeight;
-            
-            // Clear input
-            input.value = '';
-            
-            // Simulate response
-            setTimeout(() => {
-                const responseElement = document.createElement('div');
-                responseElement.className = 'chat-message message-received';
-                responseElement.innerHTML = `
-                    <strong>IPATE Support</strong>
-                    <p>Thank you for your message. We'll get back to you shortly.</p>
-                    <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">Just now</div>
-                `;
-                
-                container.appendChild(responseElement);
-                container.scrollTop = container.scrollHeight;
-            }, 1000);
-        }
-
-        function sendSellerMessage() {
-            const input = document.getElementById('seller-chat-input');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            const container = document.getElementById('seller-chat-messages');
-            
-            // Add message to UI
-            const messageElement = document.createElement('div');
-            messageElement.className = 'chat-message message-sent';
-            messageElement.innerHTML = `
-                <p>${message}</p>
-                <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px;">Just now</div>
-            `;
-            
-            container.appendChild(messageElement);
-            container.scrollTop = container.scrollHeight;
-            
-            // Clear input
-            input.value = '';
-            
-            // Simulate response
-            setTimeout(() => {
-                const responseElement = document.createElement('div');
-                responseElement.className = 'chat-message message-received';
-                responseElement.innerHTML = `
-                    <strong>Customer Support</strong>
-                    <p>Thank you for your message. We'll assist you shortly.</p>
-                    <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">Just now</div>
-                `;
-                
-                container.appendChild(responseElement);
-                container.scrollTop = container.scrollHeight;
-            }, 1000);
-        }
-
-        function sendRiderMessage() {
-            const input = document.getElementById('rider-chat-input');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            const container = document.getElementById('rider-chat-messages');
-            
-            // Add message to UI
-            const messageElement = document.createElement('div');
-            messageElement.className = 'chat-message message-sent';
-            messageElement.innerHTML = `
-                <p>${message}</p>
-                <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 5px;">Just now</div>
-            `;
-            
-            container.appendChild(messageElement);
-            container.scrollTop = container.scrollHeight;
-            
-            // Clear input
-            input.value = '';
-            
-            // Simulate response
-            setTimeout(() => {
-                const responseElement = document.createElement('div');
-                responseElement.className = 'chat-message message-received';
-                responseElement.innerHTML = `
-                    <strong>Dispatch</strong>
-                    <p>Message received. Continue with your delivery.</p>
-                    <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">Just now</div>
-                `;
-                
-                container.appendChild(responseElement);
-                container.scrollTop = container.scrollHeight;
-            }, 1000);
-        }
-
-        // ========== IMAGE UPLOAD FUNCTIONS ==========
-        function handleImageUpload(event) {
-            UIHelper.showNotification('Image upload feature (demo)', 'info');
-        }
-
-        function handleProfileImageUpload(event) {
-            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
-        }
-
-        function handleSellerProfileImageUpload(event) {
-            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
-        }
-
-        function handleRiderProfileImageUpload(event) {
-            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
-        }
-
-        function handleRatingImageUpload(event) {
-            UIHelper.showNotification('Rating image upload feature (demo)', 'info');
-        }
-
-        function handleImportFileUpload(event) {
-            UIHelper.showNotification('File selected for import (demo)', 'info');
-        }
-
-        // ========== CUSTOMER DASHBOARD SECTION SWITCHING ==========
-        function showCustomerSection(section, event) {
-            if (!event) event = window.event;
-            
-            // Hide all sections
-            document.querySelectorAll('.customer-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav links
-            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Show the selected section
-            const sectionToShow = document.getElementById(`customer-${section}-section`);
-            if (sectionToShow) {
-                sectionToShow.classList.add('active');
-            }
-            
-            // Add active class to clicked nav link
-            event.target.classList.add('active');
-            
-            // Load data if needed
-            if (section === 'dashboard') {
-                CustomerDashboard.loadDashboardData();
-            } else if (section === 'products') {
-                CustomerDashboard.loadProducts();
-            } else if (section === 'orders') {
-                CustomerDashboard.loadOrders();
-            } else if (section === 'profile') {
-                CustomerDashboard.loadProfile();
-            }
-        }
-
-        // ========== SELLER DASHBOARD SECTION SWITCHING ==========
-        function showSellerSection(section, event) {
-            if (!event) event = window.event;
-            
-            // Hide all sections
-            document.querySelectorAll('.seller-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav links
-            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Show the selected section
-            const sectionToShow = document.getElementById(`seller-${section}-section`);
-            if (sectionToShow) {
-                sectionToShow.classList.add('active');
-            }
-            
-            // Add active class to clicked nav link
-            event.target.classList.add('active');
-            
-            // Load data if needed
-            if (section === 'dashboard') {
-                SellerDashboard.loadSellerOverview();
-            } else if (section === 'products') {
-                SellerDashboard.loadProducts();
-            } else if (section === 'orders') {
-                SellerDashboard.loadOrders();
-            } else if (section === 'profile') {
-                SellerDashboard.loadProfile();
-            }
-        }
-
-        // ========== RIDER DASHBOARD SECTION SWITCHING ==========
-        function showRiderSection(section, event) {
-            if (!event) event = window.event;
-            
-            // Hide all sections
-            document.querySelectorAll('.rider-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav links
-            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Show the selected section
-            const sectionToShow = document.getElementById(`rider-${section}-section`);
-            if (sectionToShow) {
-                sectionToShow.classList.add('active');
-            }
-            
-            // Add active class to clicked nav link
-            event.target.classList.add('active');
-            
-            // Load data if needed
-            if (section === 'dashboard') {
-                RiderDashboard.loadRiderOverview();
-            } else if (section === 'deliveries') {
-                RiderDashboard.loadAvailableDeliveries();
-            } else if (section === 'active') {
-                RiderDashboard.loadActiveDeliveries();
-            } else if (section === 'profile') {
-                RiderDashboard.loadProfile();
-            }
-        }
-
-        // ========== UI HELPERS ==========
+        
+        // ========== UI HELPER CLASS ==========
         class UIHelper {
             static showLoading() {
                 const spinner = document.getElementById('loadingSpinner');
@@ -3569,509 +3008,260 @@
                 });
             }
         }
-
-        // ========== INITIALIZATION ==========
-      async function initializeApp() {
-    try {
-        debug('Starting app initialization...');
-        UIHelper.showLoading();
-
-        // Step 1: Load Supabase with retry
-        debug('Loading Supabase library...');
-        const supabaseLoaded = await loadSupabaseWithRetry();
         
-        if (!supabaseLoaded) {
-            throw new Error('Could not load Supabase library');
-        }
-        
-        // Step 2: Initialize client
-        debug('Initializing Supabase client...');
-        window.supabase = window.supabase.createClient(
-            'https://uzqsmjpcadjpezwzbnxw.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6cXNtanBjYWRqcGV6d3pibnh3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4OTA5MDMsImV4cCI6MjA4MjQ2NjkwM30.Ii1eCf_IUiCeXm0TF7QuCSBQEUTmuZuNhHNbjldodys',
-            {
-                auth: { 
-                    persistSession: true,
-                    autoRefreshToken: true,
-                    detectSessionInUrl: true
-                }
-            }
-        );
-        
-                // Step 3: Test connection
-                debug('Testing Supabase connection...');
-                const isConnected = await testSupabaseConnection();
-                if (!isConnected) {
-                    throw new Error('Failed to connect to Supabase');
-                }
-                
-                // Step 4: Initialize database schema
-                debug('Setting up database...');
-                await DatabaseSetup.initializeDatabase();
-                
-                // Step 5: Initialize auth
-                debug('Initializing authentication...');
-                await AuthManager.initAuth();
-                
-                // Step 6: Setup event listeners
-                debug('Setting up event listeners...');
-                setupEventListeners();
-                
-                // Step 7: Load featured products
-                debug('Loading featured products...');
-                await loadFeaturedProducts();
-                
-                UIHelper.hideLoading();
-                debug('✅ App initialized successfully');
-                
-            } catch (error) {
-                UIHelper.hideLoading();
-                console.error('❌ App initialization failed:', error);
-                UIHelper.showNotification('App initialization failed. Running in offline mode.', 'warning');
-                debug('Running in offline mode');
-                
-                // Initialize UI anyway for offline mode
-                setupEventListeners();
-                await loadFeaturedProducts();
-            }
-        }
-
-        async function waitForSupabase() {
-            return new Promise((resolve, reject) => {
-                let attempts = 0;
-                const maxAttempts = 20;
-                
-                const checkSupabase = setInterval(() => {
-                    attempts++;
-                    
-                    if (window.supabase && window.supabase.createClient) {
-                        clearInterval(checkSupabase);
-                        resolve();
-                    } else if (attempts >= maxAttempts) {
-                        clearInterval(checkSupabase);
-                        reject(new Error('Supabase library failed to load'));
-                    }
-                }, 500);
+        // ========== PAGE NAVIGATION ==========
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
             });
-        }
-
-        async function testSupabaseConnection() {
-            try {
-                const { data, error } = await window.supabase.auth.getSession();
-                if (error) throw error;
-                debug('✅ Supabase connection test passed');
-                return true;
-            } catch (error) {
-                debug('❌ Supabase connection test failed:', error);
-                return false;
+            
+            // Show the selected page
+            const pageToShow = document.getElementById(pageId);
+            if (pageToShow) {
+                pageToShow.classList.add('active');
+                window.scrollTo(0, 0);
             }
+            
+            // Close mobile menu if open
+            closeMobileMenu();
         }
-
-        function setupEventListeners() {
-            // Mobile menu toggle
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
-            }
-
-            // Auth modal tabs
+        
+        // ========== MODAL FUNCTIONS ==========
+        function openAuthModal() {
+            document.getElementById('auth-modal').style.display = 'flex';
+            switchAuthTab('login');
+        }
+        
+        function closeAuthModal() {
+            document.getElementById('auth-modal').style.display = 'none';
+        }
+        
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
             const loginTab = document.getElementById('loginTab');
             const registerTab = document.getElementById('registerTab');
-            if (loginTab && registerTab) {
-                loginTab.addEventListener('click', () => switchAuthTab('login'));
-                registerTab.addEventListener('click', () => switchAuthTab('register'));
-            }
-
-            // Header scroll effect
-            window.addEventListener('scroll', handleHeaderScroll);
-
-            // Product search with debounce
-            const searchProducts = document.getElementById('searchProducts');
-            if (searchProducts) {
-                searchProducts.addEventListener('input', debounce(() => {
-                    CustomerDashboard.loadProducts();
-                }, 500));
-            }
-
-            // Category filter
-            const categoryFilter = document.getElementById('categoryFilter');
-            if (categoryFilter) {
-                categoryFilter.addEventListener('change', () => {
-                    CustomerDashboard.loadProducts();
-                });
-            }
-
-            // Order status filter
-            const orderStatusFilter = document.getElementById('orderStatusFilter');
-            if (orderStatusFilter) {
-                orderStatusFilter.addEventListener('change', () => {
-                    CustomerDashboard.loadOrders();
-                });
-            }
-
-            // Chat input enter key
-            const chatInputs = ['customer-chat-input', 'seller-chat-input', 'rider-chat-input'];
-            chatInputs.forEach(id => {
-                const input = document.getElementById(id);
-                if (input) {
-                    input.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') {
-                            e.preventDefault();
-                            if (id === 'customer-chat-input') sendCustomerMessage();
-                            if (id === 'seller-chat-input') sendSellerMessage();
-                            if (id === 'rider-chat-input') sendRiderMessage();
-                        }
-                    });
-                }
-            });
-
-            // Close modals when clicking outside
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-            });
-
-            debug('Event listeners setup complete');
-        }
-
-        function handleHeaderScroll() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('header-scrolled');
+            
+            if (tab === 'login') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                loginTab.style.borderBottomColor = 'var(--primary)';
+                loginTab.style.color = 'var(--primary)';
+                registerTab.style.borderBottomColor = 'transparent';
+                registerTab.style.color = 'var(--dark)';
             } else {
-                header.classList.remove('header-scrolled');
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                registerTab.style.borderBottomColor = 'var(--primary)';
+                registerTab.style.color = 'var(--primary)';
+                loginTab.style.borderBottomColor = 'transparent';
+                loginTab.style.color = 'var(--dark)';
             }
         }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
+        
+        function openForgotPasswordModal() {
+            closeAuthModal();
+            document.getElementById('forgot-password-modal').style.display = 'flex';
+        }
+        
+        function closeForgotPasswordModal() {
+            document.getElementById('forgot-password-modal').style.display = 'none';
+        }
+        
+        function openChangePasswordModal() {
+            document.getElementById('change-password-modal').style.display = 'flex';
+        }
+        
+        function closeChangePasswordModal() {
+            document.getElementById('change-password-modal').style.display = 'none';
+        }
+        
+        function openCheckoutModal() {
+            CustomerDashboard.openCheckoutModal();
+        }
+        
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').style.display = 'none';
+        }
+        
+        function openAddProductModal() {
+            document.getElementById('add-product-modal').style.display = 'flex';
+        }
+        
+        function closeAddProductModal() {
+            document.getElementById('add-product-modal').style.display = 'none';
+        }
+        
+        function openBulkImportModal() {
+            document.getElementById('bulk-import-modal').style.display = 'flex';
+        }
+        
+        function closeBulkImportModal() {
+            document.getElementById('bulk-import-modal').style.display = 'none';
+        }
+        
+        function closeRatingModal() {
+            document.getElementById('rating-modal').style.display = 'none';
+            window.currentRatingOrderId = null;
+        }
+        
+        // ========== AUTH FUNCTIONS ==========
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                UIHelper.showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            UIHelper.showLoading();
+            
+            try {
+                const { data, error } = await window.supabase.auth.signInWithPassword({
+                    email: email.trim(),
+                    password: password
+                });
+                
+                if (error) throw error;
+                
+                UIHelper.hideLoading();
+                UIHelper.showNotification('Login successful!', 'success');
+                closeAuthModal();
+                
+                // Store user locally
+                window.currentUser = {
+                    id: data.user.id,
+                    email: data.user.email,
+                    profile: {
+                        name: data.user.user_metadata?.name || email.split('@')[0],
+                        role: data.user.user_metadata?.role || 'customer'
+                    }
                 };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // ========== DATABASE SETUP ==========
-        class DatabaseSetup {
-            static async initializeDatabase() {
-                try {
-                    debug('Initializing database schema...');
-                    
-                    // Create tables if they don't exist
-                    await this.createTables();
-                    
-                    debug('✅ Database setup completed');
-                } catch (error) {
-                    debug('Database setup error:', error);
-                    throw error;
-                }
-            }
-
-            static async createTables() {
-                // Check and create profiles table
-                try {
-                    const { error: profilesError } = await window.supabase
-                        .from('profiles')
-                        .select('*')
-                        .limit(1);
-                        
-                    if (profilesError) {
-                        debug('Profiles table might not exist, creating sample profile...');
-                    }
-                } catch (error) {
-                    debug('Profiles table check:', error);
-                }
-
-                // Check and create products table
-                try {
-                    const { error: productsError } = await window.supabase
-                        .from('products')
-                        .select('*')
-                        .limit(1);
-                        
-                    if (productsError) {
-                        debug('Products table might not exist, creating sample product...');
-                        const { error: createError } = await window.supabase
-                            .from('products')
-                            .insert([
-                                {
-                                    title: 'Sample Product',
-                                    short_description: 'A sample product for testing',
-                                    full_description: 'This is a sample product created during database initialization',
-                                    price: 1000,
-                                    category: 'Other',
-                                    stock: 10,
-                                    status: 'published',
-                                    seller_id: 'demo-seller',
-                                    seller_name: 'Demo Seller'
-                                }
-                            ]);
-                    }
-                } catch (error) {
-                    debug('Products table check:', error);
-                }
-
-                // Check and create orders table
-                try {
-                    const { error: ordersError } = await window.supabase
-                        .from('orders')
-                        .select('*')
-                        .limit(1);
-                        
-                    if (ordersError) {
-                        debug('Orders table might not exist...');
-                    }
-                } catch (error) {
-                    debug('Orders table check:', error);
-                }
+                
+                localStorage.setItem('ipate_user', JSON.stringify(window.currentUser));
+                await AuthManager.renderHeader();
+                
+                // Redirect to appropriate dashboard
+                AuthManager.redirectToDashboard(window.currentUser.profile.role);
+                
+            } catch (error) {
+                UIHelper.hideLoading();
+                debug('Login error:', error);
+                UIHelper.showNotification(error.message || 'Login failed', 'error');
             }
         }
-
-        // ========== AUTHENTICATION ==========
-        class AuthManager {
-            static async initAuth() {
-                try {
-                    const { data: { session } } = await window.supabase.auth.getSession();
-                    if (session) {
-                        await this.handleUserSession(session.user);
-                    }
-                    
-                    // Listen for auth changes
-                    window.supabase.auth.onAuthStateChange(async (event, session) => {
-                        debug('Auth state changed:', event);
-                        if (event === 'SIGNED_IN' && session) {
-                            await this.handleUserSession(session.user);
-                        } else if (event === 'SIGNED_OUT') {
-                            this.handleSignOut();
+        
+        async function signup() {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const name = document.getElementById('signup-name').value;
+            const role = document.getElementById('signup-role').value;
+            
+            if (!email || !password || !name || !role) {
+                UIHelper.showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            UIHelper.showLoading();
+            
+            try {
+                const { data, error } = await window.supabase.auth.signUp({
+                    email: email.trim(),
+                    password: password,
+                    options: {
+                        data: {
+                            name: name.trim(),
+                            role: role
                         }
-                    });
-                } catch (error) {
-                    debug('Auth initialization error:', error);
-                }
-            }
-
-            static async handleUserSession(user) {
-                try {
-                    // Get or create user profile
-                    let { data: profile, error } = await window.supabase
-                        .from('profiles')
-                        .select('*')
-                        .eq('id', user.id)
-                        .single();
-
-                    if (error && error.code === 'PGRST116') {
-                        // Profile doesn't exist, create one
-                        const { data: newProfile, error: createError } = await window.supabase
-                            .from('profiles')
-                            .insert([
-                                {
-                                    id: user.id,
-                                    email: user.email,
-                                    name: user.user_metadata?.name || user.email.split('@')[0],
-                                    role: user.user_metadata?.role || 'customer',
-                                    created_at: new Date().toISOString()
-                                }
-                            ])
-                            .select()
-                            .single();
-
-                        if (createError) throw createError;
-                        profile = newProfile;
-                    } else if (error) {
-                        throw error;
                     }
-
-                    // Store user data
-                    window.currentUser = { ...user, profile };
-                    localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
-                    
-                    // Update UI
-                    await this.renderHeader();
-                    
-                    // Redirect based on role
-                    this.redirectToDashboard(profile.role);
-                    
-                } catch (error) {
-                    debug('Error handling user session:', error);
-                    UIHelper.showNotification('Error loading user data', 'error');
-                }
+                });
+                
+                if (error) throw error;
+                
+                UIHelper.hideLoading();
+                UIHelper.showNotification('Account created successfully! Please check your email for verification.', 'success');
+                closeAuthModal();
+                
+            } catch (error) {
+                UIHelper.hideLoading();
+                debug('Signup error:', error);
+                UIHelper.showNotification(error.message || 'Signup failed', 'error');
             }
-
+        }
+        
+        async function logout() {
+            try {
+                UIHelper.showLoading();
+                
+                if (window.supabase) {
+                    const { error } = await window.supabase.auth.signOut();
+                    if (error) throw error;
+                }
+                
+                window.currentUser = null;
+                localStorage.removeItem('ipate_user');
+                
+                document.getElementById('authButtons').style.display = 'flex';
+                document.getElementById('userInfo').style.display = 'none';
+                
+                UIHelper.hideLoading();
+                UIHelper.showNotification('Logged out successfully', 'success');
+                showPage('landing-page');
+                
+            } catch (error) {
+                UIHelper.hideLoading();
+                debug('Logout error:', error);
+                
+                // Force logout locally anyway
+                window.currentUser = null;
+                localStorage.removeItem('ipate_user');
+                document.getElementById('authButtons').style.display = 'flex';
+                document.getElementById('userInfo').style.display = 'none';
+                showPage('landing-page');
+                
+                UIHelper.showNotification('Logged out', 'info');
+            }
+        }
+        
+        // ========== AUTH MANAGER ==========
+        class AuthManager {
             static async renderHeader() {
                 const user = window.currentUser;
+                
                 if (!user) {
                     document.getElementById('authButtons').style.display = 'flex';
                     document.getElementById('userInfo').style.display = 'none';
                     return;
                 }
-
+                
                 document.getElementById('authButtons').style.display = 'none';
                 document.getElementById('userInfo').style.display = 'flex';
                 
                 const avatarEl = document.getElementById('userAvatar');
-                avatarEl.textContent = (user.profile.name || user.email).split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
+                const name = user.profile?.name || user.email;
+                avatarEl.textContent = name.split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
                 
-                document.getElementById('userName').textContent = user.profile.name || user.email;
-                document.getElementById('userRole').textContent = user.profile.role.charAt(0).toUpperCase() + user.profile.role.slice(1);
+                document.getElementById('userName').textContent = name;
+                document.getElementById('userRole').textContent = user.profile?.role?.charAt(0).toUpperCase() + user.profile?.role?.slice(1) || 'User';
             }
-
+            
             static redirectToDashboard(role) {
                 switch (role) {
                     case 'seller':
                         showPage('seller-dashboard');
-                        SellerDashboard.initialize();
                         break;
                     case 'rider':
                         showPage('rider-dashboard');
-                        RiderDashboard.initialize();
                         break;
                     case 'customer':
                     default:
                         showPage('customer-dashboard');
-                        CustomerDashboard.initialize();
                         break;
                 }
             }
-
-            static handleSignOut() {
-                window.currentUser = null;
-                localStorage.removeItem('currentUser');
-                document.getElementById('authButtons').style.display = 'flex';
-                document.getElementById('userInfo').style.display = 'none';
-                showPage('landing-page');
-            }
-
-            static async login(email, password) {
-                try {
-                    if (!email || !password) {
-                        UIHelper.showNotification('Please fill in all fields', 'error');
-                        return;
-                    }
-                    
-                    UIHelper.showLoading();
-                    const { data, error } = await window.supabase.auth.signInWithPassword({
-                        email: email.trim(),
-                        password: password
-                    });
-
-                    if (error) throw error;
-                    
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Login successful!', 'success');
-                    closeAuthModal();
-                    return data;
-                } catch (error) {
-                    UIHelper.hideLoading();
-                    debug('Login error:', error);
-                    UIHelper.showNotification(error.message || 'Login failed', 'error');
-                    throw error;
-                }
-            }
-
-            static async signup(email, password, name, role) {
-                try {
-                    if (!email || !password || !name || !role) {
-                        UIHelper.showNotification('Please fill in all fields', 'error');
-                        return;
-                    }
-                    
-                    UIHelper.showLoading();
-                    const { data, error } = await window.supabase.auth.signUp({
-                        email: email.trim(),
-                        password: password,
-                        options: {
-                            data: { 
-                                name: name.trim(), 
-                                role: role 
-                            }
-                        }
-                    });
-
-                    if (error) throw error;
-
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Account created successfully! Please check your email for verification.', 'success');
-                    closeAuthModal();
-                    return data;
-                } catch (error) {
-                    UIHelper.hideLoading();
-                    debug('Signup error:', error);
-                    UIHelper.showNotification(error.message || 'Signup failed', 'error');
-                    throw error;
-                }
-            }
-
-            static async logout() {
-                try {
-                    UIHelper.showLoading();
-                    const { error } = await window.supabase.auth.signOut();
-                    if (error) throw error;
-                    
-                    UIHelper.hideLoading();
-                    this.handleSignOut();
-                    UIHelper.showNotification('Logged out successfully', 'success');
-                } catch (error) {
-                    UIHelper.hideLoading();
-                    debug('Logout error:', error);
-                    UIHelper.showNotification('Error logging out', 'error');
-                }
-            }
-
-            static async sendPasswordReset(email) {
-                try {
-                    if (!email) {
-                        UIHelper.showNotification('Please enter your email', 'error');
-                        return;
-                    }
-                    
-                    UIHelper.showLoading();
-                    const { error } = await window.supabase.auth.resetPasswordForEmail(email, {
-                        redirectTo: `${window.location.origin}`,
-                    });
-                    
-                    if (error) throw error;
-                    
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Password reset link sent to your email', 'success');
-                    closeForgotPasswordModal();
-                } catch (error) {
-                    UIHelper.hideLoading();
-                    debug('Password reset error:', error);
-                    UIHelper.showNotification('Error sending reset link', 'error');
-                }
-            }
-
-            static async changePassword(currentPassword, newPassword) {
-                try {
-                    if (!currentPassword || !newPassword) {
-                        UIHelper.showNotification('Please fill in all fields', 'error');
-                        return;
-                    }
-                    
-                    UIHelper.showLoading();
-                    const { error } = await window.supabase.auth.updateUser({
-                        password: newPassword
-                    });
-                    
-                    if (error) throw error;
-                    
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Password changed successfully', 'success');
-                    closeChangePasswordModal();
-                } catch (error) {
-                    UIHelper.hideLoading();
-                    debug('Password change error:', error);
-                    UIHelper.showNotification('Error changing password', 'error');
-                }
-            }
-
+            
             static requireAuth() {
                 if (!window.currentUser) {
                     openAuthModal();
@@ -4080,272 +3270,62 @@
                 return true;
             }
         }
-
+        
         // ========== CUSTOMER DASHBOARD ==========
         class CustomerDashboard {
             static cart = window.customerCart;
-
+            
             static initialize() {
                 if (!AuthManager.requireAuth()) return;
                 
                 const user = window.currentUser;
                 
-                // Update UI with user data
-                document.getElementById('customer-name').textContent = user.profile.name;
-                document.getElementById('customer-avatar').textContent = user.profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                // Update UI
+                if (document.getElementById('customer-name')) {
+                    document.getElementById('customer-name').textContent = user.profile?.name || user.email;
+                }
+                if (document.getElementById('customer-avatar')) {
+                    const name = user.profile?.name || user.email;
+                    document.getElementById('customer-avatar').textContent = 
+                        name.split(' ').map(n => n[0]).join('').toUpperCase();
+                }
                 
-                // Initialize data
+                // Load initial data
                 this.loadDashboardData();
-                this.loadProducts();
-                this.loadOrders();
                 this.updateCartDisplay();
-                this.loadProfile();
-            }
-
-            static async loadDashboardData() {
-                if (!window.currentUser) return;
                 
+                // Load featured products
+                loadFeaturedProducts();
+            }
+            
+            static loadDashboardData() {
                 try {
-                    const orders = await this.getOrders();
-                    
-                    // Update stats
+                    // Mock data for now
                     const stats = document.querySelectorAll('#customer-stats .stat-value');
-                    if (stats[0]) stats[0].textContent = orders.length;
-                    if (stats[1]) stats[1].textContent = orders.filter(order => 
-                        ['created', 'paid', 'accepted', 'ready', 'assigned', 'picked_up', 'in_transit'].includes(order.status)
-                    ).length;
-                    if (stats[2]) stats[2].textContent = orders.filter(order => 
-                        order.status === 'delivered'
-                    ).length;
-                    if (stats[3]) stats[3].textContent = '4.5 ★';
-
-                    // Load recent orders
-                    this.loadRecentOrders(orders.slice(0, 5));
+                    if (stats[0]) stats[0].textContent = '0';
+                    if (stats[1]) stats[1].textContent = '0';
+                    if (stats[2]) stats[2].textContent = '0';
+                    if (stats[3]) stats[3].textContent = '0 ★';
+                    
                 } catch (error) {
                     debug('Error loading dashboard data:', error);
                 }
             }
-
-            static async getOrders() {
-                if (!window.currentUser) return [];
-                
-                try {
-                    const { data, error } = await window.supabase
-                        .from('orders')
-                        .select('*')
-                        .eq('customer_id', window.currentUser.id)
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    return data || [];
-                } catch (error) {
-                    debug('Error fetching orders:', error);
-                    return [];
-                }
-            }
-
-            static loadRecentOrders(orders) {
-                const container = document.getElementById('customer-recent-orders');
-                if (!container) return;
-                
-                container.innerHTML = '';
-                
-                if (orders.length === 0) {
-                    container.innerHTML = `
-                        <div class="delivery-card">
-                            <p style="text-align: center; color: var(--gray);">No recent orders</p>
-                        </div>
-                    `;
-                    return;
+            
+            static updateCartDisplay() {
+                const cartCount = document.getElementById('cart-count');
+                if (cartCount) {
+                    const totalItems = this.cart.reduce((sum, item) => sum + item.quantity, 0);
+                    cartCount.textContent = totalItems;
                 }
                 
-                orders.forEach(order => {
-                    const orderElement = document.createElement('div');
-                    orderElement.className = 'delivery-card';
-                    orderElement.style.marginBottom = '10px';
-                    
-                    const statusClass = `status-${order.status}`;
-                    const statusText = order.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                    
-                    orderElement.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <strong>Order #${order.order_number || 'N/A'}</strong>
-                                <div style="color: var(--gray); font-size: 12px;">${order.created_at ? UIHelper.formatDate(order.created_at) : 'No date'}</div>
-                            </div>
-                            <span class="delivery-status ${statusClass}">${statusText}</span>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 14px;">
-                            Total: ${UIHelper.formatPrice(order.total || 0)}
-                        </div>
-                    `;
-                    container.appendChild(orderElement);
-                });
+                // Save to localStorage
+                localStorage.setItem('ipate_cart', JSON.stringify(this.cart));
+                window.customerCart = this.cart;
             }
-
-            static async loadProducts() {
-                try {
-                    const { data: products, error } = await window.supabase
-                        .from('products')
-                        .select('*')
-                        .eq('status', 'published')
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    
-                    const container = document.getElementById('products-list');
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (!products || products.length === 0) {
-                        container.innerHTML = `
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                                <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 20px;"></i>
-                                <h3 style="color: var(--gray);">No products available</h3>
-                                <p style="color: var(--gray);">Check back later for new products</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    products.forEach(product => {
-                        const productCard = document.createElement('div');
-                        productCard.className = 'product-card';
-                        
-                        let badge = '';
-                        if (product.stock === 0) {
-                            badge = '<div style="background: var(--danger); color: white; padding: 5px 10px; border-radius: 4px; position: absolute; top: 10px; right: 10px; font-size: 12px;">Out of Stock</div>';
-                        } else if (product.stock < 5) {
-                            badge = '<div style="background: var(--warning); color: white; padding: 5px 10px; border-radius: 4px; position: absolute; top: 10px; right: 10px; font-size: 12px;">Low Stock</div>';
-                        }
-                        
-                        const mainImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60';
-                        const isInCart = this.cart.some(item => item.productId === product.id);
-                        
-                        productCard.innerHTML = `
-                            ${badge}
-                            <div class="product-image" style="background-image: url('${mainImage}')">
-                                ${product.stock === 0 ? '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1;"></div>' : ''}
-                            </div>
-                            <div class="product-info">
-                                <h4>${product.title}</h4>
-                                <p style="color: var(--gray); font-size: 14px; margin: 10px 0;">${product.short_description}</p>
-                                <div class="seller-info">
-                                    <div class="seller-avatar">${product.seller_name ? product.seller_name.split(' ').map(n => n[0]).join('').toUpperCase() : 'S'}</div>
-                                    <span>${product.seller_name || 'Seller'}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div class="product-price">${UIHelper.formatPrice(product.price)}</div>
-                                    <div style="color: ${product.stock > 0 ? 'var(--success)' : 'var(--danger)'}; font-size: 14px;">
-                                        ${product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-                                    </div>
-                                </div>
-                                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                    <button class="btn ${isInCart ? 'btn-success' : 'btn-primary'}" onclick="CustomerDashboard.addToCart('${product.id}')" ${product.stock === 0 ? 'disabled' : ''}>
-                                        <i class="fas ${isInCart ? 'fa-check' : 'fa-cart-plus'}"></i> ${isInCart ? 'In Cart' : 'Add to Cart'}
-                                    </button>
-                                    <button class="btn btn-outline" onclick="CustomerDashboard.viewProduct('${product.id}')">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        
-                        container.appendChild(productCard);
-                    });
-                } catch (error) {
-                    debug('Error loading products:', error);
-                    UIHelper.showNotification('Error loading products', 'error');
-                }
-            }
-
-            static async loadOrders() {
-                if (!window.currentUser) return;
-                
-                try {
-                    const statusFilter = document.getElementById('orderStatusFilter')?.value || 'all';
-                    const orders = await this.getOrders();
-                    
-                    // Filter orders by status
-                    const filteredOrders = statusFilter === 'all' 
-                        ? orders 
-                        : orders.filter(order => order.status === statusFilter);
-                    
-                    const container = document.getElementById('customer-orders-list');
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (filteredOrders.length === 0) {
-                        container.innerHTML = `
-                            <div style="text-align: center; padding: 40px; color: var(--gray);">
-                                <i class="fas fa-clipboard-list" style="font-size: 48px; margin-bottom: 20px;"></i>
-                                <h3>No orders found</h3>
-                                <p>${statusFilter === 'all' ? 'Start shopping to see your orders here' : 'No orders with this status'}</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    for (const order of filteredOrders) {
-                        const orderCard = document.createElement('div');
-                        orderCard.className = 'delivery-card';
-                        
-                        const statusClass = `status-${order.status}`;
-                        const statusText = order.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                        
-                        orderCard.innerHTML = `
-                            <div class="delivery-header">
-                                <h4>Order #${order.order_number || 'N/A'}</h4>
-                                <div style="color: var(--gray); font-size: 14px; margin-top: 5px;">
-                                    ${order.created_at ? UIHelper.formatDate(order.created_at) : 'No date'}
-                                </div>
-                            </div>
-                            
-                            <div style="margin: 15px 0;">
-                                <p><strong>Seller:</strong> ${order.seller_name || 'Unknown'}</p>
-                                <p><strong>Delivery Address:</strong> ${order.shipping_address || 'No address provided'}</p>
-                                ${order.delivery_instructions ? `<p><strong>Instructions:</strong> ${order.delivery_instructions}</p>` : ''}
-                            </div>
-                            
-                            <div style="font-weight: bold; font-size: 18px; text-align: right; margin-top: 15px;">
-                                Total: ${UIHelper.formatPrice(order.total || 0)}
-                            </div>
-                            
-                            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                <button class="btn btn-outline btn-sm" onclick="CustomerDashboard.viewOrderDetails('${order.id}')">
-                                    <i class="fas fa-eye"></i> Details
-                                </button>
-                                ${order.status === 'created' ? `
-                                    <button class="btn btn-danger btn-sm" onclick="CustomerDashboard.cancelOrder('${order.id}')">
-                                        <i class="fas fa-times"></i> Cancel
-                                    </button>
-                                ` : ''}
-                                ${['assigned', 'picked_up', 'in_transit'].includes(order.status) ? `
-                                    <button class="btn btn-primary btn-sm" onclick="CustomerDashboard.trackOrder('${order.id}')">
-                                        <i class="fas fa-map-marker-alt"></i> Track
-                                    </button>
-                                ` : ''}
-                                ${order.status === 'delivered' ? `
-                                    <button class="btn btn-success btn-sm" onclick="CustomerDashboard.rateOrder('${order.id}')">
-                                        <i class="fas fa-star"></i> Rate
-                                    </button>
-                                ` : ''}
-                            </div>
-                        `;
-                        
-                        container.appendChild(orderCard);
-                    }
-                } catch (error) {
-                    debug('Error loading orders:', error);
-                    UIHelper.showNotification('Error loading orders', 'error');
-                }
-            }
-
+            
             static addToCart(productId) {
                 try {
-                    // For now, we'll use mock data since we can't fetch single product
                     const mockProduct = {
                         id: productId,
                         title: `Product ${productId}`,
@@ -4364,112 +3344,25 @@
                             price: mockProduct.price,
                             quantity: 1,
                             image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
-                            sellerId: 'demo-seller',
                             sellerName: mockProduct.seller_name
                         });
                     }
                     
-                    this.saveCart();
                     this.updateCartDisplay();
                     UIHelper.showNotification(`${mockProduct.title} added to cart!`, 'success');
                     
-                    // Reload products to update cart button
-                    this.loadProducts();
                 } catch (error) {
                     debug('Error adding to cart:', error);
-                    UIHelper.showNotification('Error adding product to cart', 'error');
+                    UIHelper.showNotification('Error adding to cart', 'error');
                 }
             }
-
+            
             static removeFromCart(productId) {
                 this.cart = this.cart.filter(item => item.productId !== productId);
-                this.saveCart();
                 this.updateCartDisplay();
-                this.loadProducts();
                 UIHelper.showNotification('Item removed from cart', 'success');
             }
-
-            static updateCartDisplay() {
-                const cartCount = document.getElementById('cart-count');
-                const cartItemCount = document.getElementById('cart-item-count');
-                const cartTotalAmount = document.getElementById('cart-total');
-                
-                if (cartCount) cartCount.textContent = this.cart.reduce((sum, item) => sum + item.quantity, 0);
-                if (cartItemCount) cartItemCount.textContent = `${this.cart.reduce((sum, item) => sum + item.quantity, 0)} items`;
-                
-                const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                const deliveryFee = 150;
-                const total = subtotal + deliveryFee;
-                
-                if (document.getElementById('cart-subtotal')) {
-                    document.getElementById('cart-subtotal').textContent = UIHelper.formatPrice(subtotal);
-                }
-                if (cartTotalAmount) cartTotalAmount.textContent = UIHelper.formatPrice(total);
-                
-                // Update cart items display
-                const cartItemsContainer = document.getElementById('cart-items');
-                if (cartItemsContainer) {
-                    cartItemsContainer.innerHTML = '';
-                    
-                    if (this.cart.length === 0) {
-                        cartItemsContainer.innerHTML = `
-                            <div style="text-align: center; padding: 40px; color: var(--gray);">
-                                <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 20px;"></i>
-                                <h3>Your cart is empty</h3>
-                                <p>Add some products to get started</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    this.cart.forEach(item => {
-                        const cartItem = document.createElement('div');
-                        cartItem.className = 'cart-item';
-                        cartItem.innerHTML = `
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <div style="width: 60px; height: 60px; background-image: url('${item.image}'); background-size: cover; background-position: center; border-radius: 8px;"></div>
-                                <div>
-                                    <h4>${item.name}</h4>
-                                    <div style="color: var(--gray); font-size: 14px;">${UIHelper.formatPrice(item.price)} × ${item.quantity}</div>
-                                    <div style="color: var(--gray); font-size: 12px;">Seller: ${item.sellerName}</div>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    <button class="btn btn-sm btn-outline" onclick="CustomerDashboard.updateQuantity('${item.productId}', ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
-                                    <span style="font-weight: bold;">${item.quantity}</span>
-                                    <button class="btn btn-sm btn-outline" onclick="CustomerDashboard.updateQuantity('${item.productId}', ${item.quantity + 1})">+</button>
-                                </div>
-                                <div style="font-weight: bold;">${UIHelper.formatPrice(item.price * item.quantity)}</div>
-                                <button class="btn btn-sm btn-danger" onclick="CustomerDashboard.removeFromCart('${item.productId}')">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        `;
-                        cartItemsContainer.appendChild(cartItem);
-                    });
-                }
-            }
-
-            static updateQuantity(productId, newQuantity) {
-                if (newQuantity <= 0) {
-                    this.removeFromCart(productId);
-                    return;
-                }
-                
-                const cartItem = this.cart.find(item => item.productId === productId);
-                if (cartItem) {
-                    cartItem.quantity = newQuantity;
-                    this.saveCart();
-                    this.updateCartDisplay();
-                }
-            }
-
-            static saveCart() {
-                window.customerCart = this.cart;
-                localStorage.setItem('customerCart', JSON.stringify(this.cart));
-            }
-
+            
             static clearCart() {
                 if (this.cart.length === 0) {
                     UIHelper.showNotification('Cart is already empty', 'warning');
@@ -4478,61 +3371,57 @@
                 
                 if (confirm('Are you sure you want to clear your cart?')) {
                     this.cart = [];
-                    this.saveCart();
                     this.updateCartDisplay();
-                    this.loadProducts();
                     UIHelper.showNotification('Cart cleared successfully', 'success');
                 }
             }
-
+            
             static openCheckoutModal() {
-                debug('Opening checkout modal, cart items:', this.cart);
-                
                 if (this.cart.length === 0) {
                     UIHelper.showNotification('Your cart is empty', 'warning');
                     return;
                 }
                 
+                // Calculate total
+                const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const deliveryFee = 150;
+                const total = subtotal + deliveryFee;
+                
+                // Update checkout modal
                 const checkoutItems = document.getElementById('checkout-items');
                 const checkoutTotal = document.getElementById('checkout-total');
                 
-                let itemsHTML = '';
-                let total = 0;
-                
-                this.cart.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    total += itemTotal;
+                if (checkoutItems) {
+                    let itemsHTML = '';
+                    this.cart.forEach(item => {
+                        const itemTotal = item.price * item.quantity;
+                        itemsHTML += `
+                            <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--light-gray);">
+                                <span>${item.name} × ${item.quantity}</span>
+                                <span>${UIHelper.formatPrice(itemTotal)}</span>
+                            </div>
+                        `;
+                    });
+                    
                     itemsHTML += `
                         <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--light-gray);">
-                            <span>${item.name} × ${item.quantity}</span>
-                            <span>${UIHelper.formatPrice(itemTotal)}</span>
+                            <span>Delivery Fee</span>
+                            <span>${UIHelper.formatPrice(deliveryFee)}</span>
                         </div>
                     `;
-                });
+                    
+                    checkoutItems.innerHTML = itemsHTML;
+                }
                 
-                // Add delivery fee
-                const deliveryFee = 150;
-                total += deliveryFee;
-                itemsHTML += `
-                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--light-gray);">
-                        <span>Delivery Fee</span>
-                        <span>${UIHelper.formatPrice(deliveryFee)}</span>
-                    </div>
-                `;
-                
-                checkoutItems.innerHTML = itemsHTML;
-                checkoutTotal.textContent = UIHelper.formatPrice(total);
+                if (checkoutTotal) {
+                    checkoutTotal.textContent = UIHelper.formatPrice(total);
+                }
                 
                 document.getElementById('checkout-modal').style.display = 'flex';
             }
-
-            static closeCheckoutModal() {
-                document.getElementById('checkout-modal').style.display = 'none';
-            }
-
-            static async placeOrder(paymentMethod = 'cash') {
+            
+            static placeOrderWithCash() {
                 const deliveryAddress = document.getElementById('delivery-address')?.value;
-                const deliveryInstructions = document.getElementById('delivery-instructions')?.value;
                 
                 if (!deliveryAddress) {
                     UIHelper.showNotification('Please enter a delivery address', 'error');
@@ -4544,165 +3433,37 @@
                     return;
                 }
                 
-                if (!window.currentUser) {
-                    UIHelper.showNotification('Please log in to place an order', 'error');
-                    return;
-                }
-                
                 UIHelper.showLoading();
                 
-                try {
-                    // Calculate total
-                    const subtotal = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                    const deliveryFee = 150;
-                    const total = subtotal + deliveryFee;
+                // Simulate order processing
+                setTimeout(() => {
+                    UIHelper.hideLoading();
                     
-                    // Create order
-                    const orderNumber = 'ORD' + Date.now() + Math.random().toString(36).substr(2, 5);
-                    const orderData = {
-                        order_number: orderNumber,
-                        customer_id: window.currentUser.id,
-                        customer_name: window.currentUser.profile.name,
-                        seller_id: 'demo-seller',
-                        seller_name: 'Demo Seller',
-                        total: total,
-                        subtotal: subtotal,
-                        delivery_fee: deliveryFee,
-                        status: 'created',
-                        payment_method: paymentMethod,
-                        payment_status: paymentMethod === 'cash' ? 'pending' : 'completed',
-                        shipping_address: deliveryAddress,
-                        delivery_instructions: deliveryInstructions || '',
-                        created_at: new Date().toISOString()
-                    };
-                    
-                    const { data: order, error } = await window.supabase
-                        .from('orders')
-                        .insert([orderData])
-                        .select()
-                        .single();
-                    
-                    if (error) throw error;
+                    // Generate order number
+                    const orderNumber = 'ORD' + Date.now().toString().slice(-6);
                     
                     // Clear cart
                     this.cart = [];
-                    this.saveCart();
                     this.updateCartDisplay();
-                    this.loadProducts();
                     
-                    this.closeCheckoutModal();
-                    UIHelper.hideLoading();
+                    // Close modal
+                    document.getElementById('checkout-modal').style.display = 'none';
                     
+                    // Show success message
                     UIHelper.showNotification(`Order #${orderNumber} placed successfully!`, 'success');
                     
-                    // Refresh dashboards
-                    setTimeout(() => {
-                        this.loadDashboardData();
-                        this.loadOrders();
-                    }, 1000);
+                    // Reset form
+                    if (document.getElementById('delivery-address')) {
+                        document.getElementById('delivery-address').value = '';
+                    }
+                    if (document.getElementById('delivery-instructions')) {
+                        document.getElementById('delivery-instructions').value = '';
+                    }
                     
-                } catch (error) {
-                    UIHelper.hideLoading();
-                    debug('Error placing order:', error);
-                    UIHelper.showNotification('Error placing order: ' + error.message, 'error');
-                }
-            }
-
-            static placeOrderWithCash() {
-                this.placeOrder('cash');
-            }
-
-            static viewOrderDetails(orderId) {
-                alert(`Order Details\n\nFull order details would be shown here with items list and timeline.`);
-            }
-
-            static trackOrder(orderId) {
-                alert(`Tracking Order\n\nLive tracking would be displayed here with a map showing rider location and estimated delivery time.`);
-            }
-
-            static rateOrder(orderId) {
-                window.currentRatingOrderId = orderId;
-                document.getElementById('rating-modal').style.display = 'flex';
-            }
-
-            static async cancelOrder(orderId) {
-                if (!confirm('Are you sure you want to cancel this order?')) return;
-                
-                try {
-                    const { error } = await window.supabase
-                        .from('orders')
-                        .update({ status: 'cancelled' })
-                        .eq('id', orderId);
-                    
-                    if (error) throw error;
-                    
-                    UIHelper.showNotification('Order cancelled successfully', 'success');
-                    this.loadOrders();
-                    this.loadDashboardData();
-                } catch (error) {
-                    debug('Error cancelling order:', error);
-                    UIHelper.showNotification('Error cancelling order', 'error');
-                }
-            }
-
-            static viewProduct(productId) {
-                alert(`Product Details\n\nFull product information would be shown here with multiple images, reviews, and detailed description.`);
-            }
-
-            static async loadProfile() {
-                if (!window.currentUser) return;
-                
-                const user = window.currentUser;
-                
-                document.getElementById('profile-name').value = user.profile.name || '';
-                document.getElementById('profile-email').value = user.email || '';
-                document.getElementById('profile-phone').value = user.profile.phone || '';
-                document.getElementById('profile-address').value = user.profile.default_address || '';
-            }
-
-            static async updateProfile() {
-                const name = document.getElementById('profile-name')?.value;
-                const phone = document.getElementById('profile-phone')?.value;
-                const address = document.getElementById('profile-address')?.value;
-                
-                if (!name) {
-                    UIHelper.showNotification('Please enter your name', 'error');
-                    return;
-                }
-                
-                UIHelper.showLoading();
-                
-                try {
-                    const { error } = await window.supabase
-                        .from('profiles')
-                        .update({
-                            name: name,
-                            phone: phone || null,
-                            default_address: address || null
-                        })
-                        .eq('id', window.currentUser.id);
-                    
-                    if (error) throw error;
-                    
-                    // Update local user data
-                    window.currentUser.profile.name = name;
-                    window.currentUser.profile.phone = phone;
-                    window.currentUser.profile.default_address = address;
-                    localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
-                    
-                    // Update header
-                    AuthManager.renderHeader();
-                    
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Profile updated successfully', 'success');
-                } catch (error) {
-                    UIHelper.hideLoading();
-                    debug('Error updating profile:', error);
-                    UIHelper.showNotification('Error updating profile', 'error');
-                }
+                }, 2000);
             }
         }
-
+        
         // ========== SELLER DASHBOARD ==========
         class SellerDashboard {
             static initialize() {
@@ -4710,366 +3471,21 @@
                 
                 const user = window.currentUser;
                 
-                // Update UI with user data
-                document.getElementById('seller-name').textContent = user.profile.name;
-                document.getElementById('seller-avatar').textContent = user.profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                
-                // Load seller data
-                this.loadSellerOverview();
-                this.loadProducts();
-                this.loadOrders();
-                this.loadProfile();
-            }
-
-            static async loadSellerOverview() {
-                if (!window.currentUser) return;
-                
-                try {
-                    const { data: orders, error } = await window.supabase
-                        .from('orders')
-                        .select('*')
-                        .eq('seller_id', window.currentUser.id);
-                    
-                    if (error) throw error;
-                    
-                    // Calculate earnings from delivered orders
-                    const totalEarnings = (orders || [])
-                        .filter(order => order.status === 'delivered')
-                        .reduce((sum, order) => sum + (order.total || 0), 0);
-
-                    // Update stats
-                    document.getElementById('seller-total-revenue').textContent = UIHelper.formatPrice(totalEarnings);
-                    document.getElementById('seller-weekly-revenue').textContent = UIHelper.formatPrice(Math.floor(totalEarnings * 0.3));
-                    document.getElementById('seller-today-revenue').textContent = UIHelper.formatPrice(Math.floor(totalEarnings * 0.1));
-                    document.getElementById('seller-total-orders').textContent = (orders || []).length;
-                    
-                    // Load recent orders
-                    this.loadRecentOrders((orders || []).slice(0, 5));
-                } catch (error) {
-                    debug('Error loading seller overview:', error);
+                if (document.getElementById('seller-name')) {
+                    document.getElementById('seller-name').textContent = user.profile?.name || user.email;
+                }
+                if (document.getElementById('seller-avatar')) {
+                    const name = user.profile?.name || user.email;
+                    document.getElementById('seller-avatar').textContent = 
+                        name.split(' ').map(n => n[0]).join('').toUpperCase();
                 }
             }
-
-            static loadRecentOrders(orders) {
-                const container = document.getElementById('seller-recent-orders');
-                if (!container) return;
-                
-                container.innerHTML = '';
-                
-                if (!orders || orders.length === 0) {
-                    container.innerHTML = '<p style="color: var(--gray); text-align: center;">No recent orders</p>';
-                    return;
-                }
-                
-                orders.forEach(order => {
-                    const orderElement = document.createElement('div');
-                    orderElement.className = 'delivery-card';
-                    orderElement.style.marginBottom = '10px';
-                    
-                    const statusClass = `status-${order.status}`;
-                    const statusText = order.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                    
-                    orderElement.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <strong>Order #${order.order_number || 'N/A'}</strong>
-                                <div style="color: var(--gray); font-size: 12px;">${order.created_at ? UIHelper.formatDate(order.created_at) : 'No date'}</div>
-                            </div>
-                            <span class="delivery-status ${statusClass}">${statusText}</span>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 14px;">
-                            Total: ${UIHelper.formatPrice(order.total || 0)}
-                        </div>
-                        <div style="margin-top: 10px;">
-                            <button class="btn btn-sm btn-primary" onclick="SellerDashboard.viewOrderDetails('${order.id}')">View Details</button>
-                        </div>
-                    `;
-                    container.appendChild(orderElement);
-                });
-            }
-
-            static async loadProducts() {
-                try {
-                    const { data: products, error } = await window.supabase
-                        .from('products')
-                        .select('*')
-                        .eq('seller_id', window.currentUser.id)
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    
-                    const container = document.getElementById('seller-products-list');
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (!products || products.length === 0) {
-                        container.innerHTML = `
-                            <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                                <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 20px;"></i>
-                                <h3 style="color: var(--gray);">No products yet</h3>
-                                <p style="color: var(--gray);">Add your first product to start selling</p>
-                                <button class="btn btn-primary" onclick="openAddProductModal()" style="margin-top: 20px;">
-                                    <i class="fas fa-plus"></i> Add First Product
-                                </button>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    products.forEach(product => {
-                        const productCard = document.createElement('div');
-                        productCard.className = 'product-card';
-                        
-                        let badge = '';
-                        if (product.stock === 0) {
-                            badge = '<div style="background: var(--danger); color: white; padding: 5px 10px; border-radius: 4px; position: absolute; top: 10px; right: 10px; font-size: 12px;">Out of Stock</div>';
-                        } else if (product.stock < 5) {
-                            badge = '<div style="background: var(--warning); color: white; padding: 5px 10px; border-radius: 4px; position: absolute; top: 10px; right: 10px; font-size: 12px;">Low Stock</div>';
-                        }
-                        
-                        const mainImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60';
-                        
-                        productCard.innerHTML = `
-                            ${badge}
-                            <div class="product-image" style="background-image: url('${mainImage}')">
-                                ${product.stock === 0 ? '<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1;"></div>' : ''}
-                            </div>
-                            <div class="product-info">
-                                <h4>${product.title}</h4>
-                                <p style="color: var(--gray); font-size: 14px; margin: 10px 0;">${product.short_description}</p>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div class="product-price">${UIHelper.formatPrice(product.price)}</div>
-                                    <div style="color: ${product.stock > 0 ? 'var(--success)' : 'var(--danger)'}; font-size: 14px;">
-                                        ${product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-                                    </div>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                    <div style="color: var(--warning);">
-                                        <i class="fas fa-star"></i> 4.5
-                                    </div>
-                                    <div style="color: var(--gray); font-size: 12px;">
-                                        ${product.category}
-                                    </div>
-                                </div>
-                                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                    <button class="btn btn-primary" onclick="SellerDashboard.editProduct('${product.id}')">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </button>
-                                    <button class="btn btn-danger" onclick="SellerDashboard.deleteProduct('${product.id}')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        
-                        container.appendChild(productCard);
-                    });
-                } catch (error) {
-                    debug('Error loading products:', error);
-                    UIHelper.showNotification('Error loading products', 'error');
-                }
-            }
-
-            static async loadOrders() {
-                if (!window.currentUser) return;
-                
-                try {
-                    const { data: orders, error } = await window.supabase
-                        .from('orders')
-                        .select('*')
-                        .eq('seller_id', window.currentUser.id)
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    
-                    const container = document.getElementById('seller-orders-list');
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (!orders || orders.length === 0) {
-                        container.innerHTML = `
-                            <div style="text-align: center; padding: 40px; color: var(--gray);">
-                                <i class="fas fa-clipboard-list" style="font-size: 48px; margin-bottom: 20px;"></i>
-                                <h3>No orders yet</h3>
-                                <p>Orders from customers will appear here</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    orders.forEach(order => {
-                        const orderCard = document.createElement('div');
-                        orderCard.className = 'delivery-card';
-                        
-                        const statusClass = `status-${order.status}`;
-                        const statusText = order.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                        
-                        orderCard.innerHTML = `
-                            <div class="delivery-header">
-                                <h4>Order #${order.order_number || 'N/A'}</h4>
-                                <div style="color: var(--gray); font-size: 14px; margin-top: 5px;">
-                                    ${order.created_at ? UIHelper.formatDate(order.created_at) : 'No date'}
-                                </div>
-                            </div>
-                            
-                            <div style="margin: 15px 0;">
-                                <p><strong>Customer:</strong> ${order.customer_name || 'Unknown'}</p>
-                                <p><strong>Delivery Address:</strong> ${order.shipping_address || 'No address provided'}</p>
-                                ${order.delivery_instructions ? `<p><strong>Instructions:</strong> ${order.delivery_instructions}</p>` : ''}
-                            </div>
-                            
-                            <div style="font-weight: bold; font-size: 18px; text-align: right; margin-top: 15px;">
-                                Total: ${UIHelper.formatPrice(order.total || 0)}
-                            </div>
-                            
-                            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                <button class="btn btn-outline btn-sm" onclick="SellerDashboard.viewOrderDetails('${order.id}')">
-                                    <i class="fas fa-eye"></i> Details
-                                </button>
-                                ${order.status === 'created' ? `
-                                    <button class="btn btn-success btn-sm" onclick="SellerDashboard.updateOrderStatus('${order.id}', 'accepted')">
-                                        <i class="fas fa-check"></i> Accept
-                                    </button>
-                                    <button class="btn btn-danger btn-sm" onclick="SellerDashboard.updateOrderStatus('${order.id}', 'cancelled')">
-                                        <i class="fas fa-times"></i> Reject
-                                    </button>
-                                ` : ''}
-                                ${order.status === 'accepted' ? `
-                                    <button class="btn btn-primary btn-sm" onclick="SellerDashboard.updateOrderStatus('${order.id}', 'ready')">
-                                        <i class="fas fa-check-double"></i> Mark Ready
-                                    </button>
-                                ` : ''}
-                            </div>
-                        `;
-                        
-                        container.appendChild(orderCard);
-                    });
-                } catch (error) {
-                    debug('Error loading orders:', error);
-                    UIHelper.showNotification('Error loading orders', 'error');
-                }
-            }
-
-            static async updateOrderStatus(orderId, status) {
-                try {
-                    const { error } = await window.supabase
-                        .from('orders')
-                        .update({ status: status })
-                        .eq('id', orderId);
-                    
-                    if (error) throw error;
-                    
-                    UIHelper.showNotification(`Order ${status} successfully`, 'success');
-                    this.loadOrders();
-                    this.loadSellerOverview();
-                } catch (error) {
-                    debug('Error updating order status:', error);
-                    UIHelper.showNotification('Error updating order status', 'error');
-                }
-            }
-
-            static viewOrderDetails(orderId) {
-                alert(`Order Details\n\nFull order details would be shown here with customer information, items list, and order timeline.`);
-            }
-
-            static editProduct(productId) {
-                window.currentEditingProduct = productId;
-                openAddProductModal();
-                UIHelper.showNotification('Edit product functionality would load product data here', 'info');
-            }
-
-            static async deleteProduct(productId) {
-                if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
-                
-                try {
-                    UIHelper.showLoading();
-                    const { error } = await window.supabase
-                        .from('products')
-                        .delete()
-                        .eq('id', productId);
-                    
-                    if (error) throw error;
-                    
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Product deleted successfully', 'success');
-                    this.loadProducts();
-                } catch (error) {
-                    UIHelper.hideLoading();
-                    debug('Error deleting product:', error);
-                    UIHelper.showNotification('Error deleting product', 'error');
-                }
-            }
-
+            
             static refreshOrders() {
-                this.loadOrders();
                 UIHelper.showNotification('Orders refreshed', 'success');
             }
-
-            static async loadProfile() {
-                if (!window.currentUser) return;
-                
-                const user = window.currentUser;
-                
-                document.getElementById('seller-profile-name').value = user.profile.name || '';
-                document.getElementById('seller-profile-email').value = user.email || '';
-                document.getElementById('seller-profile-phone').value = user.profile.phone || '';
-                document.getElementById('seller-store-name').value = user.profile.store_name || '';
-                document.getElementById('seller-store-description').value = user.profile.store_description || '';
-            }
-
-            static async updateSellerProfile() {
-                const name = document.getElementById('seller-profile-name')?.value;
-                const phone = document.getElementById('seller-profile-phone')?.value;
-                const storeName = document.getElementById('seller-store-name')?.value;
-                const storeDescription = document.getElementById('seller-store-description')?.value;
-                
-                if (!name) {
-                    UIHelper.showNotification('Please enter your name', 'error');
-                    return;
-                }
-                
-                if (!storeName) {
-                    UIHelper.showNotification('Please enter your store name', 'error');
-                    return;
-                }
-                
-                UIHelper.showLoading();
-                
-                try {
-                    const { error } = await window.supabase
-                        .from('profiles')
-                        .update({
-                            name: name,
-                            phone: phone || null,
-                            store_name: storeName,
-                            store_description: storeDescription || null
-                        })
-                        .eq('id', window.currentUser.id);
-                    
-                    if (error) throw error;
-                    
-                    // Update local user data
-                    window.currentUser.profile.name = name;
-                    window.currentUser.profile.phone = phone;
-                    window.currentUser.profile.store_name = storeName;
-                    window.currentUser.profile.store_description = storeDescription;
-                    localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
-                    
-                    // Update header
-                    AuthManager.renderHeader();
-                    
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Profile updated successfully', 'success');
-                } catch (error) {
-                    UIHelper.hideLoading();
-                    debug('Error updating seller profile:', error);
-                    UIHelper.showNotification('Error updating profile', 'error');
-                }
-            }
         }
-
+        
         // ========== RIDER DASHBOARD ==========
         class RiderDashboard {
             static initialize() {
@@ -5077,417 +3493,488 @@
                 
                 const user = window.currentUser;
                 
-                // Update UI with user data
-                document.getElementById('rider-name').textContent = user.profile.name;
-                document.getElementById('rider-avatar').textContent = user.profile.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                
-                // Load rider data
-                this.loadRiderOverview();
-                this.loadAvailableDeliveries();
-                this.loadActiveDeliveries();
-                this.loadProfile();
-            }
-
-            static async loadRiderOverview() {
-                try {
-                    // Get orders assigned to this rider
-                    const { data: orders, error } = await window.supabase
-                        .from('orders')
-                        .select('*')
-                        .eq('rider_id', window.currentUser.id)
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    
-                    const today = new Date().toISOString().split('T')[0];
-                    const deliveriesToday = (orders || []).filter(order => 
-                        order.created_at && order.created_at.startsWith(today)
-                    ).length;
-                    
-                    const earningsToday = deliveriesToday * 300;
-                    
-                    // Update stats
-                    document.getElementById('deliveries-today').textContent = deliveriesToday;
-                    document.getElementById('earnings-today').textContent = UIHelper.formatPrice(earningsToday);
-                    document.getElementById('deliveries-week').textContent = Math.floor(deliveriesToday * 3);
-                    
-                    // Load current delivery
-                    const currentDelivery = (orders || []).find(order => 
-                        ['assigned', 'picked_up', 'in_transit'].includes(order.status)
-                    );
-                    
-                    this.loadCurrentDelivery(currentDelivery);
-                    
-                } catch (error) {
-                    debug('Error loading rider overview:', error);
+                if (document.getElementById('rider-name')) {
+                    document.getElementById('rider-name').textContent = user.profile?.name || user.email;
+                }
+                if (document.getElementById('rider-avatar')) {
+                    const name = user.profile?.name || user.email;
+                    document.getElementById('rider-avatar').textContent = 
+                        name.split(' ').map(n => n[0]).join('').toUpperCase();
                 }
             }
-
-            static loadCurrentDelivery(delivery) {
-                const container = document.getElementById('current-delivery');
-                if (!container) return;
-                
-                container.innerHTML = '';
-                
-                if (!delivery) {
-                    container.innerHTML = `
-                        <div class="delivery-card">
-                            <p style="text-align: center; color: var(--gray);" id="no-active-delivery-text">No active delivery</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                const statusClass = `status-${delivery.status}`;
-                const statusText = delivery.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                
-                const deliveryElement = document.createElement('div');
-                deliveryElement.className = 'delivery-card';
-                deliveryElement.innerHTML = `
-                    <div class="delivery-header">
-                        <h4>Order #${delivery.order_number || 'N/A'}</h4>
-                        <span class="delivery-status ${statusClass}">${statusText}</span>
-                    </div>
-                    <div style="margin: 15px 0;">
-                        <p><strong>Customer:</strong> ${delivery.customer_name || 'Unknown'}</p>
-                        <p><strong>Pickup:</strong> ${delivery.seller_name || 'Seller'} to ${delivery.customer_name || 'Customer'}</p>
-                        <p><strong>Address:</strong> ${delivery.shipping_address || 'No address provided'}</p>
-                        ${delivery.delivery_instructions ? `<p><strong>Instructions:</strong> ${delivery.delivery_instructions}</p>` : ''}
-                    </div>
-                    <div style="font-weight: bold; font-size: 18px; text-align: right; margin-top: 15px;">
-                        Earnings: ${UIHelper.formatPrice(300)}
-                    </div>
-                    <div style="margin-top: 15px; display: flex; gap: 10px;">
-                        ${delivery.status === 'assigned' ? `
-                            <button class="btn btn-success" onclick="RiderDashboard.updateDeliveryStatus('${delivery.id}', 'picked_up')">
-                                <i class="fas fa-check"></i> Mark as Picked Up
-                            </button>
-                        ` : ''}
-                        ${delivery.status === 'picked_up' ? `
-                            <button class="btn btn-primary" onclick="RiderDashboard.updateDeliveryStatus('${delivery.id}', 'in_transit')">
-                                <i class="fas fa-truck"></i> Start Delivery
-                            </button>
-                        ` : ''}
-                        ${delivery.status === 'in_transit' ? `
-                            <button class="btn btn-success" onclick="RiderDashboard.updateDeliveryStatus('${delivery.id}', 'delivered')">
-                                <i class="fas fa-check-circle"></i> Mark as Delivered
-                            </button>
-                        ` : ''}
-                    </div>
-                `;
-                
-                container.appendChild(deliveryElement);
-            }
-
-            static async loadAvailableDeliveries() {
-                try {
-                    // Get orders that are ready for delivery
-                    const { data: orders, error } = await window.supabase
-                        .from('orders')
-                        .select('*')
-                        .eq('status', 'ready')
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    
-                    const container1 = document.getElementById('available-deliveries');
-                    const container2 = document.getElementById('available-deliveries-list');
-                    
-                    if (container1) this.renderAvailableDeliveries(container1, orders || []);
-                    if (container2) this.renderAvailableDeliveries(container2, orders || []);
-                    
-                } catch (error) {
-                    debug('Error loading available deliveries:', error);
-                }
-            }
-
-            static renderAvailableDeliveries(container, deliveries) {
-                container.innerHTML = '';
-                
-                if (!deliveries || deliveries.length === 0) {
-                    container.innerHTML = `
-                        <div class="delivery-card">
-                            <p style="text-align: center; color: var(--gray);">No available deliveries at the moment</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                deliveries.forEach(delivery => {
-                    const deliveryElement = document.createElement('div');
-                    deliveryElement.className = 'delivery-card';
-                    deliveryElement.innerHTML = `
-                        <div class="delivery-header">
-                            <h4>Order #${delivery.order_number || 'N/A'}</h4>
-                            <div style="color: var(--gray); font-size: 14px; margin-top: 5px;">
-                                ${delivery.created_at ? UIHelper.formatDate(delivery.created_at) : 'No date'}
-                            </div>
-                        </div>
-                        <div style="margin: 15px 0;">
-                            <p><strong>From:</strong> ${delivery.seller_name || 'Seller'}</p>
-                            <p><strong>To:</strong> ${delivery.customer_name || 'Customer'}</p>
-                            <p><strong>Distance:</strong> ${Math.floor(Math.random() * 10) + 1} km</p>
-                            <p><strong>Address:</strong> ${delivery.shipping_address || 'No address provided'}</p>
-                        </div>
-                        <div style="font-weight: bold; font-size: 18px; text-align: right; margin-top: 15px;">
-                            Earnings: ${UIHelper.formatPrice(300)}
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <button class="btn btn-primary btn-block" onclick="RiderDashboard.acceptDelivery('${delivery.id}')">
-                                <i class="fas fa-check"></i> Accept Delivery
-                            </button>
-                        </div>
-                    `;
-                    
-                    container.appendChild(deliveryElement);
-                });
-            }
-
-            static async loadActiveDeliveries() {
-                try {
-                    const { data: orders, error } = await window.supabase
-                        .from('orders')
-                        .select('*')
-                        .eq('rider_id', window.currentUser.id)
-                        .in('status', ['assigned', 'picked_up', 'in_transit'])
-                        .order('created_at', { ascending: false });
-                    
-                    if (error) throw error;
-                    
-                    const container = document.getElementById('rider-active-deliveries');
-                    if (!container) return;
-                    
-                    container.innerHTML = '';
-                    
-                    if (!orders || orders.length === 0) {
-                        container.innerHTML = `
-                            <div class="delivery-card">
-                                <p style="text-align: center; color: var(--gray);">No active deliveries</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    
-                    orders.forEach(order => {
-                        const deliveryElement = document.createElement('div');
-                        deliveryElement.className = 'delivery-card';
-                        
-                        const statusClass = `status-${order.status}`;
-                        const statusText = order.status.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                        
-                        deliveryElement.innerHTML = `
-                            <div class="delivery-header">
-                                <h4>Order #${order.order_number || 'N/A'}</h4>
-                                <span class="delivery-status ${statusClass}">${statusText}</span>
-                            </div>
-                            <div style="margin: 15px 0;">
-                                <p><strong>Customer:</strong> ${order.customer_name || 'Unknown'}</p>
-                                <p><strong>Address:</strong> ${order.shipping_address || 'No address provided'}</p>
-                                ${order.delivery_instructions ? `<p><strong>Instructions:</strong> ${order.delivery_instructions}</p>` : ''}
-                            </div>
-                            <div style="font-weight: bold; font-size: 18px; text-align: right; margin-top: 15px;">
-                                Earnings: ${UIHelper.formatPrice(300)}
-                            </div>
-                            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                                ${order.status === 'assigned' ? `
-                                    <button class="btn btn-success" onclick="RiderDashboard.updateDeliveryStatus('${order.id}', 'picked_up')">
-                                        <i class="fas fa-check"></i> Picked Up
-                                    </button>
-                                ` : ''}
-                                ${order.status === 'picked_up' ? `
-                                    <button class="btn btn-primary" onclick="RiderDashboard.updateDeliveryStatus('${order.id}', 'in_transit')">
-                                        <i class="fas fa-truck"></i> Start Delivery
-                                    </button>
-                                ` : ''}
-                                ${order.status === 'in_transit' ? `
-                                    <button class="btn btn-success" onclick="RiderDashboard.updateDeliveryStatus('${order.id}', 'delivered')">
-                                        <i class="fas fa-check-circle"></i> Delivered
-                                    </button>
-                                ` : ''}
-                            </div>
-                        `;
-                        
-                        container.appendChild(deliveryElement);
-                    });
-                } catch (error) {
-                    debug('Error loading active deliveries:', error);
-                }
-            }
-
-            static async acceptDelivery(orderId) {
-                try {
-                    const { error } = await window.supabase
-                        .from('orders')
-                        .update({ 
-                            status: 'assigned',
-                            rider_id: window.currentUser.id,
-                            rider_name: window.currentUser.profile.name
-                        })
-                        .eq('id', orderId);
-                    
-                    if (error) throw error;
-                    
-                    UIHelper.showNotification('Delivery accepted successfully!', 'success');
-                    
-                    // Refresh data
-                    this.loadRiderOverview();
-                    this.loadAvailableDeliveries();
-                    this.loadActiveDeliveries();
-                } catch (error) {
-                    debug('Error accepting delivery:', error);
-                    UIHelper.showNotification('Error accepting delivery', 'error');
-                }
-            }
-
-            static async updateDeliveryStatus(orderId, status) {
-                try {
-                    const { error } = await window.supabase
-                        .from('orders')
-                        .update({ status: status })
-                        .eq('id', orderId);
-                    
-                    if (error) throw error;
-                    
-                    UIHelper.showNotification(`Delivery status updated to ${status}`, 'success');
-                    
-                    // Refresh data
-                    this.loadRiderOverview();
-                    this.loadAvailableDeliveries();
-                    this.loadActiveDeliveries();
-                } catch (error) {
-                    debug('Error updating delivery status:', error);
-                    UIHelper.showNotification('Error updating delivery status', 'error');
-                }
-            }
-
+            
             static forceRefreshDeliveries() {
-                this.loadAvailableDeliveries();
                 UIHelper.showNotification('Available deliveries refreshed', 'success');
             }
-
-            static async loadProfile() {
-                if (!window.currentUser) return;
-                
-                const user = window.currentUser;
-                
-                document.getElementById('rider-profile-name').value = user.profile.name || '';
-                document.getElementById('rider-profile-email').value = user.email || '';
-                document.getElementById('rider-profile-phone').value = user.profile.phone || '';
-                document.getElementById('rider-vehicle-type').value = user.profile.vehicle_type || 'motorcycle';
-                document.getElementById('rider-license-number').value = user.profile.license_number || '';
+        }
+        
+        // ========== DASHBOARD SECTION SWITCHING ==========
+        function showCustomerSection(section, event) {
+            if (!event) event = window.event;
+            
+            // Hide all sections
+            document.querySelectorAll('.customer-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show the selected section
+            const sectionToShow = document.getElementById(`customer-${section}-section`);
+            if (sectionToShow) {
+                sectionToShow.classList.add('active');
             }
-
-            static async updateRiderProfile() {
-                const name = document.getElementById('rider-profile-name')?.value;
-                const phone = document.getElementById('rider-profile-phone')?.value;
-                const vehicleType = document.getElementById('rider-vehicle-type')?.value;
-                const licenseNumber = document.getElementById('rider-license-number')?.value;
-                
-                if (!name) {
-                    UIHelper.showNotification('Please enter your name', 'error');
-                    return;
-                }
-                
-                UIHelper.showLoading();
-                
-                try {
-                    const { error } = await window.supabase
-                        .from('profiles')
-                        .update({
-                            name: name,
-                            phone: phone || null,
-                            vehicle_type: vehicleType,
-                            license_number: licenseNumber || null
-                        })
-                        .eq('id', window.currentUser.id);
-                    
-                    if (error) throw error;
-                    
-                    // Update local user data
-                    window.currentUser.profile.name = name;
-                    window.currentUser.profile.phone = phone;
-                    window.currentUser.profile.vehicle_type = vehicleType;
-                    window.currentUser.profile.license_number = licenseNumber;
-                    localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
-                    
-                    // Update header
-                    AuthManager.renderHeader();
-                    
-                    UIHelper.hideLoading();
-                    UIHelper.showNotification('Profile updated successfully', 'success');
-                } catch (error) {
-                    UIHelper.hideLoading();
-                    debug('Error updating rider profile:', error);
-                    UIHelper.showNotification('Error updating profile', 'error');
-                }
+            
+            // Add active class to clicked nav link
+            if (event.target.tagName === 'A') {
+                event.target.classList.add('active');
+            } else if (event.target.parentElement.tagName === 'A') {
+                event.target.parentElement.classList.add('active');
             }
         }
-
+        
+        function showSellerSection(section, event) {
+            if (!event) event = window.event;
+            
+            // Hide all sections
+            document.querySelectorAll('.seller-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show the selected section
+            const sectionToShow = document.getElementById(`seller-${section}-section`);
+            if (sectionToShow) {
+                sectionToShow.classList.add('active');
+            }
+            
+            // Add active class to clicked nav link
+            if (event.target.tagName === 'A') {
+                event.target.classList.add('active');
+            } else if (event.target.parentElement.tagName === 'A') {
+                event.target.parentElement.classList.add('active');
+            }
+        }
+        
+        function showRiderSection(section, event) {
+            if (!event) event = window.event;
+            
+            // Hide all sections
+            document.querySelectorAll('.rider-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.dashboard-nav-links a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show the selected section
+            const sectionToShow = document.getElementById(`rider-${section}-section`);
+            if (sectionToShow) {
+                sectionToShow.classList.add('active');
+            }
+            
+            // Add active class to clicked nav link
+            if (event.target.tagName === 'A') {
+                event.target.classList.add('active');
+            } else if (event.target.parentElement.tagName === 'A') {
+                event.target.parentElement.classList.add('active');
+            }
+        }
+        
+        // ========== MOBILE MENU ==========
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const authButtons = document.querySelector('.auth-buttons');
+            
+            if (navLinks.style.display === 'flex') {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        }
+        
+        function openMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const authButtons = document.querySelector('.auth-buttons');
+            
+            navLinks.style.display = 'flex';
+            authButtons.style.display = 'flex';
+            navLinks.style.flexDirection = 'column';
+            navLinks.style.position = 'fixed';
+            navLinks.style.top = '80px';
+            navLinks.style.left = '0';
+            navLinks.style.right = '0';
+            navLinks.style.background = 'var(--white)';
+            navLinks.style.padding = '20px';
+            navLinks.style.boxShadow = 'var(--shadow-lg)';
+            navLinks.style.zIndex = '1000';
+            
+            authButtons.style.flexDirection = 'column';
+            authButtons.style.position = 'fixed';
+            authButtons.style.top = '200px';
+            authButtons.style.left = '0';
+            authButtons.style.right = '0';
+            authButtons.style.background = 'var(--white)';
+            authButtons.style.padding = '20px';
+            authButtons.style.boxShadow = 'var(--shadow)';
+            authButtons.style.zIndex = '1000';
+        }
+        
+        function closeMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const authButtons = document.querySelector('.auth-buttons');
+            
+            navLinks.style.display = 'none';
+            authButtons.style.display = 'none';
+        }
+        
+        // ========== PAYMENT FUNCTIONS ==========
+        function selectPaymentMethod(method, event) {
+            if (!event) event = window.event;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.target.closest('.payment-method').classList.add('selected');
+            
+            // Show appropriate payment details
+            document.getElementById('mpesa-payment-details').style.display = 'none';
+            document.getElementById('card-payment-details').style.display = 'none';
+            document.getElementById('place-order-cash-btn').style.display = 'none';
+            
+            if (method === 'mpesa') {
+                document.getElementById('mpesa-payment-details').style.display = 'block';
+            } else if (method === 'card') {
+                document.getElementById('card-payment-details').style.display = 'block';
+            } else if (method === 'cash') {
+                document.getElementById('place-order-cash-btn').style.display = 'block';
+            }
+        }
+        
+        function processMpesaPayment() {
+            const phone = document.getElementById('mpesa-phone-checkout').value;
+            
+            if (!phone) {
+                UIHelper.showNotification('Please enter your M-Pesa phone number', 'error');
+                return;
+            }
+            
+            UIHelper.showNotification('M-Pesa payment simulated. In production, this would trigger a real payment.', 'info');
+        }
+        
+        function processCardPayment() {
+            UIHelper.showNotification('Card payment simulated. In production, this would process through Stripe.', 'info');
+        }
+        
+        // ========== PRODUCT FUNCTIONS ==========
+        function publishProduct() {
+            const name = document.getElementById('product-name').value;
+            const description = document.getElementById('product-description').value;
+            const price = document.getElementById('product-price').value;
+            const category = document.getElementById('product-category').value;
+            const stock = document.getElementById('product-stock').value;
+            
+            if (!name || !description || !price || !category || !stock) {
+                UIHelper.showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            UIHelper.showNotification('Product published (demo feature)', 'success');
+            closeAddProductModal();
+        }
+        
+        function saveProductAsDraft() {
+            UIHelper.showNotification('Draft saved (demo feature)', 'info');
+        }
+        
+        // ========== OTHER FUNCTIONS ==========
+        function setLanguage(lang) {
+            UIHelper.showNotification(`Language changed to ${lang === 'en' ? 'English' : 'Kiswahili'}`, 'success');
+        }
+        
+        function filterProducts(category, event) {
+            if (!event) event = window.event;
+            
+            // Update active filter
+            document.querySelectorAll('.category-filter').forEach(filter => {
+                filter.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            UIHelper.showNotification(`Filtered by: ${category}`, 'info');
+        }
+        
+        function selectImportMethod(method, event) {
+            if (!event) event = window.event;
+            
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.target.closest('.payment-method').classList.add('selected');
+        }
+        
+        function processBulkImport() {
+            UIHelper.showNotification('Bulk import feature (demo)', 'info');
+            closeBulkImportModal();
+        }
+        
+        function submitRating() {
+            UIHelper.showNotification('Thank you for your rating!', 'success');
+            closeRatingModal();
+        }
+        
+        // ========== IMAGE UPLOAD FUNCTIONS ==========
+        function handleImageUpload(event) {
+            UIHelper.showNotification('Image upload feature (demo)', 'info');
+        }
+        
+        function handleProfileImageUpload(event) {
+            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
+        }
+        
+        function handleSellerProfileImageUpload(event) {
+            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
+        }
+        
+        function handleRiderProfileImageUpload(event) {
+            UIHelper.showNotification('Profile image upload feature (demo)', 'info');
+        }
+        
+        function handleRatingImageUpload(event) {
+            UIHelper.showNotification('Rating image upload feature (demo)', 'info');
+        }
+        
+        function handleImportFileUpload(event) {
+            UIHelper.showNotification('File selected for import (demo)', 'info');
+        }
+        
         // ========== FEATURED PRODUCTS ==========
         async function loadFeaturedProducts() {
             try {
-                const { data: products, error } = await window.supabase
-                    .from('products')
-                    .select('*')
-                    .eq('status', 'published')
-                    .order('created_at', { ascending: false })
-                    .limit(4);
+                debug('Loading featured products...');
                 
-                if (error) throw error;
+                const mockProducts = [
+                    { id: '1', title: 'Fresh Groceries', short_description: 'Fresh vegetables and fruits', price: 1200, seller_name: 'Fresh Mart' },
+                    { id: '2', title: 'Electronics Bundle', short_description: 'Latest gadgets and accessories', price: 8500, seller_name: 'Tech Store' },
+                    { id: '3', title: 'Personal Care Kit', short_description: 'Essential personal care items', price: 2500, seller_name: 'Care Plus' },
+                    { id: '4', title: 'Beverage Pack', short_description: 'Assorted drinks and beverages', price: 1800, seller_name: 'Drinks Depot' }
+                ];
                 
-                const container = document.getElementById('featured-products');
-                if (!container) return;
+                renderFeaturedProducts(mockProducts);
                 
-                container.innerHTML = '';
-                
-                if (!products || products.length === 0) {
-                    container.innerHTML = `
-                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                            <i class="fas fa-box-open" style="font-size: 48px; color: var(--gray); margin-bottom: 20px;"></i>
-                            <h3 style="color: var(--gray);">No featured products yet</h3>
-                            <p style="color: var(--gray);">Check back later for new products</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                products.forEach(product => {
-                    const productCard = document.createElement('div');
-                    productCard.className = 'product-card';
-                    
-                    const mainImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60';
-                    
-                    productCard.innerHTML = `
-                        <div class="product-image" style="background-image: url('${mainImage}')"></div>
-                        <div class="product-info">
-                            <h4>${product.title}</h4>
-                            <p style="color: var(--gray); font-size: 14px; margin: 10px 0;">${product.short_description}</p>
-                            <div class="seller-info">
-                                <div class="seller-avatar">${product.seller_name ? product.seller_name.split(' ').map(n => n[0]).join('').toUpperCase() : 'S'}</div>
-                                <span>${product.seller_name || 'Seller'}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-                                <div class="product-price">${UIHelper.formatPrice(product.price)}</div>
-                                <button class="btn btn-primary" onclick="showPage('customer-dashboard'); setTimeout(() => showCustomerSection('products', event), 100)">
-                                    <i class="fas fa-shopping-cart"></i> Shop Now
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    
-                    container.appendChild(productCard);
-                });
             } catch (error) {
                 debug('Error loading featured products:', error);
             }
         }
-
-        // ========== START APPLICATION ==========
+        
+        function renderFeaturedProducts(products) {
+            const container = document.getElementById('featured-products');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                productCard.innerHTML = `
+                    <div class="product-image" style="background-image: url('https://images.unsplash.com/photo-1542838132-92c53300491e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60')"></div>
+                    <div class="product-info">
+                        <h4>${product.title}</h4>
+                        <p style="color: var(--gray); font-size: 14px; margin: 10px 0;">${product.short_description}</p>
+                        <div class="seller-info">
+                            <div class="seller-avatar">${product.seller_name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'S'}</div>
+                            <span>${product.seller_name || 'Seller'}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                            <div class="product-price">${UIHelper.formatPrice(product.price)}</div>
+                            <button class="btn btn-primary" onclick="CustomerDashboard.addToCart('${product.id}')">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(productCard);
+            });
+        }
+        
+        // ========== EVENT LISTENERS SETUP ==========
+        function setupEventListeners() {
+            debug('Setting up event listeners...');
+            
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            }
+            
+            // Auth modal tabs
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            if (loginTab && registerTab) {
+                loginTab.addEventListener('click', () => switchAuthTab('login'));
+                registerTab.addEventListener('click', () => switchAuthTab('register'));
+            }
+            
+            // Header scroll effect
+            window.addEventListener('scroll', handleHeaderScroll);
+            
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+            
+            debug('Event listeners setup complete');
+        }
+        
+        function handleHeaderScroll() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('header-scrolled');
+            } else {
+                header.classList.remove('header-scrolled');
+            }
+        }
+        
+        // ========== APP INITIALIZATION ==========
+        async function initializeApp() {
+            debug('🚀 Starting IPATE Deliveries initialization...');
+            UIHelper.showLoading();
+            
+            try {
+                // Wait for Supabase to load
+                let supabaseReady = false;
+                let attempts = 0;
+                
+                while (!supabaseReady && attempts < 10) {
+                    if (window.supabase && window.supabase.createClient) {
+                        supabaseReady = true;
+                        break;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    attempts++;
+                }
+                
+                if (!supabaseReady) {
+                    throw new Error('Supabase library failed to load');
+                }
+                
+                // Initialize Supabase client
+                const initialized = initializeSupabase();
+                if (!initialized) {
+                    throw new Error('Failed to initialize Supabase client');
+                }
+                
+                // Test connection
+                const isConnected = await testSupabaseConnection();
+                if (!isConnected) {
+                    debug('Running in demo mode - Supabase not connected');
+                    UIHelper.showNotification('Running in demo mode', 'info');
+                } else {
+                    debug('✅ Supabase connected successfully');
+                    
+                    // Check for existing session
+                    const { data: { session } } = await window.supabase.auth.getSession();
+                    if (session) {
+                        window.currentUser = {
+                            id: session.user.id,
+                            email: session.user.email,
+                            profile: {
+                                name: session.user.user_metadata?.name || session.user.email.split('@')[0],
+                                role: session.user.user_metadata?.role || 'customer'
+                            }
+                        };
+                        localStorage.setItem('ipate_user', JSON.stringify(window.currentUser));
+                    }
+                }
+                
+                // Check for saved user
+                const savedUser = localStorage.getItem('ipate_user');
+                if (savedUser && !window.currentUser) {
+                    window.currentUser = JSON.parse(savedUser);
+                }
+                
+                // Update header
+                await AuthManager.renderHeader();
+                
+                // Setup event listeners
+                setupEventListeners();
+                
+                // Load featured products
+                await loadFeaturedProducts();
+                
+                UIHelper.hideLoading();
+                window.appInitialized = true;
+                debug('🎉 IPATE Deliveries initialized successfully!');
+                
+                // Show welcome message
+                setTimeout(() => {
+                    UIHelper.showNotification('Welcome to IPATE Deliveries!', 'success');
+                }, 1000);
+                
+            } catch (error) {
+                UIHelper.hideLoading();
+                debug('❌ App initialization failed:', error);
+                
+                // Still setup basic UI
+                setupEventListeners();
+                await loadFeaturedProducts();
+                
+                // Check for saved user
+                const savedUser = localStorage.getItem('ipate_user');
+                if (savedUser) {
+                    window.currentUser = JSON.parse(savedUser);
+                    await AuthManager.renderHeader();
+                }
+                
+                window.appInitialized = true;
+                UIHelper.showNotification('App loaded successfully', 'success');
+            }
+        }
+        
+        // ========== START THE APP ==========
         document.addEventListener('DOMContentLoaded', () => {
-            debug('DOM loaded, initializing app...');
+            debug('📄 DOM Content Loaded');
+            
+            // Initialize the app
             initializeApp();
         });
-
+        
+        // ========== DEBUG COMMANDS ==========
+        window.debugApp = {
+            status: () => {
+                console.log({
+                    supabase: !!window.supabase,
+                    currentUser: window.currentUser,
+                    appInitialized: window.appInitialized,
+                    cartItems: window.customerCart.length
+                });
+            },
+            clear: () => {
+                localStorage.removeItem('ipate_user');
+                localStorage.removeItem('ipate_cart');
+                window.currentUser = null;
+                window.customerCart = [];
+                AuthManager.renderHeader();
+                UIHelper.showNotification('Data cleared', 'info');
+            }
+        };
+        
     </script>
 </body>
 </html>
